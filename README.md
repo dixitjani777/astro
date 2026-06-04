@@ -65,3 +65,7 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 - Scheduler (recommended): add a system cron that runs every minute:
   - `* * * * * php /path/to/artisan schedule:run >> /dev/null 2>&1`
 - Config via `.env`: `HOROSCOPE_TIMEZONE`, `HOROSCOPE_FETCH_TIME`, `HOROSCOPE_API_URL`
+
+## Installation
+
+See [INSTALLATION.md](./INSTALLATION.md) for the full setup guide and PHP version requirements.
