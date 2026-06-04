@@ -1,8 +1,13 @@
 <!-- layout, title, description, keywords -->
 @extends('frontend.layouts.master')
-@section('title','Horoscope Report : Janam patrika : Kundali - Astroduniya')
-@section('description','Get your horoscope report and analysis your past, present and future. It gives you overall life predictions. Also, get solutions from report.')
-@section('keywords','horoscope report, janam patrika, janampatrika, kundli, kundali, life predictions, kundali online, online kundali, janam kundali, online horoscope report, kundali report, Janmakshar')
+@php
+	$metaTitle = (!empty($cms?->meta_title)) ? $cms->meta_title : 'Horoscope Report : Janam patrika : Kundali - Astroduniya';
+	$metaDescription = (!empty($cms?->meta_description)) ? $cms->meta_description : 'Get your horoscope report and analysis your past, present and future. It gives you overall life predictions. Also, get solutions from report.';
+	$metaKeywords = 'horoscope report, janam patrika, janampatrika, kundli, kundali, life predictions, kundali online, online kundali, janam kundali, online horoscope report, kundali report, Janmakshar';
+@endphp
+@section('title', $metaTitle)
+@section('description', $metaDescription)
+@section('keywords', $metaKeywords)
 <!-- End of layout, title, description, keywords -->
 
 <!-- toolbar page title -->
@@ -21,6 +26,9 @@
 	<div class="container">
 		<div class="row">	
 			<div class="col-lg-9 order-1 order-lg-1">		
+				@if(!empty($cms?->content_html))
+					{!! $cms->content_html !!}
+				@else
 				<div>
 					<p>
 						Horoscope report is also known as Janam patrika and Kundali report or Natal Char report. It's a very important document which helps to understand the various events encountered by you during your lifetime. It would contain the details of all astrological aspects of you on the basis of your birth date, time and place.
@@ -49,6 +57,7 @@
 				    </div>
 
 				</div><br/>
+				@endif
 
 				<!-- <div class="mb-5">
 					<span class="sub_heading letter-spacing-1 badge badge-pill badge-primary badge-soft font-weight-medium pl-2 pr-2 pt--6 pb--6 mb-2 fs--15">
@@ -98,83 +107,90 @@
 							Enter Details						
 						</h3>
 
-						<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
-							<span class="styleColor">*</span> You must <a href="#" data-href="_ajax/modal_signin_md.html" data-ajax-modal-size="modal-md" data-ajax-modal-centered="false" class="js-ajax-modal">Log in</a> to Buy Horoscope.
-						</p>
+						@guest
+							<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
+								<span class="styleColor">*</span> You must <a href="#" data-href="_ajax/modal_signin_md.html" data-ajax-modal-size="modal-md" data-ajax-modal-centered="false" class="js-ajax-modal">Log in</a> to Buy Horoscope.
+							</p>
+						@endguest
 
 						<!-- Query Form -->
-						<form novalidate method="post" action="#" class="bs-validate d-block bg-white shadow-md rounded p-4 mb-5 ">
-							<div class="row">
-								<div class="col-12 col-md-6">
-									<div class="form-label-group mb-3">
-										<input required placeholder="Name" id="name" type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Name">
-										<label for="comment_name">Name</label>
-									</div>
-								</div>
+<x-enquiry-form
+	layout="floating"
+	class="bs-validate d-block bg-white shadow-md rounded p-4 mb-5"
+	source="report"
+	context="horoscope_report"
+	subject="Horoscope Report"
+	:show-name="false"
+	:show-email="false"
+	:show-phone="false"
+	:show-message="false"
+	message-label="Enter your query here.."
+	submit-label="Submit Query"
+>
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<input required placeholder="Name" type="text" class="form-control" name="name" value="{{ old('name', auth()->user()?->name) }}">
+				<label>Name</label>
+				@error('name')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
 
-								<div class="col-12 col-md-6">
-									<div class="form-label-group mb-3">
-										<select id="select_options2" class="form-control">
-											<option value="male">Male</option>
-											<option value="female">Female</option>
-											<option value="other">Other</option>
-										</select>
-										<label for="select_options2">Gender</label>
-									</div>
-								</div>
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<select id="report_gender" class="form-control" name="meta[gender]">
+					<option value="male">Male</option>
+					<option value="female">Female</option>
+					<option value="other">Other</option>
+				</select>
+				<label for="report_gender">Gender</label>
+				@error('meta.gender')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+	</div>
 
-							</div>
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<input required autocomplete="off" type="text" name="meta[dob_time]" class="form-control rangepicker" placeholder="Date of Birth and Time"
+					data-layout-rounded="false"
+					data-single-datepicker="true"
+					data-interval-years='[1982,2020]'
+					data-timepicker="true"
+					data-date-format="DD/MM/YYYY hh:mm: A"
+					data-quick-locale='{
+						"lang_apply" : "Apply",
+						"lang_cancel": "Cancel",
+						"lang_crange": "Custom Range",
+						"lang_months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+						"lang_weekdays": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+					}'>
+				<label>Date of Birth and Time</label>
+				@error('meta.dob_time')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<input required placeholder="Birth Place" type="text" class="form-control" name="meta[birth_place]">
+				<label>Birth Place</label>
+				<span class="fs--14 styleColor letter-spacing-03">* Select location from the list only.</span>
+				@error('meta.birth_place')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+	</div>
 
-							<div class="row">
-									<div class="col-12 col-md-6">
-										<div class="form-label-group mb-3">
-											<input required autocomplete="off" type="text" name="my_daterange" class="form-control rangepicker" placeholder="Date of Birth and Time" data-toggle="tooltip" data-placement="top" data-original-title="Date of Birth and Time"
-												data-layout-rounded="false" 
-												data-single-datepicker="true" 
-												data-interval-years='[1982,2020]'
-												data-timepicker="true" 
-												
-												data-date-format="DD/MM/YYYY hh:mm: A" 
-												 
-												data-quick-locale='{
-													"lang_apply"	: "Apply",
-													"lang_cancel"	: "Cancel",
-													"lang_crange"	: "Custom Range",
-													"lang_months" 	: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-													"lang_weekdays" : ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
-												}'
-											>
-											<label for="comment_name">Date of Birth and Time</label>
-										</div>
-									</div>
-									<div class="col-12 col-md-6">
-										<div class="form-label-group mb-3">
-											<input required placeholder="Birth Place" id="timepickerT" type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Birth Place">
-											<label for="comment_name">Birth Place</label>
-											<span class="fs--14 styleColor letter-spacing-03">* Select location from the list only.</span>
-										</div>
-									</div>
-							</div>
-							
-							<div class="clearfix mb-3">
-								<div class="form-label-group">
-									<textarea required rows="3" id="comment_description"
-											data-output-target=".js-form-advanced-char-left" 
-											class="form-control js-form-advanced-char-count-down" 
-											maxlength="3000" placeholder="Your comment"></textarea>
-									<label for="comment_description">Enter your query here..</label>
-								</div>
-								<span class="fs--12 text-muted text-align-end float-end mt-1">
-									characters left: <span class="js-form-advanced-char-left">3000</span>
-								</span>
-
-							</div>
-
-							<button type="submit" class="btn btn-sm btn-warning">
-								Submit Query
-							</button>
-						</form>
-						<!-- /Query Form -->
+	<div class="clearfix mb-3">
+		<div class="form-label-group">
+			<textarea required rows="3" class="form-control js-form-advanced-char-count-down" name="message" maxlength="3000" placeholder="Your comment">{{ old('message') }}</textarea>
+			<label>Enter your query here..</label>
+			@error('message')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+		</div>
+		<span class="fs--12 text-muted text-align-end float-end mt-1">
+			characters left: <span class="js-form-advanced-char-left">3000</span>
+		</span>
+	</div>
+</x-enquiry-form>
+<!-- /Query Form -->
 
 						
 
@@ -436,3 +452,4 @@
 
 @endsection
 <!-- End Section -->
+

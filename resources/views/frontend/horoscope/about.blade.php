@@ -1,8 +1,13 @@
 <!-- layout, title, description, keywords -->
 @extends('frontend.layouts.master')
-@section('title','About Horoscope : What is Horoscope - Astroduniya')
-@section('description','Predictions of Horoscope help you to explore your upcoming event. It always help you to identify actual reasons of your troubles in life.')
-@section('keywords','About Horoscope, Zodiac Sign, Daily Horoscope, Predictions of Horoscope, all the zodiac signs, horoscope dates, horoscope by date of birth')
+@php
+	$metaTitle = (!empty($cms?->meta_title)) ? $cms->meta_title : 'About Horoscope : What is Horoscope - Astroduniya';
+	$metaDescription = (!empty($cms?->meta_description)) ? $cms->meta_description : 'Predictions of Horoscope help you to explore your upcoming event. It always help you to identify actual reasons of your troubles in life.';
+	$metaKeywords = 'About Horoscope, Zodiac Sign, Daily Horoscope, Predictions of Horoscope, all the zodiac signs, horoscope dates, horoscope by date of birth';
+@endphp
+@section('title', $metaTitle)
+@section('description', $metaDescription)
+@section('keywords', $metaKeywords)
 <!-- End of layout, title, description, keywords -->
 
 <!-- toolbar page title -->
@@ -20,7 +25,10 @@
 	<div class="container">
 		<div class="row">	
 			<div class="col-lg-9 order-1 order-lg-1">
-				
+				@if(!empty($cms?->content_html))
+					{!! $cms->content_html !!}
+				@else
+
 				<div>
 					<img class="img-fluid" src="{{ asset('images/other/about_horoscope.jpg') }}" width="840" alt="about astrology"><br/><br/>										
 					<p>
@@ -342,6 +350,7 @@
 				  </div>
 				</div><br><br>
 
+				@endif
 			</div>
 			
 			<!-- SIDEBAR -->

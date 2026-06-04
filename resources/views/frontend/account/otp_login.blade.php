@@ -21,186 +21,88 @@
 	<div class="container">
 		<div class="row ">
 			<div class="col-12 col-sm-8 col-md-8 col-lg-6 offset-sm-2 offset-md-2 offset-lg-3">
-				<!-- PASSWD RESET -->
-				<form method="post" action="#" id="accordionAccountPasswd" data-parent="#accordionAccount">
-					
-					<!-- title -->
-					
-					<!-- <p class="mb-4 font-weight-medium b-0">
-						&nbsp; Type your Mobile Number to continue
-					</p> -->
+				<div class="p-4 rounded shadow-xs">
 
-					<div class="p-4 rounded shadow-xs">
+					<p class="mb-4 font-weight-normal styleColor b-0 fs--16">
+						We will send an OTP to your email for authentication.
+					</p>
 
-						
-						
-						<p class="mb-4 font-weight-normal styleColor b-0 fs--16">
-							We will sent an OTP to the mobile number for Authentication.
-						</p>
+					@if (session('status'))
+						<div class="alert alert-success py-2">{{ session('status') }}</div>
+					@endif
 
-						<!--
-						<p class="text-danger">
-							Ups! Please check again
-						</p>
-						-->
-
+					<form method="post" action="{{ route('otp.send') }}">
+						@csrf
+						<div class="mb-3">
+							<label class="fs--16 text-muted">Email</label>
+							<input name="email" type="email" class="form-control" value="{{ old('email', session('otp_email')) }}" required>
+							@error('email')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+						</div>
 
 						<div class="mb-3">
-							<label for="otp_mobile" class="fs--16 text-muted">Enter Mobile Number</label>
-							<input id="otp_mobile" name="otp_mobile" type="number" class="form-control">
-							<span id="valid-msg" class="hide fs--13 font-weight-medium">Valid</span>
-							<span id="error-msg" class="hide fs--15 font-weight-normal letter-spacing-03 styleColor"></span>
-							
+							<label class="fs--16 text-muted">Name (optional)</label>
+							<input name="name" type="text" class="form-control" value="{{ old('name', session('otp_name')) }}">
+							@error('name')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
 						</div>
 
-						<div class="op hide">
-							<div class="mb-3">
-								<label for="log_otp" class="fs--16 text-muted">Enter OTP</label>
-								<input id="log_otp" name="log_otp" type="number" class="form-control">
-							</div>
-
-							<div class="input-group-over">
-								<div class="mb-3">
-									<label for="log_password" class="fs--16 text-muted">Set Password</label>
-									<input required placeholder="At least 6 characters" id="log_password" name="log_password" type="password" class="form-control">
-								</div>
-
-								<!-- `SOW : Form Advanced` plugin used -->
-								<a href="account-sign-password.html" class="btn fs--12 btn-password-type-toggle mt-3" data-target="#log_password">
-									<span class="group-icon">
-										<i class="fi fi-eye m-0"></i>
-										<i class="fi fi-close m-0"></i>
-									</span>
-								</a>
-							</div>
+						<div class="mb-3">
+							<label class="fs--16 text-muted">Mobile (optional)</label>
+							<input id="otp_mobile_input" type="tel" class="form-control" value="{{ old('mobile', session('otp_mobile')) }}" placeholder="+91 9876543210">
+							<input id="otp_mobile" name="mobile" type="hidden" value="{{ old('mobile', session('otp_mobile')) }}">
+							@error('mobile')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+							<small class="text-muted">Include country code. Max 1MB uploads apply to images only.</small>
 						</div>
 
-						
-						<div>
-							<button type="button" class="send-otp btn btn-soft btn-warning btn-block" onclick="sendOtp()">Continue
-                            </button>
-                        </div>
+						<button type="submit" class="btn btn-soft btn-warning btn-block">Send OTP</button>
+					</form>
 
-                        <div>
-                            <button class="log_otp hide btn btn-soft btn-warning btn-block">Login
-                            </button>
+					<hr>
+
+					<form method="post" action="{{ route('otp.verify') }}">
+						@csrf
+						<div class="mb-3">
+							<label class="fs--16 text-muted">Email</label>
+							<input name="email" type="email" class="form-control" value="{{ old('email', session('otp_email')) }}" required>
 						</div>
 
-						
-						<button type="submit" onclick="history.back()" class="btn btn-soft btn-link btn-block text-muted mt--0">
-							back to log in
-						</button>
-						
+						<div class="mb-3">
+							<label class="fs--16 text-muted">OTP</label>
+							<input name="otp" type="text" inputmode="numeric" pattern="[0-9]*" class="form-control" value="{{ old('otp') }}" required>
+							@error('otp')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+						</div>
 
-					</div>
+						<button type="submit" class="btn btn-soft btn-warning btn-block">Verify &amp; Login</button>
+					</form>
 
-				</form>
-				<!-- /PASSWD RESET -->
+					<a href="{{ url('/account') }}" class="btn btn-soft btn-link btn-block text-muted mt--0">back to log in</a>
+
+				</div>
 			</div>
 		</div>
 	</div>
 </section>
 
 <script>
-var input = document.querySelector("#otp_mobile"),
-  errorMsg = document.querySelector("#error-msg"),
-  validMsg = document.querySelector("#valid-msg");
+	(function () {
+		var input = document.getElementById('otp_mobile_input');
+		var hidden = document.getElementById('otp_mobile');
+		if (!input || !hidden || typeof window.intlTelInput !== 'function') return;
 
-// Error messages based on the code returned from getValidationError
-var errorMap = [ "Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+		var iti = window.intlTelInput(input, {
+			separateDialCode: true,
+			nationalMode: false,
+			initialCountry: 'in',
+		});
 
-// Initialise plugin
-var intl = window.intlTelInput(input, {
-    initialCountry: "auto",
-    geoIpLookup: function(success, failure) {
-        $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-            var countryCode = (resp && resp.country) ? resp.country : "";
-            success(countryCode);
-        });
-    },
-    utilsScript: "../js/utils.js"
-});
+		function sync() {
+			try { hidden.value = iti.getNumber() || ''; } catch (e) { hidden.value = ''; }
+		}
 
-var reset = function() {
-  input.classList.remove("error");
-  errorMsg.innerHTML = " ";
-  errorMsg.classList.add("hide");
-  validMsg.classList.add("hide");
-  validMsg.classList.remove("logvalidation");
-  $('.log_otp').hide();
-  $('.send-otp').show();
-  $('.op').hide();
-  $('input[name=log_otp').val('');
-  $('input[name=log_password').val('');
-};
-
-// Validate on blur event
-input.addEventListener('blur', function() {
-  reset();
-  if(input.value.trim()){
-    if(intl.isValidNumber()){
-      //validMsg.classList.remove("hide");
-      validMsg.classList.add("logvalidation");
-    }else{
-      input.classList.add("error");
-      var errorCode = intl.getValidationError();
-      errorMsg.innerHTML = errorMap[errorCode];
-      errorMsg.classList.remove("hide");
-    }
-  }
-});
-
-// Reset on keyup/change event
-input.addEventListener('change', reset);
-input.addEventListener('keyup', reset);    
-</script>
-
-<script>
-	
-    function sendOtp() {
-    	var data =$(".logvalidation").html();
-    	
-    	alert(data);
-       /* $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });*/
-
-        // alert($('#mobile').val());
-        /*$.ajax( {
-            url:'sendOtp',
-            type:'post',
-            data: {'mobile': $('#reg_mobile').val()},
-            success:function(data) {
-                 alert(data);
-                if(data != 0){
-                    $('.log_otp').show();
-                    $('.send-otp').hide();
-                }else{
-                    alert('Mobile No not found');
-                }
-
-            },
-            error:function () {
-                console.log('error');
-            }
-        });*/
-        //
-        //var data = "1";
-        if(data == 'Valid'){
-            $('.log_otp').show();
-            $('.op').show();
-            $('.send-otp').hide();
-           return false;    // or return;
-			// or
-			throw new Error("Here we stop");
-        }else{
-            alert('Mobile No not found');
-        	return false;
-        	throw new Error('controlledError');
-        }
-    }
+		input.addEventListener('change', sync);
+		input.addEventListener('keyup', sync);
+		input.form && input.form.addEventListener('submit', sync);
+		sync();
+	})();
 </script>
 
 @endsection

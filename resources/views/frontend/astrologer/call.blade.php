@@ -70,9 +70,12 @@
 							Enter Details						
 						</h3>
 
-						<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
-							<span class="styleColor">*</span> You must <a href="{{ url('/account')}}" >Log in</a> to Book Astrologer.
-						</p><br><br>
+						@guest
+							<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
+								<span class="styleColor">*</span> You must <a href="{{ url('/account')}}" >Log in</a> to Book Astrologer.
+							</p>
+						@endguest
+						<br><br>
 
 						<!-- Query Form -->
 						<form novalidate method="post" action="#" class="bs-validate d-block bg-white shadow-md rounded p-4 mb-5 ">

@@ -11,6 +11,11 @@ use App\Http\Controllers\Panditji;
 use App\Http\Controllers\Query;
 use App\Http\Controllers\Section;
 use App\Http\Controllers\Vastu;
+use App\Http\Controllers\EnquiryController;
+use App\Http\Controllers\OtpAuthController;
+use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\EmailInboxController;
 
 
 // Route::get('/', function () {
@@ -21,23 +26,114 @@ use App\Http\Controllers\Vastu;
 //Route::get('/','Home@index');
 Route::get('/', [Home::class, 'index']);
 
+/* enquiries (contact/query/feedback/etc) */
+Route::post('/enquiries', [EnquiryController::class, 'store'])
+    ->middleware(['honeypot', 'throttle:15,1'])
+    ->name('enquiries.store');
+
+/* OTP auth */
+Route::get('/account/loginwithotp', [OtpAuthController::class, 'show'])->name('otp.show');
+Route::post('/otp/send', [OtpAuthController::class, 'send'])->middleware(['honeypot', 'throttle:8,1'])->name('otp.send');
+Route::post('/otp/verify', [OtpAuthController::class, 'verify'])->middleware(['honeypot', 'throttle:12,1'])->name('otp.verify');
+Route::match(['get', 'post'], '/logout', [OtpAuthController::class, 'logout'])->name('logout');
+
+/* password auth (frontend) */
+Route::post('/account/login/password', [Account::class, 'loginWithPassword'])->middleware(['honeypot', 'throttle:10,1'])->name('account.login.password');
+
+/* admin auth */
+Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
+Route::post('/admin/login', [AdminAuthController::class, 'login'])->middleware(['honeypot', 'throttle:10,1'])->name('admin.login.post');
+
+/* chatbot */
+Route::post('/chatbot/ai', [ChatbotController::class, 'ai'])->middleware(['throttle:30,1'])->name('chatbot.ai');
+Route::post('/chatbot/submit', [ChatbotController::class, 'submit'])->middleware(['throttle:20,1'])->name('chatbot.submit');
+
+/* admin */
+Route::middleware(['auth', 'admin', 'admin.log'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard')->middleware('perm:admin.dashboard');
+    Route::get('/enquiries', [\App\Http\Controllers\Admin\EnquiriesController::class, 'index'])->name('enquiries.index')->middleware('perm:admin.enquiries');
+    Route::get('/enquiries/{enquiry}', [\App\Http\Controllers\Admin\EnquiriesController::class, 'show'])->name('enquiries.show')->middleware('perm:admin.enquiries');
+    Route::post('/enquiries/{enquiry}/replies', [\App\Http\Controllers\Admin\EnquiriesController::class, 'storeReply'])->name('enquiries.replies.store')->middleware('perm:admin.enquiries.reply');
+    Route::delete('/enquiries/{enquiry}', [\App\Http\Controllers\Admin\EnquiriesController::class, 'destroy'])->name('enquiries.destroy')->middleware('perm:admin.enquiries');
+    Route::post('/enquiries/bulk-delete', [\App\Http\Controllers\Admin\EnquiriesController::class, 'bulkDestroy'])->name('enquiries.bulk-delete')->middleware('perm:admin.enquiries');
+
+    Route::get('/inbox', [EmailInboxController::class, 'index'])->name('inbox.index')->middleware('perm:admin.inbox');
+    Route::get('/inbox/{messageId}', [EmailInboxController::class, 'show'])->name('inbox.show')->middleware('perm:admin.inbox');
+    Route::get('/inbox/{messageId}/attachments/{attachmentId}', [EmailInboxController::class, 'downloadAttachment'])->name('inbox.attachments.download')->middleware('perm:admin.inbox');
+
+    Route::middleware('perm:admin.users')->resource('users', \App\Http\Controllers\Admin\UsersController::class)->except(['show']);
+    Route::post('users/bulk-delete', [\App\Http\Controllers\Admin\UsersController::class, 'bulkDestroy'])->name('users.bulk-delete')->middleware('perm:admin.users');
+    Route::middleware('perm:admin.roles')->resource('roles', \App\Http\Controllers\Admin\RolesController::class)->except(['show']);
+    Route::post('roles/bulk-delete', [\App\Http\Controllers\Admin\RolesController::class, 'bulkDestroy'])->name('roles.bulk-delete')->middleware('perm:admin.roles');
+    Route::middleware('perm:admin.pages')->resource('pages', \App\Http\Controllers\Admin\CmsPagesController::class)->except(['show'])->parameters(['pages' => 'page']);
+    Route::post('pages/bulk-delete', [\App\Http\Controllers\Admin\CmsPagesController::class, 'bulkDestroy'])->name('pages.bulk-delete')->middleware('perm:admin.pages');
+
+    Route::middleware('perm:admin.blog')->prefix('blog')->name('blog.')->group(function () {
+        Route::resource('categories', \App\Http\Controllers\Admin\BlogCategoriesController::class)->except(['show'])->parameters(['categories' => 'category']);
+        Route::post('categories/bulk-delete', [\App\Http\Controllers\Admin\BlogCategoriesController::class, 'bulkDestroy'])->name('categories.bulk-delete');
+        Route::resource('posts', \App\Http\Controllers\Admin\BlogPostsController::class)->except(['show'])->parameters(['posts' => 'post']);
+        Route::post('posts/bulk-delete', [\App\Http\Controllers\Admin\BlogPostsController::class, 'bulkDestroy'])->name('posts.bulk-delete');
+        Route::get('comments', [\App\Http\Controllers\Admin\BlogCommentsController::class, 'index'])->name('comments.index');
+        Route::post('comments/{comment}/approve', [\App\Http\Controllers\Admin\BlogCommentsController::class, 'approve'])->name('comments.approve');
+        Route::delete('comments/{comment}', [\App\Http\Controllers\Admin\BlogCommentsController::class, 'destroy'])->name('comments.destroy');
+        Route::post('comments/bulk-delete', [\App\Http\Controllers\Admin\BlogCommentsController::class, 'bulkDestroy'])->name('comments.bulk-delete');
+    });
+
+    Route::middleware('perm:admin.offers')->resource('offers', \App\Http\Controllers\Admin\OffersController::class)->except(['show'])->parameters(['offers' => 'offer']);
+    Route::post('offers/bulk-delete', [\App\Http\Controllers\Admin\OffersController::class, 'bulkDestroy'])->name('offers.bulk-delete')->middleware('perm:admin.offers');
+    Route::middleware('perm:admin.ad_banners')->resource('ad-banners', \App\Http\Controllers\Admin\AdBannersController::class)->except(['show'])->parameters(['ad-banners' => 'ad_banner']);
+    Route::post('ad-banners/bulk-delete', [\App\Http\Controllers\Admin\AdBannersController::class, 'bulkDestroy'])->name('ad-banners.bulk-delete')->middleware('perm:admin.ad_banners');
+
+    Route::middleware('perm:admin.settings')->resource('settings', \App\Http\Controllers\Admin\SettingsController::class)->except(['show']);
+    Route::post('settings/bulk-delete', [\App\Http\Controllers\Admin\SettingsController::class, 'bulkDestroy'])->name('settings.bulk-delete')->middleware('perm:admin.settings');
+
+    Route::middleware('perm:admin.daily_horoscopes')->resource('daily-horoscopes', \App\Http\Controllers\Admin\DailyHoroscopesController::class)->only(['index', 'edit', 'update'])->parameters(['daily-horoscopes' => 'daily_horoscope']);
+
+    Route::middleware('perm:admin.horoscope_content')->resource('horoscope-contents', \App\Http\Controllers\Admin\HoroscopeContentsController::class)->except(['show'])->parameters(['horoscope-contents' => 'horoscope_content']);
+
+    Route::middleware('perm:admin.home_services')->resource('home-services', \App\Http\Controllers\Admin\HomeServicesController::class)->except(['show'])->parameters(['home-services' => 'home_service']);
+    Route::middleware('perm:admin.pandit_services')->resource('pandit-services', \App\Http\Controllers\Admin\PanditServicesController::class)->except(['show'])->parameters(['pandit-services' => 'pandit_service']);
+    Route::middleware('perm:admin.home_sliders')->resource('home-sliders', \App\Http\Controllers\Admin\HomeSlidersController::class)->except(['show'])->parameters(['home-sliders' => 'home_slider']);
+
+    Route::get('contact-settings', [\App\Http\Controllers\Admin\ContactSettingsController::class, 'edit'])->name('contact-settings.edit')->middleware('perm:admin.contact');
+    Route::put('contact-settings', [\App\Http\Controllers\Admin\ContactSettingsController::class, 'update'])->name('contact-settings.update')->middleware('perm:admin.contact');
+    Route::get('smtp-settings', [\App\Http\Controllers\Admin\SmtpSettingsController::class, 'edit'])->name('smtp-settings.edit')->middleware('perm:admin.smtp');
+    Route::put('smtp-settings', [\App\Http\Controllers\Admin\SmtpSettingsController::class, 'update'])->name('smtp-settings.update')->middleware('perm:admin.smtp');
+    Route::post('smtp-settings/test', [\App\Http\Controllers\Admin\SmtpSettingsController::class, 'test'])->name('smtp-settings.test')->middleware('perm:admin.smtp');
+    Route::get('activity', [\App\Http\Controllers\Admin\ActivityLogsController::class, 'index'])->name('activity.index')->middleware('perm:admin.activity');
+    Route::post('activity/bulk-delete', [\App\Http\Controllers\Admin\ActivityLogsController::class, 'bulkDestroy'])->name('activity.bulk-delete')->middleware('perm:admin.activity');
+
+    Route::post('tools/clear-cache', [\App\Http\Controllers\Admin\ToolsController::class, 'clearCache'])->name('tools.clear-cache')->middleware('perm:admin.tools');
+});
+
 /* query */
 Route::get('/query',[Query::class,'index']);
 
 /* account */
 Route::get('/account',[Account::class,'index']);
 Route::get('/account/resetpassword',[Account::class,'forgotpassword']);
-Route::get('/account/loginwithotp',[Account::class,'loginwithotp']);
+Route::post('/account/resetpassword', [Account::class, 'sendPasswordResetLink'])->name('password.email');
+Route::get('/account/resetpassword/{token}', [Account::class, 'showResetForm'])->name('password.reset');
+Route::post('/account/resetpassword/{token}', [Account::class, 'resetPassword'])->name('password.update');
 
 /* My account */
-Route::get('/myaccount/querystatus',[Account::class,'querystatus']);
-Route::get('/myaccount/report',[Account::class,'report']);
-Route::get('/myaccount/astrologerbooking',[Account::class,'astrologerbooking']);
-Route::get('/myaccount/gemstonesuggestion',[Account::class,'gemstonesuggestion']);
-Route::get('/myaccount/bookpanditJi',[Account::class,'bookpanditJi']);
-Route::get('/myaccount/vastu-specific',[Account::class,'vastu_specific']);
-Route::get('/myaccount/orders',[Account::class,'orders']);
-Route::get('/myaccount/setting',[Account::class,'setting']);
+Route::middleware('auth')->group(function () {
+    Route::get('/myaccount/querystatus',[Account::class,'querystatus']);
+    Route::get('/myaccount/enquiries/{enquiry}', [\App\Http\Controllers\Account\EnquiriesController::class, 'show'])->name('account.enquiries.show');
+    Route::post('/myaccount/enquiries/{enquiry}/replies', [\App\Http\Controllers\Account\EnquiriesController::class, 'storeReply'])->name('account.enquiries.replies.store');
+    Route::get('/myaccount/report',[Account::class,'report']);
+    Route::get('/myaccount/astrologerbooking',[Account::class,'astrologerbooking']);
+    Route::get('/myaccount/gemstonesuggestion',[Account::class,'gemstonesuggestion']);
+    Route::get('/myaccount/bookpanditJi',[Account::class,'bookpanditJi']);
+    Route::get('/myaccount/vastu-specific',[Account::class,'vastu_specific']);
+    Route::get('/myaccount/orders',[Account::class,'orders']);
+    Route::get('/myaccount/setting',[Account::class,'setting']);
+
+    Route::post('/myaccount/setting', [Account::class, 'updateSettings'])->name('myaccount.settings.update');
+    Route::post('/myaccount/password', [Account::class, 'updatePassword'])->name('myaccount.password.update');
+    Route::post('/myaccount/password/otp/send', [Account::class, 'sendPasswordOtp'])->name('myaccount.password.otp.send');
+    Route::post('/myaccount/password/otp/verify', [Account::class, 'verifyPasswordOtp'])->name('myaccount.password.otp.verify');
+});
 
 /* astrology */
 Route::get('/astrology/about',[Astrology::class,'about']);
@@ -149,11 +245,14 @@ Route::get('/donate',[Section::class,'donate']);
 Route::get('/contact',[Section::class,'contact']);
 Route::get('/about',[Section::class,'about']);
 Route::get('/blogs',[Section::class,'blogs']);
-Route::get('/readblog/birth-month-influence/1',[Section::class,'readblog']);
+Route::get('/readblog/{post:slug}',[Section::class,'readblog']);
+Route::get('/readblog/{slug}/{post}', function ($slug, \App\Models\BlogPost $post) {
+	return redirect("/readblog/{$post->slug}", 301);
+})->whereNumber('post');
 Route::get('/teamactivity',[Section::class,'teamactivity']);
 Route::get('/disclaimer',[Section::class,'disclaimer']);
 Route::get('/feedback',[Section::class,'feedback']);
-Route::get('/disclaimer',[Section::class,'disclaimer']);
 Route::get('/payment',[Section::class,'payment']);
 Route::get('/privacy',[Section::class,'privacy']);
 Route::get('/terms',[Section::class,'terms']);
+Route::get('/page/{slug}',[Section::class,'page']);

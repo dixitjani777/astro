@@ -72,14 +72,18 @@
 			}'>
 
 			<div class="swiper-wrapper h--400">
-
-				<div class="swiper-slide h-100 d-middle bg-white bg-cover" style="background:url('{{ url('/images/offers/off_1.png') }}')">
-					
-				</div>
-
-				<div class="swiper-slide h-100 d-middle bg-white bg-cover" style="background:url('{{ url('/images/offers/off_2.png') }}')">
-					
-				</div>
+				@if (isset($offers) && $offers->count())
+					@foreach ($offers as $offer)
+						<div class="swiper-slide h-100 d-middle bg-white bg-cover position-relative" style="background:url('{{ asset($offer->image_path) }}')">
+							@if ($offer->link_url)
+								<a href="{{ $offer->link_url }}" target="_blank" rel="noopener" class="position-absolute top-0 start-0 w-100 h-100"></a>
+							@endif
+						</div>
+					@endforeach
+				@else
+					<div class="swiper-slide h-100 d-middle bg-white bg-cover" style="background:url('{{ url('/images/offers/off_1.png') }}')"></div>
+					<div class="swiper-slide h-100 d-middle bg-white bg-cover" style="background:url('{{ url('/images/offers/off_2.png') }}')"></div>
+				@endif
 
 			</div>
 
@@ -142,85 +146,21 @@
 
 
 	<?php if ( Request::segment(1)=='gemstone' && Request::segment(2)=='about'  ? 'active' : '' ) : ?><br/>
-	<div>
-		<a href="#!" class="mt-5 d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-			<img class="w-100 img-fluid rounded" src="{{ asset('images/offers/off_1.png') }}" alt="...">
-		</a>
+		@if (isset($sidebarAdBanners) && $sidebarAdBanners->count())
+			@foreach ($sidebarAdBanners->take(4) as $banner)
+				@include('frontend.partials.ad_banner_item', ['banner' => $banner])
+			@endforeach
+		@else
+			<div>
+				<a href="#!" class="mt-5 d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
+					<img class="w-100 img-fluid rounded" src="{{ asset('images/offers/off_1.png') }}" alt="...">
+				</a>
 
-		<h4 class="fs--13 text-gray-500 font-weight-normal mt-1 mb-0">
-			Sponsored Ad
-		</h4>
-	</div>
-
-	<div>
-		<a href="#!" class="mt-5 d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-			<img class="w-100 img-fluid rounded" src="{{ asset('images/offers/off_1.png') }}" alt="...">
-		</a>
-
-		<h4 class="fs--13 text-gray-500 font-weight-normal mt-1 mb-0">
-			Sponsored Ad
-		</h4>
-	</div>
-
-	<div>
-		<a href="#!" class="mt-5 d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-			<img class="w-100 img-fluid rounded" src="{{ asset('images/offers/off_1.png') }}" alt="...">
-		</a>
-
-		<h4 class="fs--13 text-gray-500 font-weight-normal mt-1 mb-0">
-			Sponsored Ad
-		</h4>
-	</div>
-
-	<div>
-		<a href="#!" class="mt-5 d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-			<img class="w-100 img-fluid rounded" src="{{ asset('images/offers/off_1.png') }}" alt="...">
-		</a>
-
-		<h4 class="fs--13 text-gray-500 font-weight-normal mt-1 mb-0">
-			Sponsored Ad
-		</h4>
-	</div>
-
-	<div>
-		<a href="#!" class="mt-5 d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-			<img class="w-100 img-fluid rounded" src="{{ asset('images/offers/off_1.png') }}" alt="...">
-		</a>
-
-		<h4 class="fs--13 text-gray-500 font-weight-normal mt-1 mb-0">
-			Sponsored Ad
-		</h4>
-	</div>
-
-	<div>
-		<a href="#!" class="mt-5 d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-			<img class="w-100 img-fluid rounded" src="{{ asset('images/offers/off_1.png') }}" alt="...">
-		</a>
-
-		<h4 class="fs--13 text-gray-500 font-weight-normal mt-1 mb-0">
-			Sponsored Ad
-		</h4>
-	</div>
-
-	<div>
-		<a href="#!" class="mt-5 d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-			<img class="w-100 img-fluid rounded" src="{{ asset('images/offers/off_1.png') }}" alt="...">
-		</a>
-
-		<h4 class="fs--13 text-gray-500 font-weight-normal mt-1 mb-0">
-			Sponsored Ad
-		</h4>
-	</div>
-
-	<div>
-		<a href="#!" class="mt-5 d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-			<img class="w-100 img-fluid rounded" src="{{ asset('images/offers/off_1.png') }}" alt="...">
-		</a>
-
-		<h4 class="fs--13 text-gray-500 font-weight-normal mt-1 mb-0">
-			Sponsored Ad
-		</h4>
-	</div>
+				<h4 class="fs--13 text-gray-500 font-weight-normal mt-1 mb-0">
+					Sponsored Ad
+				</h4>
+			</div>
+		@endif
 	<?php endif; ?>
 
 </div>

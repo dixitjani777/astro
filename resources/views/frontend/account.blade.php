@@ -88,9 +88,9 @@
 						</li>
 
 						<li class="nav-item">
-							<a class="nav-link px-0" href="#">
-								<i class="fi fi-power"></i> 
-								Log Out
+							<a class="nav-link px-0 text-start d-flex align-items-center" href="{{ route('logout') }}">
+								<i class="fi fi-power"></i>
+								<span class="px-2 d-inline-block">Log Out</span>
 							</a>
 						</li>
 

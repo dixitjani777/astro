@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<html lang="en">
+<html lang="{{ $currentLang ?? 'en' }}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
@@ -32,6 +32,8 @@
     <meta property="fb:admins" content="Facebook numberic ID" />
     <meta name="author" content="astrologer" />
     <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="base-url" content="{{ url('/') }}">
 
     <!-- up to 10% speed up for external res -->
     <link rel="dns-prefetch" href="https://fonts.googleapis.com/">
@@ -45,6 +47,8 @@
     <link href="{{asset('css/core.min.css')}}" rel="stylesheet">
     <link href="{{asset('css/vendor_bundle.min.css')}}" rel="stylesheet">
     <link href="{{asset('css/intlTelInput.css')}}" rel="stylesheet">
+    <link href="{{ asset('css/chatbot.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/site-overrides.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap">
     
     <!-- some js are is in footer. dont touch or change their place without asking jani -->
@@ -71,6 +75,45 @@
 @include('frontend.layouts.header')
 @yield('content')
 @include('frontend.layouts.footer')
+<x-chatbot-widget />
+<script src="{{ asset('js/chatbot.js') }}"></script>
+<script>
+	(function () {
+		function addHoneypot(form) {
+			if (!form || !form.querySelector) return;
+			var method = (form.getAttribute('method') || '').toLowerCase();
+			if (method !== 'post') return;
+
+			if (!form.querySelector('input[name="hp_time"]')) {
+				var t = document.createElement('input');
+				t.type = 'hidden';
+				t.name = 'hp_time';
+				t.value = String(Math.floor(Date.now() / 1000));
+				form.appendChild(t);
+			}
+
+			if (!form.querySelector('input[name="website"]')) {
+				var w = document.createElement('input');
+				w.type = 'text';
+				w.name = 'website';
+				w.autocomplete = 'off';
+				w.tabIndex = -1;
+				w.value = '';
+				w.style.position = 'absolute';
+				w.style.left = '-10000px';
+				w.style.top = 'auto';
+				w.style.width = '1px';
+				w.style.height = '1px';
+				w.style.opacity = '0';
+				form.appendChild(w);
+			}
+		}
+
+		document.addEventListener('DOMContentLoaded', function () {
+			Array.prototype.forEach.call(document.querySelectorAll('form'), addHoneypot);
+		});
+	})();
+</script>
 
 </body>
 </html>

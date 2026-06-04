@@ -1,8 +1,13 @@
 <!-- layout, title, description, keywords -->
 @extends('frontend.layouts.master')
-@section('title','Horoscope Matching : Love compatibility - Astroduniya')
-@section('description','Get your horoscope matching report with highest accuracy result. It gives you overall marriage life predictions. Also, get solutions from report if any required.')
-@section('keywords','horoscope matching, love compatibility, matchmaking, marriage compatibility, kundli match, kundali matching, love match, love compatibility, marriage kundli match, marriage match making, kundli milan')
+@php
+	$metaTitle = (!empty($cms?->meta_title)) ? $cms->meta_title : 'Horoscope Matching : Love compatibility - Astroduniya';
+	$metaDescription = (!empty($cms?->meta_description)) ? $cms->meta_description : 'Get your horoscope matching report with highest accuracy result. It gives you overall marriage life predictions. Also, get solutions from report if any required.';
+	$metaKeywords = 'horoscope matching, love compatibility, matchmaking, marriage compatibility, kundli match, kundali matching, love match, love compatibility, marriage kundli match, marriage match making, kundli milan';
+@endphp
+@section('title', $metaTitle)
+@section('description', $metaDescription)
+@section('keywords', $metaKeywords)
 <!-- End of layout, title, description, keywords -->
 
 <!-- toolbar page title -->
@@ -21,6 +26,9 @@
 	<div class="container">
 		<div class="row">	
 			<div class="col-lg-9 order-1 order-lg-1">		
+				@if(!empty($cms?->content_html))
+					{!! $cms->content_html !!}
+				@else
 				<div>
 					<p>
 						Horoscope Matching is also known as Matchmaking and Kundali Matching or Guna milan. It is the first step in a marriage planning. It plays a important role to find an ideal life partner. Marriage is preferable if couple have more than 18 points (Guna) out of 36 points (Guna) during Kundli matching process.
@@ -49,6 +57,7 @@
 				    </div>
 
 				</div><br/>
+				@endif
 
 				<!-- <div class="mb-5">
 					<span class="sub_heading letter-spacing-1 badge badge-pill badge-primary badge-soft font-weight-medium pl-2 pr-2 pt--6 pb--6 mb-2 fs--15">
@@ -98,9 +107,12 @@
 							Enter Details						
 						</h3>
 
-						<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
-							<span class="styleColor">*</span> You must <a href="{{ url('/account')}}" >Log in</a> to Buy Horoscope. 
-						</p><br><br>
+						@guest
+							<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
+								<span class="styleColor">*</span> You must <a href="{{ url('/account')}}" >Log in</a> to Buy Horoscope.
+							</p>
+						@endguest
+						<br><br>
 
 						<!-- Query Form -->
 						<form novalidate method="post" action="#" class="bs-validate d-block bg-white shadow-md rounded p-4 mb-5 ">

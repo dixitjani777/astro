@@ -23,141 +23,44 @@
 			<div>
 				<!-- posts -->
 				<div class="row">
-					<?php
-						 $title= "Birth month influence";
-					 	 $ttl = trim(strtolower(preg_replace('/\s+/', '-', $title)));
-					 	 $id = '1';
-					 	 $post_date = '24th Fab'
-					 ?>
+					@forelse ($posts as $post)
+						<a href='{{ url("/readblog/{$post->slug}") }}' class="col-12 col-md-6 mb-5 position-relative text-dark clearfix text-decoration-none">
 
-					<!-- post -->
-					<a href='{{ url("/readblog/$ttl/$id") }}' class="col-12 col-md-6 mb-5 position-relative text-dark clearfix text-decoration-none">
+							<figure class="d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
+								<img class="img-fluid rounded" src="{{ asset('images/blog/birth_influence.jpg') }}" alt="{{ $post->title }}">
+							</figure>
 
-						<figure class="d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-							<img class="img-fluid rounded" src="{{ asset('images/blog/birth_influence.jpg') }}" alt="...">
-						</figure>
+							<p class="mt-3 fs--20 mb-2">
+								<span class="h6-xs text-dark d-block">
+									{{ $post->title }}
+								</span>
 
-						<p class="mt-3 fs--20 mb-2">
-							<span class="h6-xs text-dark d-block">
-								<?php echo $title; ?>
-							</span>
+								<span class="d-block text-muted font-regular fs--14">
+									Post Date:
+									@if ($post->published_at)
+										<time datetime="{{ $post->published_at->toDateString() }}">{{ $post->published_at->format('d M Y') }}</time>
+									@else
+										<time>—</time>
+									@endif
+								</span>
+							</p>
 
-							<span class="d-block text-muted font-regular fs--14">
-								Post Date: <time datetime="2019-12-03"><?php echo $post_date; ?></time>
-							</span>
-						</p>
-
-					</a>
-					<!-- /post -->
-
-
-
-					<!-- post -->
-					<a href='{{ url("/readblog/$ttl/$id") }}' class="col-12 col-md-6 mb-5 position-relative text-dark clearfix text-decoration-none">
-
-						<figure class="d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-							<img class="img-fluid rounded" src="{{ asset('images/blog/birth_influence.jpg') }}" alt="...">
-						</figure>
-
-						<p class="mt-3 fs--20 mb-2">
-							<span class="h6-xs text-dark d-block">
-								<?php echo $title; ?>
-							</span>
-
-							<span class="d-block text-muted font-regular fs--14">
-								Post Date: <time datetime="2019-12-03"><?php echo $post_date; ?></time>
-							</span>
-						</p>
-
-					</a>
-					<!-- /post -->
-
-
-
-					<!-- post -->
-					<a href='{{ url("/readblog/$ttl/$id") }}' class="col-12 col-md-6 mb-5 position-relative text-dark clearfix text-decoration-none">
-
-						<figure class="d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-							<img class="img-fluid rounded" src="{{ asset('images/blog/birth_influence.jpg') }}" alt="...">
-						</figure>
-
-						<p class="mt-3 fs--20 mb-2">
-							<span class="h6-xs text-dark d-block">
-								<?php echo $title; ?>
-							</span>
-
-							<span class="d-block text-muted font-regular fs--14">
-								Post Date: <time datetime="2019-12-03"><?php echo $post_date; ?></time>
-							</span>
-						</p>
-
-					</a>
-					<!-- /post -->
-
-
-					<!-- post -->
-					<a href='{{ url("/readblog/$ttl/$id") }}' class="col-12 col-md-6 mb-5 position-relative text-dark clearfix text-decoration-none">
-
-						<figure class="d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-							<img class="img-fluid rounded" src="{{ asset('images/blog/birth_influence.jpg') }}" alt="...">
-						</figure>
-
-						<p class="mt-3 fs--20 mb-2">
-							<span class="h6-xs text-dark d-block">
-								<?php echo $title; ?>
-							</span>
-
-							<span class="d-block text-muted font-regular fs--14">
-								Post Date: <time datetime="2019-12-03"><?php echo $post_date; ?></time>
-							</span>
-						</p>
-
-					</a>
-					<!-- /post -->
-
-					<!-- post -->
-					<a href='{{ url("/readblog/$ttl/$id") }}' class="col-12 col-md-6 mb-5 position-relative text-dark clearfix text-decoration-none">
-
-						<figure class="d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-							<img class="img-fluid rounded" src="{{ asset('images/blog/birth_influence.jpg') }}" alt="...">
-						</figure>
-
-						<p class="mt-3 fs--20 mb-2">
-							<span class="h6-xs text-dark d-block">
-								<?php echo $title; ?>
-							</span>
-
-							<span class="d-block text-muted font-regular fs--14">
-								Post Date: <time datetime="2019-12-03"><?php echo $post_date; ?></time>
-							</span>
-						</p>
-
-					</a>
-					<!-- /post -->
-
-					<!-- post -->
-					<a href='{{ url("/readblog/$ttl/$id") }}' class="col-12 col-md-6 mb-5 position-relative text-dark clearfix text-decoration-none">
-
-						<figure class="d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-							<img class="img-fluid rounded" src="{{ asset('images/blog/birth_influence.jpg') }}" alt="...">
-						</figure>
-
-						<p class="mt-3 fs--20 mb-2">
-							<span class="h6-xs text-dark d-block">
-								<?php echo $title; ?>
-							</span>
-
-							<span class="d-block text-muted font-regular fs--14">
-								Post Date: <time datetime="2019-12-03"><?php echo $post_date; ?></time>
-							</span>
-						</p>
-
-					</a>
-					<!-- /post -->
+						</a>
+					@empty
+						<div class="col-12">
+							<p class="text-muted">No blog posts found.</p>
+						</div>
+					@endforelse
 
 
 				</div>
 				<!-- /posts -->
+
+				@if (method_exists($posts, 'links'))
+					<div class="mt-3">
+						{{ $posts->links() }}
+					</div>
+				@endif
 				
 			</div>	
 			</div>

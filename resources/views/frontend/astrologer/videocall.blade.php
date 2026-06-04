@@ -70,9 +70,11 @@
 							Enter Details						
 						</h3>
 
-						<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
-							<span class="styleColor">*</span> You must <a href="#" data-href="_ajax/modal_signin_md.html" data-ajax-modal-size="modal-md" data-ajax-modal-centered="false" class="js-ajax-modal">Log in</a> to Buy Horoscope.
-						</p>
+						@guest
+							<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
+								<span class="styleColor">*</span> You must <a href="#" data-href="_ajax/modal_signin_md.html" data-ajax-modal-size="modal-md" data-ajax-modal-centered="false" class="js-ajax-modal">Log in</a> to Buy Horoscope.
+							</p>
+						@endguest
 
 						<!-- Query Form -->
 						<form novalidate method="post" action="#" class="bs-validate d-block bg-white shadow-md rounded p-4 mb-5 ">

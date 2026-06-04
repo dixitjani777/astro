@@ -72,14 +72,18 @@
 			}'>
 
 			<div class="swiper-wrapper h--400">
-
-				<div class="swiper-slide h-100 d-middle bg-white bg-cover" style="background:url('{{ url('/images/offers/off_1.png') }}')">
-					
-				</div>
-
-				<div class="swiper-slide h-100 d-middle bg-white bg-cover" style="background:url('{{ url('/images/offers/off_2.png') }}')">
-					
-				</div>
+				@if (isset($offers) && $offers->count())
+					@foreach ($offers as $offer)
+						<div class="swiper-slide h-100 d-middle bg-white bg-cover position-relative" style="background:url('{{ asset($offer->image_path) }}')">
+							@if ($offer->link_url)
+								<a href="{{ $offer->link_url }}" target="_blank" rel="noopener" class="position-absolute top-0 start-0 w-100 h-100"></a>
+							@endif
+						</div>
+					@endforeach
+				@else
+					<div class="swiper-slide h-100 d-middle bg-white bg-cover" style="background:url('{{ url('/images/offers/off_1.png') }}')"></div>
+					<div class="swiper-slide h-100 d-middle bg-white bg-cover" style="background:url('{{ url('/images/offers/off_2.png') }}')"></div>
+				@endif
 
 			</div>
 

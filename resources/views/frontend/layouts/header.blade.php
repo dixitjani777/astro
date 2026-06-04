@@ -37,19 +37,23 @@
 
 								<a id="topDDLanguage" href="#!" class="d-inline-block  text-muted font-weight-medium" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true">
 									
-									<span class="pl-2 pr-2">ENGLISH</span>
+									@php
+										$langKey = $currentLang ?? 'en';
+										$langLabel = data_get($supportedLangs ?? [], $langKey, strtoupper($langKey));
+									@endphp
+									<span class="pl-2 pr-2">{{ strtoupper($langLabel) }}</span>
 								</a>
 
 								<div aria-labelledby="topDDLanguage" class="dropdown-menu fs--13 px-1 pt-1 pb-0 m-0 max-h-50vh scrollable-vertical list-inline-item  dropdown-menu-right">
-									<a href="#!" class="active dropdown-item text-muted text-truncate line-height-1 rounded p--12 mb-1">
-										ENGLISH
-									</a>
-									<a href="#!" class="dropdown-item text-muted text-truncate line-height-1 rounded p--12 mb-1">
-										HINDI
-									</a>
-									<a href="#!" class="dropdown-item text-muted text-truncate line-height-1 rounded p--12 mb-1">
-										GUJARATI
-									</a>
+									@foreach(($supportedLangs ?? ['en' => 'English']) as $k => $label)
+										@php
+											$isActive = ($langKey === $k);
+											$url = request()->fullUrlWithQuery(['lang' => $k]);
+										@endphp
+										<a href="{{ $url }}" class="{{ $isActive ? 'active' : '' }} dropdown-item text-muted text-truncate line-height-1 rounded p--12 mb-1">
+											{{ strtoupper($label) }}
+										</a>
+									@endforeach
 								</div>
 
 							</li>
@@ -185,7 +189,7 @@
 
                         <div class="dropdown-divider mb-0"></div>
 
-                        <a href="#!" title="Log Out" class="prefix-icon-ignore dropdown-footer dropdown-custom-ignore">
+                        <a href="{{ route('logout') }}" title="Log Out" class="dropdown-item prefix-icon-ignore dropdown-footer dropdown-custom-ignore text-truncate font-weight-light">
                             <i class="fi fi-power float-start"></i>
                             Log Out
                         </a>

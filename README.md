@@ -57,3 +57,11 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Daily Horoscope (dynamic)
+
+- Run migrations: `php artisan migrate`
+- Manual fetch (all 12 signs): `php artisan horoscope:fetch-daily`
+- Scheduler (recommended): add a system cron that runs every minute:
+  - `* * * * * php /path/to/artisan schedule:run >> /dev/null 2>&1`
+- Config via `.env`: `HOROSCOPE_TIMEZONE`, `HOROSCOPE_FETCH_TIME`, `HOROSCOPE_API_URL`

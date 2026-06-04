@@ -1,0 +1,44 @@
+/* Home main slider: reduce height + tighten caption */
+.home-main-slider {
+  height: 48vh !important;
+  min-height: 360px;
+}
+
+@media (max-width: 991.98px) {
+  .home-main-slider {
+    height: 42vh !important;
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .home-main-slider {
+    height: 38vh !important;
+    min-height: 260px;
+  }
+}
+
+.home-main-slider .slidintext {
+  padding: 12px 12px;
+  max-width: 280px;
+  bottom: 0;
+}
+
+.home-main-slider .slidintext h1,
+.home-main-slider .slidintext h2 {
+  font-size: 26px !important;
+  margin: 0 0 6px 0;
+  line-height: 1.15;
+}
+
+.home-main-slider .slidintext p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.home-main-slider .slidintext .btn {
+  padding: 7px 12px;
+  font-size: 13px;
+}
+

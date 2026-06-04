@@ -2,56 +2,95 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BlogPost;
+use App\Models\CmsPage;
 use Illuminate\Http\Request;
 
 class Section extends Controller
 {
-    /*public function teamwork(){
-        return view('frontend/section/teamwork');
-    }*/
+    private function cmsPageOrFallbackView(string $slug, string $fallbackView, array $data = [])
+    {
+        $page = CmsPage::query()
+            ->where('slug', $slug)
+            ->where('is_published', true)
+            ->first();
+
+        if ($page) {
+            return view('frontend.cms.page', array_merge($data, [
+                'page' => $page,
+            ]));
+        }
+
+        return view($fallbackView, $data);
+    }
+
+    public function teamwork(){
+        return $this->cmsPageOrFallbackView('teamwork', 'frontend/section/teamwork');
+    }
 
     public function donate(){
-        return view('frontend/section/donate');
+        return $this->cmsPageOrFallbackView('donate', 'frontend/section/donate');
     }
 
     public function contact(){
-        return view('frontend/section/contact');
+        return $this->cmsPageOrFallbackView('contact', 'frontend/section/contact');
 	}
 
     public function about(){
-		return view('frontend/section/about');
+		return $this->cmsPageOrFallbackView('about', 'frontend/section/about');
 	}
 
     public function blogs(){
-        return view('frontend/section/blogs');
+        $posts = BlogPost::query()
+            ->latest('published_at')
+            ->latest()
+            ->paginate(12);
+
+        return view('frontend/section/blogs', [
+            'posts' => $posts,
+        ]);
     }
 
-    public function readblog(){
-        return view('frontend/section/readblog');
+    public function readblog(BlogPost $post){
+        return view('frontend/section/readblog', [
+            'post' => $post,
+        ]);
     }
 
     public function teamactivity(){
-        return view('frontend/section/teamactivity');
+        return $this->cmsPageOrFallbackView('teamactivity', 'frontend/section/teamactivity');
     }
 
     public function disclaimer(){
-        return view('frontend/section/disclaimer');
+        return $this->cmsPageOrFallbackView('disclaimer', 'frontend/section/disclaimer');
     }
 
     public function feedback(){
-        return view('frontend/section/feedback');
+        return $this->cmsPageOrFallbackView('feedback', 'frontend/section/feedback');
     }
 
     public function payment(){
-        return view('frontend/section/payment');
+        return $this->cmsPageOrFallbackView('payment', 'frontend/section/payment');
     }
 
     public function privacy(){
-        return view('frontend/section/privacy');
+        return $this->cmsPageOrFallbackView('privacy', 'frontend/section/privacy');
     }
 
     public function terms(){
-        return view('frontend/section/terms');
+        return $this->cmsPageOrFallbackView('terms', 'frontend/section/terms');
+    }
+
+    public function page(string $slug)
+    {
+        $page = CmsPage::query()
+            ->where('slug', $slug)
+            ->where('is_published', true)
+            ->firstOrFail();
+
+        return view('frontend.cms.page', [
+            'page' => $page,
+        ]);
     }
     
 }

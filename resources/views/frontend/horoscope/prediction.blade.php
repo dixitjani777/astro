@@ -33,6 +33,12 @@ $prediction = Request::segment(3);
             
     }
 
+    if (!empty($cms?->meta_title)) {
+        $title = $cms->meta_title;
+    }
+    if (!empty($cms?->meta_description)) {
+        $description = $cms->meta_description;
+    }
 ?>
 
 <!-- layout, title, description, keywords -->
@@ -73,6 +79,12 @@ $prediction = Request::segment(3);
 						<i class="fa fa-chevron-down"></i>
 					</div>			
 				</header><br>
+
+				@if(!empty($cms?->content_html))
+					<div class="mb-4">
+						{!! $cms->content_html !!}
+					</div>
+				@endif
 
 				<div class="row">
 						<div class="col-6m col-lg-3">

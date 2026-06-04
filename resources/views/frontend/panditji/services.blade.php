@@ -22,120 +22,42 @@
 		<div class="row">
 			<div class="col-lg-9 order-1 order-lg-1">
 				<div class="row">
-					<div class="col-6 mb-5">
+					@forelse(($panditServices ?? []) as $svc)
+						@php
+							$img = $svc->image_path;
+							$isUrl = is_string($img) && preg_match('/^https?:\\/\\//i', $img);
+							$imgUrl = $img ? ($isUrl ? $img : asset($img)) : '';
+							$link = $svc->link_url ?: '#!';
+						@endphp
 
-						<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
-							<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-								<img class="img-fluid lazy rounded" data-src="{{ asset('images/services/pt2.jpg') }}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAQAAACoWRFeAAAAE0lEQVR42mNkYGAcRaNoFA0cAgAUvAEtNFICWAAAAABJRU5ErkJggg==" alt="...">
-							</a>
+						<div class="col-6 mb-5">
+							<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
+								<a href="{{ url($link) }}" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
+									@if($imgUrl)
+										<img class="img-fluid lazy rounded" src="{{ $imgUrl }}" alt="{{ $svc->title }}">
+									@endif
+								</a>
 
-							<div class="p-3">
+								<div class="p-3">
+									<h5 class="m-0">
+										{{ $svc->title }}
+									</h5>
 
-								<h5 class="m-0">
-									Puja Services
-								</h5>
-
-								<ul class="list-inline fs--13 m-0">
-									<li class="list-inline-item">
-										<a href="#!" class="text-gray-500">Photography</a>
-									</li>
-
-									<li class="list-inline-item">
-										<a href="#!" class="text-gray-500">Design</a>
-									</li>
-								</ul>
-
+									@if($svc->short_text)
+										<ul class="list-inline fs--13 m-0">
+											<li class="list-inline-item">
+												<a href="{{ url($link) }}" class="text-gray-500">{{ $svc->short_text }}</a>
+											</li>
+										</ul>
+									@endif
+								</div>
 							</div>
 						</div>
-
-					</div>
-
-
-					<div class="col-6 mb-5">
-
-						<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
-							<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-								<img class="img-fluid lazy rounded" data-src="{{ asset('images/services/pt2.jpg') }}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAQAAACoWRFeAAAAE0lEQVR42mNkYGAcRaNoFA0cAgAUvAEtNFICWAAAAABJRU5ErkJggg==" alt="...">
-							</a>
-
-							<div class="p-3">
-
-								<h5 class="m-0">
-									Havan Services
-								</h5>
-
-								<ul class="list-inline fs--13 m-0">
-									<li class="list-inline-item">
-										<a href="#!" class="text-gray-500">Photography</a>
-									</li>
-
-									<li class="list-inline-item">
-										<a href="#!" class="text-gray-500">Design</a>
-									</li>
-								</ul>
-
-							</div>
+					@empty
+						<div class="col-12">
+							<div class="alert alert-secondary mb-0">No services are available right now.</div>
 						</div>
-
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-6 mb-5">
-
-						<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
-							<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-								<img class="img-fluid lazy rounded" data-src="{{ asset('images/services/pt2.jpg') }}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAQAAACoWRFeAAAAE0lEQVR42mNkYGAcRaNoFA0cAgAUvAEtNFICWAAAAABJRU5ErkJggg==" alt="...">
-							</a>
-
-							<div class="p-3">
-
-								<h5 class="m-0">
-									Jaap & Shanti Pujas
-								</h5>
-
-								<ul class="list-inline fs--13 m-0">
-									<li class="list-inline-item">
-										<a href="#!" class="text-gray-500">Photography</a>
-									</li>
-
-									<li class="list-inline-item">
-										<a href="#!" class="text-gray-500">Design</a>
-									</li>
-								</ul>
-
-							</div>
-						</div>
-
-					</div>
-
-
-					<div class="col-6 mb-5">
-
-						<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
-							<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-								<img class="img-fluid lazy rounded" data-src="{{ asset('images/services/pt2.jpg') }}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAQAAACoWRFeAAAAE0lEQVR42mNkYGAcRaNoFA0cAgAUvAEtNFICWAAAAABJRU5ErkJggg==" alt="...">
-							</a>
-
-							<div class="p-3">
-
-								<h5 class="m-0">
-									Katha
-								</h5>
-
-								<ul class="list-inline fs--13 m-0">
-									<li class="list-inline-item">
-										<a href="#!" class="text-gray-500">Photography</a>
-									</li>
-
-									<li class="list-inline-item">
-										<a href="#!" class="text-gray-500">Design</a>
-									</li>
-								</ul>
-
-							</div>
-						</div>
-
-					</div>
+					@endforelse
 				</div>
 
 			</div>
@@ -152,6 +74,5 @@
 
 @endsection
 <!-- End Section -->
-
 
 

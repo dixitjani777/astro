@@ -51,36 +51,36 @@
                <h4 class="pb-3"><strong>Contact Us</strong></h4>
                
                 <div class="clearfix pb-1">
-                    Address: <span class="text-muted">N-1, Baldev Jyot<br/> Modi Patel Road, Bhayander<br/> Thane 401101, India</span>
+                    Address: <span class="text-muted">{!! $siteSettings['contact.address_html'] ?? 'N-1, Baldev Jyot<br/> Modi Patel Road, Bhayander<br/> Thane 401101, India' !!}</span>
                 </div>
                 
                 <div class="clearfix pb-1">
-                    Phone: <a href="tel:+91-2818-7280" class="d-inline-block link-muted">(+91) 2818-7280</a>
+                    Phone: <a href="tel:{{ $siteSettings['site.phone'] ?? '+91-2818-7280' }}" class="d-inline-block link-muted">{{ $siteSettings['site.phone'] ?? '(+91) 2818-7280' }}</a>
                 </div>
 
                 <div class="clearfix pb-3">
-                    Email: <a href="email:support@astroduniya.com" class="d-inline-block link-muted">support@astroduniya.com</a>
+                    Email: <a href="mailto:{{ $siteSettings['site.email'] ?? 'support@astroduniya.com' }}" class="d-inline-block link-muted">{{ $siteSettings['site.email'] ?? 'support@astroduniya.com' }}</a>
                 </div>
 
                 <!-- social -->
                 <div class="clearfix"> 
-                    <a href="https://wa.me/919699342442/?text=subscribe" target="_blank" aria-label="whatsapp page">
+                    <a href="{{ $siteSettings['social.whatsapp'] ?? 'https://wa.me/919699342442/?text=subscribe' }}" target="_blank" aria-label="whatsapp page">
                        <img src="{{ asset('images/social/whatsapp.png') }}" width="30px" height="30px" alt="whatsapp">
                     </a>&nbsp;
 
-                    <a href="#!" target="_blank" aria-label="facebook page">
+                    <a href="{{ $siteSettings['social.facebook'] ?? '#!' }}" target="_blank" aria-label="facebook page">
                        <img src="{{ asset('images/social/facebook.png') }}" width="30px" height="30px" alt="facebook">
                     </a>&nbsp;
 
-                    <a href="#!" target="_blank" aria-label="twitter page">
+                    <a href="{{ $siteSettings['social.twitter'] ?? '#!' }}" target="_blank" aria-label="twitter page">
                         <img src="{{ asset('images/social/twitter.png') }}" width="30px" height="30px" alt="twitter">
                     </a>&nbsp;
 
-                    <a href="#!" target="_blank" aria-label="youtube page">
+                    <a href="{{ $siteSettings['social.youtube'] ?? '#!' }}" target="_blank" aria-label="youtube page">
                         <img src="{{ asset('images/social/utube.png') }}" width="30px" height="30px" alt="youtube">
                     </a>&nbsp;
                    
-                    <a href="#!" target="_blank" aria-label="instagram page">
+                    <a href="{{ $siteSettings['social.instagram'] ?? '#!' }}" target="_blank" aria-label="instagram page">
                        <img src="{{ asset('images/social/instagram.png') }}" width="30px" height="30px" alt="instagram">
                     </a>
                 </div>
@@ -101,55 +101,36 @@
 
                             <div class="dropdown-menu dropdown-click-ignore shadow-lg w-100 max-w-350 p-0" aria-labelledby="dropdownMenuContact">
 
-                                <div class="accordion" id="accordionDropdownContact">
-                                    <form novalidate="" action="_ajax/ajax_form_test_submit.html" method="GET" data-ajax-container="#ajax_dd_contact_response_container" data-ajax-update-url="false" data-ajax-show-loading-icon="true" data-ajax-callback-function="" data-error-scroll-up="true" data-error-toast-text="<i class='fi fi-circle-spin fi-spin float-start'></i> Please, complete all required fields!" data-error-toast-delay="2000" data-error-toast-position="bottom-center" data-parent="#accordionDropdownContact" class="collapse bs-validate js-ajax show" id="accordionDropdownContactForm">
+	                                <div class="accordion" id="accordionDropdownContact">
+	                                    <x-enquiry-form
+	                                        layout="floating"
+	                                        source="footer"
+	                                        context="footer_dropdown"
+	                                        subject="Contact Us"
+	                                        class="collapse bs-validate show"
+	                                        id="accordionDropdownContactForm"
+	                                        data-parent="#accordionDropdownContact"
+	                                        input-class="form-control form-control-clean"
+	                                        textarea-class="form-control form-control-clean"
+	                                        submit-class="btn btn-sm btn-soft btn-warning btn-block"
+	                                        submit-label="Send Message"
+	                                    >
+	                                        <x-slot:beforeFields>
+	                                            <div class="p--30 pt--0">
+	                                                <h3 class="h5 text-center pt-4 pb-3">Contact Us</h3>
+	                                        </x-slot:beforeFields>
 
-                                        <input type="hidden" name="action" value="contact_form_submit" tabindex="-1"> 
-                                        
-                                        <input type="text" name="norobot" value="" class="hide" tabindex="-1"> 
-                                        
-                                        <div class="p--30 pt--0">
-
-                                            <h3 class="h5 text-center pt-4 pb-3">
-                                                Contact Us
-                                            </h3>
-
-                                            <div id="ajax_dd_contact_response_container"><!-- ajax response container --></div>
-
-                                            <div class="form-label-group mb-3">
-                                                <input required="" placeholder="Name" id="contact_name" type="text" class="form-control form-control-clean">
-                                                <label for="contact_name">Name</label>
-                                            </div>
-
-                                            <div class="form-label-group mb-3">
-                                                <input required="" placeholder="Email" id="contact_email" type="email" class="form-control form-control-clean">
-                                                <label for="contact_email">Email</label>
-                                            </div>
-
-                                            <div class="form-label-group mb-3">
-                                                <input required="" placeholder="Phone" id="contact_phone" type="text" class="form-control form-control-clean">
-                                                <label for="contact_phone">Phone</label>
-                                            </div>
-
-                                            <div class="form-label-group mb-4">
-                                                <textarea required="" placeholder="Message" id="contact_message" class="form-control form-control-clean" rows="3"></textarea>
-                                                <label for="contact_message">Message</label>
-                                            </div>
-
-                                            <button type="submit" class="btn btn-sm btn-soft btn-warning btn-block">
-                                                Send Message
-                                            </button>
-
-                                            <div class="text-center mt--30">
-                                                <a href="#accordionDropdownContactDetail" class="d-block text-success text-decoration-none" data-toggle="collapse" aria-expanded="true" aria-controls="accordionDropdownContactDetail">
-                                                    Contact Detail
-                                                </a>
-                                            </div>
-
-                                        </div>
-                                    </form>
-                                    
-                                    <form action="#" method="get" class="collapse" id="accordionDropdownContactDetail" data-parent="#accordionDropdownContact">
+	                                        <x-slot:afterSubmit>
+	                                            <div class="text-center mt--30">
+	                                                <a href="#accordionDropdownContactDetail" class="d-block text-success text-decoration-none" data-toggle="collapse" aria-expanded="true" aria-controls="accordionDropdownContactDetail">
+	                                                    Contact Detail
+	                                                </a>
+	                                            </div>
+	                                            </div>
+	                                        </x-slot:afterSubmit>
+	                                    </x-enquiry-form>
+	                                    
+	                                    <form action="#" method="get" class="collapse" id="accordionDropdownContactDetail" data-parent="#accordionDropdownContact">
 
 
                                         <div class="p--30 pt--0">
@@ -175,28 +156,28 @@
                                             </div>
 
                                             <div class="clearfix pb-3">
-                                                Email: <a href="email:support@astroduniya.com" class="d-inline-block link-muted">support@astroduniya.com</a>
+                                                Email: <a href="mailto:{{ $siteSettings['site.email'] ?? 'support@astroduniya.com' }}" class="d-inline-block link-muted">{{ $siteSettings['site.email'] ?? 'support@astroduniya.com' }}</a>
                                             </div>
 
                                             <!-- social -->
                                             <div class="clearfix"> 
-                                                <a href="https://wa.me/919699342442/?text=subscribe" target="_blank" aria-label="whatsapp page">
+                                                <a href="{{ $siteSettings['social.whatsapp'] ?? 'https://wa.me/919699342442/?text=subscribe' }}" target="_blank" aria-label="whatsapp page">
                                                    <img src="{{ asset('images/social/whatsapp.png') }}" width="30px" height="30px" alt="whatsapp">
                                                 </a>&nbsp;
 
-                                                <a href="#!" target="_blank" aria-label="facebook page">
+                                                <a href="{{ $siteSettings['social.facebook'] ?? '#!' }}" target="_blank" aria-label="facebook page">
                                                    <img src="{{ asset('images/social/facebook.png') }}" width="30px" height="30px" alt="facebook">
                                                 </a>&nbsp;
 
-                                                <a href="#!" target="_blank" aria-label="twitter page">
-                                                    <img src="{{ asset('images/social/twitter.png') }}" width="30px" height="30px" alt="twitter">
+                                                <a href="{{ $siteSettings['social.twitter'] ?? '#!' }}" target="_blank" aria-label="twitter page">
+                                                   <img src="{{ asset('images/social/twitter.png') }}" width="30px" height="30px" alt="twitter">
                                                 </a>&nbsp;
 
-                                                <a href="#!" target="_blank" aria-label="youtube page">
-                                                    <img src="{{ asset('images/social/utube.png') }}" width="30px" height="30px" alt="youtube">
+                                                <a href="{{ $siteSettings['social.youtube'] ?? '#!' }}" target="_blank" aria-label="youtube page">
+                                                   <img src="{{ asset('images/social/utube.png') }}" width="30px" height="30px" alt="youtube">
                                                 </a>&nbsp;
                                                
-                                                <a href="#!" target="_blank" aria-label="instagram page">
+                                                <a href="{{ $siteSettings['social.instagram'] ?? '#!' }}" target="_blank" aria-label="instagram page">
                                                    <img src="{{ asset('images/social/instagram.png') }}" width="30px" height="30px" alt="instagram">
                                                 </a>
                                             </div>
@@ -274,62 +255,21 @@
     </div>
 </div> -->
 
+@if(!empty($footerDailyHoroscopes))
 <div class="dhoroscope-container">
   <div class="title">
       &nbsp;&nbsp;Horosope&nbsp;&nbsp;
   </div>
 
   <ul>
-      <li>
-        <strong class="styleColor">Aries - </strong>You may need it more often as you are always working hard to claim the top spot in every facet of life in the fastest way possible.
-      </li>
-
-      <li>
-        <strong class="styleColor">Taurus - </strong>You may need it more often as you are always working hard to claim the top spot in every facet of life in the fastest way possible.
-      </li>
-
-      <li>
-        <strong class="styleColor">Gemini - </strong>You may need it more often as you are always working hard to claim the top spot in every facet of life in the fastest way possible.
-      </li>
-
-      <li>
-        <strong class="styleColor">Cancer - </strong>You may need it more often as you are always working hard to claim the top spot in every facet of life in the fastest way possible.
-      </li>
-
-      <li>
-        <strong class="styleColor">Leo - </strong>You may need it more often as you are always working hard to claim the top spot in every facet of life in the fastest way possible.
-      </li>
-
-      <li>
-        <strong class="styleColor">Virgo - </strong>You may need it more often as you are always working hard to claim the top spot in every facet of life in the fastest way possible.
-      </li>
-
-      <li>
-        <strong class="styleColor">Libra - </strong>You may need it more often as you are always working hard to claim the top spot in every facet of life in the fastest way possible.
-      </li>
-
-      <li>
-        <strong class="styleColor">Sagittarius - </strong>You may need it more often as you are always working hard to claim the top spot in every facet of life in the fastest way possible.
-      </li>
-
-      <li>
-        <strong class="styleColor">Sagittarius - </strong>You may need it more often as you are always working hard to claim the top spot in every facet of life in the fastest way possible.
-      </li>
-
-      <li>
-        <strong class="styleColor">Capricorn - </strong>You may need it more often as you are always working hard to claim the top spot in every facet of life in the fastest way possible.
-      </li>
-
-      <li>
-        <strong class="styleColor">Aquarius - </strong>You may need it more often as you are always working hard to claim the top spot in every facet of life in the fastest way possible.
-      </li>
-
-      <li>
-        <strong class="styleColor">Pisces - </strong>You may need it more often as you are always working hard to claim the top spot in every facet of life in the fastest way possible.
-      </li>
-
+      @foreach($footerDailyHoroscopes as $h)
+          <li>
+              <strong class="styleColor">{{ $h['sign'] ?? '' }} - </strong>{{ $h['text'] ?? '' }}
+          </li>
+      @endforeach
   </ul>
 </div>
+@endif
 
 
 
@@ -359,19 +299,19 @@
         <hr/>
         
         <div class="clearfix"> 
-             <a href="https://wa.me/919699342442/?text=subscribe" target="_blank" aria-label="whatsapp page">
+             <a href="{{ $siteSettings['social.whatsapp'] ?? 'https://wa.me/919699342442/?text=subscribe' }}" target="_blank" aria-label="whatsapp page">
                &nbsp;&nbsp;&nbsp;<img src="{{ asset('images/social/whatsapp.png') }}" width="30px" height="30px" alt="whatsapp">
             </a>
-            <a href="#!" target="_blank" aria-label="facebook page">
+            <a href="{{ $siteSettings['social.facebook'] ?? '#!' }}" target="_blank" aria-label="facebook page">
                <img src="{{ asset('images/social/facebook.png') }}" width="30px" height="30px" alt="facebook">
             </a>
-            <a href="#!" target="_blank" aria-label="twitter page">
+            <a href="{{ $siteSettings['social.twitter'] ?? '#!' }}" target="_blank" aria-label="twitter page">
                 <img src="{{ asset('images/social/twitter.png') }}" width="30px" height="30px" alt="twitter">
             </a>
-            <a href="#!" target="_blank" aria-label="youtube page">
+            <a href="{{ $siteSettings['social.youtube'] ?? '#!' }}" target="_blank" aria-label="youtube page">
                 <img src="{{ asset('images/social/utube.png') }}" width="30px" height="30px" alt="youtube">
             </a>        
-            <a href="#!" target="_blank" aria-label="instagram page">
+            <a href="{{ $siteSettings['social.instagram'] ?? '#!' }}" target="_blank" aria-label="instagram page">
                <img src="{{ asset('images/social/instagram.png') }}" width="30px" height="30px" alt="instagram">
             </a>
         </div>

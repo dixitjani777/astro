@@ -73,9 +73,7 @@
 
 				<div>
 					<header class="text-center">
-						<h2>{{ ucfirst($zodiac) }}<span class="styleColor"> Weekly Horoscope</span>
-							<p class="sub_heading letter-spacing-1">Thursday, December 19, 2019</p>
-						</h2>
+						<h2>{{ ucfirst($zodiac) }}<span class="styleColor"> Weekly Horoscope</span></h2>
 						<div class="divider half-margins"><!-- divider -->
 							<i class="fa fa-chevron-down"></i>
 						</div>
@@ -111,9 +109,23 @@
 					</header>
 
 					<article>
-						<p class="lead"><?php echo $zodiac_horoscope; ?></p>
-						<p class="lead"><b>Lucky Number</b> :- <?php echo $lucky_number; ?></p>
-						<p class="lead"><b>Lucky Color</b> :- <?php echo $lucky_color; ?></p><br>
+						@if(!empty($cms?->content_html))
+							{!! $cms->content_html !!}
+						@elseif(isset($cms) && ($cms->love_text || $cms->career_text || $cms->health_text || $cms->money_text))
+							@php
+								$combined = trim(implode("\n\n", array_filter([
+									$cms->love_text ? ("Love: " . $cms->love_text) : null,
+									$cms->career_text ? ("Career: " . $cms->career_text) : null,
+									$cms->health_text ? ("Health: " . $cms->health_text) : null,
+									$cms->money_text ? ("Money: " . $cms->money_text) : null,
+								])));
+							@endphp
+							<p class="lead">{!! nl2br(e($combined)) !!}</p>
+						@else
+							<p class="lead"><?php echo $zodiac_horoscope; ?></p>
+							<p class="lead"><b>Lucky Number</b> :- <?php echo $lucky_number; ?></p>
+							<p class="lead"><b>Lucky Color</b> :- <?php echo $lucky_color; ?></p><br>
+						@endif
 					</article>
 				</div>
 
@@ -181,39 +193,58 @@
 					
 					<div class="col-12 col-md-6">
 						<div class="form-label-group mb-3">
-							<select id="select_options2" class="form-control">
-								<option value="1"><?php echo $zodiac; ?> Daily Horoscope</option>
-								<option value="2"><?php echo $zodiac; ?> Weekly Horoscope</option>
-								<option value="1"><?php echo $zodiac; ?> Monthly Horoscope</option>
-								<option value="2"><?php echo $zodiac; ?> Yearly Horoscope</option>
+							<select id="horoscopePeriodSelect" class="form-control">
+								@php($currentSignKey = strtolower((string) Request::segment(3)))
+								<option value="daily">Daily Horoscope</option>
+								<option value="weekly" selected>Weekly Horoscope</option>
+								<option value="monthly">Monthly Horoscope</option>
+								<option value="yearly">Yearly Horoscope</option>
 							</select>
-							<label for="select_options2">Another Period</label>
+							<label for="horoscopePeriodSelect">Another Period</label>
 						</div>
 						
 					</div>
 
 					<div class="col-12 col-md-6">
 						<div class="form-label-group mb-3">
-							<select id="select_options2" class="form-control">
-								<option value="1">Aries</option>
-								<option value="2">Taurus</option>
-								<option value="1">Gemini</option>
-								<option value="2">Cancer</option>
-								<option value="1">Leo</option>
-								<option value="2">Virgo</option>
-								<option value="1">Libra</option>
-								<option value="2">Scorpio</option>
-								<option value="1">Sagittarius</option>
-								<option value="2">Capricorn</option>
-								<option value="1">Aquarius</option>
-								<option value="2">Pisces</option>
+							<select id="horoscopeSignSelect" class="form-control">
+								<option value="aries" @selected($currentSignKey==='aries')>Aries</option>
+								<option value="taurus" @selected($currentSignKey==='taurus')>Taurus</option>
+								<option value="gemini" @selected($currentSignKey==='gemini')>Gemini</option>
+								<option value="cancer" @selected($currentSignKey==='cancer')>Cancer</option>
+								<option value="leo" @selected($currentSignKey==='leo')>Leo</option>
+								<option value="virgo" @selected($currentSignKey==='virgo')>Virgo</option>
+								<option value="libra" @selected($currentSignKey==='libra')>Libra</option>
+								<option value="scorpio" @selected($currentSignKey==='scorpio')>Scorpio</option>
+								<option value="sagittarius" @selected($currentSignKey==='sagittarius')>Sagittarius</option>
+								<option value="capricorn" @selected($currentSignKey==='capricorn')>Capricorn</option>
+								<option value="aquarius" @selected($currentSignKey==='aquarius')>Aquarius</option>
+								<option value="pisces" @selected($currentSignKey==='pisces')>Pisces</option>
 							</select>
-							<label for="select_options2">Another Sign</label>
+							<label for="horoscopeSignSelect">Another Sign</label>
 						</div>
 						
 					</div>
 					
 				</div><br/><br/>
+
+				<script>
+					(function () {
+						var periodSel = document.getElementById('horoscopePeriodSelect');
+						var signSel = document.getElementById('horoscopeSignSelect');
+						if (!periodSel || !signSel) return;
+
+						function go() {
+							var period = (periodSel.value || 'weekly').toLowerCase();
+							var sign = (signSel.value || '').toLowerCase();
+							if (!sign) return;
+							window.location.href = "{{ url('/horoscope') }}/" + period + "/" + sign;
+						}
+
+						periodSel.addEventListener('change', go);
+						signSel.addEventListener('change', go);
+					})();
+				</script>
 
 				<div>	
 				  <h2>Recommendation</h2><br/>

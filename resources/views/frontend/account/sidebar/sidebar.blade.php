@@ -23,7 +23,7 @@
 			<a class="nav-link px-0" href="{{ url('/myaccount/querystatus')}}">
 				<i class="fi fi-arrow-end m-0 fs--12"></i> 
 				<span class="px-2 d-inline-block">
-					Query Status 
+					Query Status
 				</span>
 			</a>
 		</li>
@@ -45,7 +45,7 @@
 			</a>
 		</li>
 		<li class="nav-item {{ Request::segment(2)=='gemstonesuggestion' ? 'active' : '' }} ">
-			<a class="nav-link px-0" href="#">
+			<a class="nav-link px-0" href="{{ url('/myaccount/gemstonesuggestion')}}">
 				<i class="fi fi-arrow-end m-0 fs--12"></i> 
 				<span class="px-2 d-inline-block">
 					Gemstone Recommendations
@@ -74,7 +74,7 @@
 			<a class="nav-link px-0" href="{{ url('/myaccount/orders')}}">
 				<i class="fi fi-arrow-end m-0 fs--12"></i> 
 				<span class="px-2 d-inline-block">
-					My Orders (2)
+					My Orders ({{ (int) data_get($myaccountCounts ?? [], 'orders', 0) }})
 				</span>
 			</a>
 		</li>
@@ -89,9 +89,9 @@
 		</li>
 
 		<li class="nav-item">
-			<a class="nav-link px-0" href="#">
-				<i class="fi fi-power"></i> 
-				Log Out
+			<a class="nav-link px-0 text-start d-flex align-items-center" href="{{ route('logout') }}">
+				<i class="fi fi-power"></i>
+				<span class="px-2 d-inline-block">Log Out</span>
 			</a>
 		</li>
 

@@ -74,179 +74,130 @@ Our expert approach combines Vastu Shastra, astrology insights, and color therap
 						Enter Details						
 					</h3>
 
-					<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
-						<span class="styleColor">*</span> You must <a href="#" ">Log in</a> to consult Us.
-					</p><br><br>
+					@guest
+						<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
+							<span class="styleColor">*</span> You must <a href="{{ url('/account') }}">Log in</a> to consult Us.
+						</p>
+					@endguest
+					<br><br>
 
 					<!-- Query Form -->
-					<form novalidate method="post" action="#" class="bs-validate d-block bg-white shadow-primary-xs rounded p-4 mb-5">
-						<div class="row">
-							<div class="col-12 col-md-6">
-								<div class="form-label-group mb-3">
-									<input required placeholder="Name" id="name" type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Name">
-									<label for="comment_name">Property Occupant Name</label>
-								</div>
-							</div>
+<x-enquiry-form
+	layout="floating"
+	class="bs-validate d-block bg-white shadow-primary-xs rounded p-4 mb-5"
+	source="vastu"
+	context="vastu_consultation"
+	subject="Vastu Consultation"
+	:show-name="false"
+	:show-email="false"
+	:show-phone="false"
+	:show-message="false"
+	message-label="Specific Concerns / Problems"
+	submit-label="Submit Query"
+	enctype="multipart/form-data"
+>
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<input required placeholder="Property Occupant Name" type="text" class="form-control" name="name" value="{{ old('name', auth()->user()?->name) }}">
+				<label>Property Occupant Name</label>
+				@error('name')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
 
-							<div class="col-12 col-md-6">
-								<div class="form-label-group mb-3">
-									<select id="select_options2" class="form-control">
-										<option value="1">Male</option>
-										<option value="2">Female</option>
-									</select>
-									<label for="select_options2">Gender</label>
-								</div>
-							</div>
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<select id="vastu_gender" class="form-control" name="meta[gender]">
+					<option value="male">Male</option>
+					<option value="female">Female</option>
+				</select>
+				<label for="vastu_gender">Gender</label>
+				@error('meta.gender')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+	</div>
 
-						</div>
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<input required autocomplete="off" type="text" name="meta[dob_time]" class="form-control rangepicker" placeholder="Date of Birth and Time"
+					data-layout-rounded="false"
+					data-single-datepicker="true"
+					data-interval-years='[1982,2020]'
+					data-timepicker="true"
+					data-date-format="DD/MM/YYYY hh:mm: A"
+					data-quick-locale='{
+						"lang_apply" : "Apply",
+						"lang_cancel": "Cancel",
+						"lang_crange": "Custom Range",
+						"lang_months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+						"lang_weekdays": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+					}'>
+				<label>Date of Birth and Time</label>
+				@error('meta.dob_time')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<input required placeholder="Birth Place" type="text" class="form-control" name="meta[birth_place]">
+				<label>Birth Place</label>
+				<span class="fs--14 styleColor letter-spacing-03">* Select location from the list only.</span>
+				@error('meta.birth_place')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+	</div>
 
-						<div class="row">
-								<div class="col-12 col-md-6">
-									<div class="form-label-group mb-3">
-										<input required autocomplete="off" type="text" name="my_daterange" class="form-control rangepicker" placeholder="Date of Birth and Time" data-toggle="tooltip" data-placement="top" data-original-title="Date of Birth and Time"
-											data-layout-rounded="false" 
-											data-single-datepicker="true" 
-											data-interval-years='[1982,2020]'
-											data-timepicker="true" 
-											
-											data-date-format="DD/MM/YYYY hh:mm: A" 
-											 
-											data-quick-locale='{
-												"lang_apply"	: "Apply",
-												"lang_cancel"	: "Cancel",
-												"lang_crange"	: "Custom Range",
-												"lang_months" 	: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-												"lang_weekdays" : ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
-											}'
-										>
-										<label for="comment_name">Date of Birth and Time</label>
-									</div>
-								</div>
-								<div class="col-12 col-md-6">
-									<div class="form-label-group mb-3">
-										<input required placeholder="Birth Place" id="timepickerT" type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Birth Place">
-										<label for="comment_name">Birth Place</label>
-										<span class="fs--14 styleColor letter-spacing-03">* Select location from the list only.</span>
-									</div>
-								</div>
-						</div>
-						
-							<div class="row">
-								<div class="col-12 col-md-6">
-								<div class="form-label-group mb-3">
-									<select id="select_options2" class="form-control">
-										<option value="apartment">Apartment</option>
-										<option value="bungalow">Bungalow</option>
-										<option value="plot/land">Plot/Land</option>
-										<option value="shop">Shop</option>
-										<option value="factory">Factory</option>
-										<option value="workplace">Workplace</option>
-									</select>
-									<label for="select_options2">Property Type</label>
-								</div>
-							</div>
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<select id="vastu_property_type" class="form-control" name="meta[property_type]">
+					<option value="apartment">Apartment</option>
+					<option value="bungalow">Bungalow</option>
+					<option value="plot_land">Plot/Land</option>
+					<option value="shop">Shop</option>
+					<option value="factory">Factory</option>
+					<option value="workplace">Workplace</option>
+				</select>
+				<label for="vastu_property_type">Property Type</label>
+				@error('meta.property_type')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
 
-							<div class="col-12 col-md-3">
-								<div class="form-label-group mb-3">
-									<select id="select_options2" class="form-control">
-										<option value="visit">Personal Visit</option>
-										<option value="phone">Phone Consultation</option>
-										<option value="video">Video Consultation</option>
-										
-									</select>
-									<label for="select_options2">Consultation Type</label>
-								</div>
-							</div>
+		<div class="col-12 col-md-3">
+			<div class="form-label-group mb-3">
+				<select id="vastu_consultation_type" class="form-control" name="meta[consultation_type]">
+					<option value="visit">Personal Visit</option>
+					<option value="phone">Phone Consultation</option>
+					<option value="video">Video Consultation</option>
+				</select>
+				<label for="vastu_consultation_type">Consultation Type</label>
+				@error('meta.consultation_type')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
 
-							<div class="col-12 col-md-3">
-								<div class="form-label-group mb-3">
-									<select id="select_options2" class="form-control">
-										<option value="basic">Basic Report</option>
-										<option value="detail">Detailed Report with Remedies</option>
-										
-									</select>
-									<label for="select_options2">Report</label>
-								</div>
-							</div>
+		<div class="col-12 col-md-3">
+			<div class="form-label-group mb-3">
+				<select id="vastu_report_type" class="form-control" name="meta[report_type]">
+					<option value="basic">Basic Report</option>
+					<option value="detail">Detailed Report with Remedies</option>
+				</select>
+				<label for="vastu_report_type">Report</label>
+				@error('meta.report_type')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+	</div>
 
-						</div>
-						
-						<!-- AJAX -->
-						<div class="mb-1">
-
-							<label class="btn btn-warning cursor-pointer position-relative">
-
-								<!-- 
-									We use .absolute-full class instead of .viewport-out
-									Just to make sure the element is working crossbrowser!
-									-->
-								<input 	name="file_input_name[]" 
-										multiple=""
-										type="file" 
-
-										data-file-ext="mp3, jpg, png, gif" 
-										data-file-max-size-kb-per-file="0"
-										data-file-max-size-kb-total="0" 
-										data-file-max-total-files="100"
-										data-file-ext-err-msg="Allowed:" 
-										data-file-exist-err-msg="File already exists:"
-										data-file-size-err-item-msg="File too large!"
-										data-file-size-err-total-msg="Total allowed size exceeded!"
-										data-file-size-err-max-msg="Maximum allowed files:"
-										data-file-toast-position="bottom-center"
-										data-file-preview-container=".js-file-input-container-multiple-example-ajax" 
-										data-file-preview-img-height="120" 
-										data-file-preview-show-info="false" 
-										data-file-preview-class="show-hover-container shadow-md m-2 rounded float-start" 
-										data-file-preview-img-cover="false" 
-
-										data-file-ajax-upload-enable="true"
-										data-file-ajax-upload-url="../../html_frontend/demo.files/php/demo.ajax_file_upload.php"
-										data-file-ajax-upload-params="['action','upload']['param2','value2']"
-
-										data-file-ajax-delete-enable="true"
-										data-file-ajax-delete-url="../../html_frontend/demo.files/php/demo.ajax_file_upload.php"
-										data-file-ajax-delete-params="['action','delete_file']"
-
-										data-file-ajax-reorder-enable="true"
-										data-file-ajax-reorder-url="../../html_frontend/demo.files/php/demo.ajax_file_upload.php"
-										data-file-ajax-reorder-params="['action','reorder']"
-										data-file-ajax-reorder-toast-success="Order Saved!" 
-										data-file-ajax-reorder-toast-position="bottom-center" 
-
-										data-file-ajax-toast-success-txt="Successfully Uploaded!"
-										data-file-ajax-toast-error-txt="One or more files not uploaded!"
-										data-file-ajax-callback-function=""
-										data-file-ajax-progressbar-custom=""
-										data-file-ajax-progressbar-disable="false"
-
-										class="custom-file-input absolute-full">
-
-									Upload Images
-
-							</label>
-
-						</div>
-
-						<div class="clearfix mb-3">
-							<div class="form-label-group">
-								<textarea required rows="3" id="comment_description"
-										data-output-target=".js-form-advanced-char-left" 
-										class="form-control js-form-advanced-char-count-down" 
-										maxlength="3000" placeholder="Your comment"></textarea>
-								<label for="comment_description">Specific Concerns / Problems </label>
-							</div>
-							<span class="fs--12 text-muted text-align-end float-end mt-1">
-								characters left: <span class="js-form-advanced-char-left">3000</span>
-							</span>
-
-						</div>
-
-						<button type="submit" class="btn btn-warning btn-sm">
-							Submit Query
-						</button>
-					</form>
-					<!-- /Query Form -->
+	<div class="mb-3">
+		<label class="btn btn-warning cursor-pointer position-relative">
+			<input name="attachments[]" multiple type="file" accept="image/*,application/pdf" class="custom-file-input absolute-full">
+			Upload Images
+		</label>
+		<div class="form-hint mt-2">Allowed: images and PDF files.</div>
+		@error('attachments')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+		@error('attachments.*')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+	</div>
+</x-enquiry-form>
+<!-- /Query Form -->
 
 					<p class="font-weight-normal"><span class="styleColor font-weight-normal">Note :</span> Your query will be answered very shortly and Will notify on your registered Email or Mobile. </p>
 
@@ -361,6 +312,7 @@ Our expert approach combines Vastu Shastra, astrology insights, and color therap
 
 @endsection
 <!-- End Section -->
+
 
 
 

@@ -241,15 +241,20 @@
 			</div>
 
 			<div class="col-lg-3 col-md-3">
-				<div>
-					<a href="#!" class="mt-5 d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
-						<img class="w-100 img-fluid rounded" src="http://lc.smartastro.com/images/offers/off_1.png" alt="...">
-					</a>
+				@if (isset($sidebarAdBanners) && $sidebarAdBanners->count())
+					@php($banner = $sidebarAdBanners->first())
+					@include('frontend.partials.ad_banner_item', ['banner' => $banner])
+				@else
+					<div>
+						<a href="#!" class="mt-5 d-block text-center overlay-dark-hover overlay-opacity-2 rounded overflow-hidden">
+							<img class="w-100 img-fluid rounded" src="{{ asset('images/offers/off_1.png') }}" alt="...">
+						</a>
 
-					<h4 class="fs--13 text-gray-500 font-weight-normal mt-1 mb-0">
-						Sponsored Ad
-					</h4>
-				</div>
+						<h4 class="fs--13 text-gray-500 font-weight-normal mt-1 mb-0">
+							Sponsored Ad
+						</h4>
+					</div>
+				@endif
 			</div>
 		</div>
 	</div>
@@ -848,6 +853,4 @@
 
 @endsection
 <!-- End Section -->
-
-
 

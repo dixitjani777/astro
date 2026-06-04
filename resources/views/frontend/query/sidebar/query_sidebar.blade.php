@@ -45,9 +45,10 @@
 
 </div>
 <!-- BANNER -->
-<!-- <a href="#!" class="mt-5 d-block text-center rounded">
-	<img class="w-100 img-fluid rounded" src="{{ asset('images/other/find.jpg')}}" alt="...">
-</a> -->
+@if (isset($querySidebarAdBanners) && $querySidebarAdBanners->count())
+	@php($banner = $querySidebarAdBanners->first())
+	@include('frontend.partials.ad_banner_item', ['banner' => $banner])
+@endif
 <!-- /BANNER -->
 <br/>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\PanditService;
 
 class Panditji extends Controller
 {
@@ -11,7 +12,13 @@ class Panditji extends Controller
 	}
 
 	public function services(){
-    	return view('frontend/panditji/services');
+    	return view('frontend/panditji/services', [
+            'panditServices' => PanditService::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->orderBy('title')
+                ->get(),
+        ]);
 	}
 
 	public function puja_services(){

@@ -88,10 +88,10 @@
 
 			<div class="order-2 order-md-2 col-12 col-md-6 mb-5">
 				<br/>
-				<div class="stretch-end py-5 rounded-xl bg-light bg-cover lazy" style="background-image:url('images/other/find.jpg')">
+				<div class="py-5 rounded-xl bg-light bg-cover lazy" style="background-image:url('images/other/find.jpg')">
 					<img class="w-100" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAKCAQAAADxnt1TAAAAEUlEQVR42mNkIBowjiodaKUACusAC4zze1kAAAAASUVORK5CYII=" alt="...">
 				</div>	<br/>
-				<div class="row stretch-end">
+				<div class="row align-items-center">
 		            <div class="col-12 col-md-7">
 		                <h4 class="m-0 font-weight-medium clrvb"><b>Find Right Path of Life.</b></h4>
 		                <p class="m-0 letter-spacing-1">Our astrologer are here for you.</p>
@@ -129,6 +129,13 @@
 			<span class="sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft font-weight-normal pl-2 pr-2 pt--6 pb--6 mb-2">
 				Choose your zodiac sign
 			</span>
+			@if(isset($dailyPreview) && $dailyPreview && $dailyPreview->description)
+				<p class="mt-3 mb-0 text-muted">
+					<strong class="styleColor">Aries ({{ $dailyPreviewDate->format('M j, Y') }})</strong>:
+					{{ \Illuminate\Support\Str::limit($dailyPreview->description, 180) }}
+					<a href="{{ url('/horoscope/daily/aries') }}">Read more</a>
+				</p>
+			@endif
 		</div>
 		<div class="row">
 
@@ -393,246 +400,50 @@
 
 		</div>
 		<div class="row">
+			@foreach(($homeServices ?? []) as $svc)
+				@php
+					$img = $svc->image_path;
+					$isUrl = is_string($img) && preg_match('/^https?:\\/\\//i', $img);
+					$imgUrl = $img ? ($isUrl ? $img : asset($img)) : '';
+					$link = $svc->link_url ?: '#!';
+				@endphp
 
-			<div class="col-12 col-lg-4 mb-5">
+				<div class="col-12 col-lg-4 mb-5">
+					<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
+						<a href="{{ url($link) }}" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
+							@if($imgUrl)
+								<img class="img-fluid lazy rounded" src="{{ $imgUrl }}" alt="{{ $svc->title }}">
+							@endif
+						</a>
 
-				<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
-					<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-						<img class="img-fluid lazy rounded" src="{{ asset('images/services/question.jpg') }}" alt="...">
-					</a>
-
-					<div class="p-3">
-
-						<h5 class="m-0">
-							Ask Free Query
-						</h5><br/>
-
-						<ul class="list-inline fs--13 m-0">
-							<li class="list-inline-item">
-								<a href="#!" class="text-gray-500">Some quick example text Some quick example text Some quick example text</a>
-							</li>
-
-
-						</ul>
-
+						<div class="p-3">
+							<h5 class="m-0">{{ $svc->title }}</h5><br/>
+							@if($svc->short_text)
+								<ul class="list-inline fs--13 m-0">
+									<li class="list-inline-item">
+										<a href="{{ url($link) }}" class="text-gray-500">{{ $svc->short_text }}</a>
+									</li>
+								</ul>
+							@endif
+						</div>
 					</div>
 				</div>
-
-			</div>
-
-			<div class="col-12 col-lg-4 mb-5">
-
-				<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
-					<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-						<img class="img-fluid lazy rounded" src="{{ asset('images/services/question.jpg') }}" alt="...">
-					</a>
-
-					<div class="p-3">
-
-						<h5 class="m-0">
-							Horoscope Report
-						</h5><br/>
-
-						<ul class="list-inline fs--13 m-0">
-							<li class="list-inline-item">
-								<a href="#!" class="text-gray-500">Some quick example text Some quick example text Some quick example text</a>
-							</li>
-
-
-						</ul>
-
-					</div>
-				</div>
-
-			</div>
-
-			<div class="col-12 col-lg-4 mb-5">
-
-				<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
-					<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-						<img class="img-fluid lazy rounded" src="{{ asset('images/services/question.jpg') }}" alt="...">
-					</a>
-
-					<div class="p-3">
-
-						<h5 class="m-0">
-							Book Astrologer
-						</h5><br/>
-
-						<ul class="list-inline fs--13 m-0">
-							<li class="list-inline-item">
-								<a href="#!" class="text-gray-500">Some quick example text Some quick example text Some quick example text</a>
-							</li>
-
-
-						</ul>
-
-					</div>
-				</div>
-
-			</div>
-
-			<div class="col-12 col-lg-4 mb-5">
-
-				<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
-					<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-						<img class="img-fluid lazy rounded" src="{{ asset('images/services/match_making.jpg') }}" alt="...">
-					</a>
-
-					<div class="p-3">
-
-						<h5 class="m-0">
-							Match Making Report
-						</h5><br/>
-
-						<ul class="list-inline fs--13 m-0">
-							<li class="list-inline-item">
-								<a href="#!" class="text-gray-500">Some quick example text Some quick example text Some quick example text</a>
-							</li>
-
-
-						</ul>
-
-					</div>
-				</div>
-
-			</div>
-
-			<div class="col-12 col-lg-4 mb-5">
-
-				<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
-					<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-						<img class="img-fluid lazy rounded" src="{{ asset('images/services/gems.png') }}" alt="...">
-					</a>
-
-					<div class="p-3">
-
-						<h5 class="m-0">
-							Order Gemstones
-						</h5><br/>
-
-						<ul class="list-inline fs--13 m-0">
-							<li class="list-inline-item">
-								<a href="#!" class="text-gray-500">Some quick example text Some quick example text Some quick example text</a>
-							</li>
-
-
-						</ul>
-
-					</div>
-				</div>
-
-			</div>
-
-			<div class="col-12 col-lg-4 mb-5">
-
-				<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
-					<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-						<img class="img-fluid lazy rounded" src="{{ asset('images/services/pt2.jpg') }}" alt="...">
-					</a>
-
-					<div class="p-3">
-
-						<h5 class="m-0">
-							Book Panditji
-						</h5><br/>
-
-						<ul class="list-inline fs--13 m-0">
-							<li class="list-inline-item">
-								<a href="#!" class="text-gray-500">Some quick example text Some quick example text Some quick example text </a>
-							</li>
-
-
-						</ul>
-
-					</div>
-				</div>
-
-			</div>
-
-			<div class="col-12 col-lg-4 mb-5">
-
-				<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
-					<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-						<img class="img-fluid lazy rounded" src="{{ asset('images/services/vastu_shastra.jpg') }}" alt="...">
-					</a>
-
-					<div class="p-3">
-
-						<h5 class="m-0">
-							Vastu Consultancy
-						</h5><br/>
-
-						<ul class="list-inline fs--13 m-0">
-							<li class="list-inline-item">
-								<a href="#!" class="text-gray-500">Some quick example text Some quick example text Some quick example text </a>
-							</li>
-
-
-						</ul>
-
-					</div>
-				</div>
-
-			</div>
-
-			<div class="col-12 col-lg-4 mb-5">
-
-				<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
-					<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-						<img class="img-fluid lazy rounded" src="{{ asset('images/services/vst.jpg') }}" alt="...">
-					</a>
-
-					<div class="p-3">
-
-						<h5 class="m-0">
-							Our Puja
-						</h5><br/>
-
-						<ul class="list-inline fs--13 m-0">
-							<li class="list-inline-item">
-								<a href="#!" class="text-gray-500">Some quick example text Some quick example text Some quick example text </a>
-							</li>
-
-
-						</ul>
-
-					</div>
-				</div>
-
-			</div>
-
-			<div class="col-12 col-lg-4 mb-5">
-
-				<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
-					<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-						<img class="img-fluid lazy rounded" src="{{ asset('images/services/team_activity.jpg') }}" alt="...">
-					</a>
-
-					<div class="p-3">
-
-						<h5 class="m-0">
-							Team Activity
-						</h5><br/>
-
-						<ul class="list-inline fs--13 m-0">
-							<li class="list-inline-item">
-								<a href="#!" class="text-gray-500">Some quick example text Some quick example text Some quick example text </a>
-							</li>
-
-
-						</ul>
-
-					</div>
-				</div>
-
-			</div>
+			@endforeach
 
 		</div>
 	</div>
 </section>
 <!-- /services -->
 
+@if(isset($homeBottomAdBanners) && $homeBottomAdBanners->count())
+	<section class="p-0">
+		<div class="container pb-4">
+			@foreach($homeBottomAdBanners->take(2) as $banner)
+				@include('frontend.partials.ad_banner_item', ['banner' => $banner])
+			@endforeach
+		</div>
+	</section>
+@endif
 
 <!-- block : about us -->
 <section id="section_about" class="overflow-hidden bg-1mg">

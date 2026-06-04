@@ -81,116 +81,123 @@
 							Enter Details						
 						</h3>
 
-						<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
-							<span class="styleColor">*</span> You must <a href="#" >Log in</a> to Buy Gemstone.
-						</p>
+						@guest
+							<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
+								<span class="styleColor">*</span> You must <a href="#" >Log in</a> to Buy Gemstone.
+							</p>
+						@endguest
 
 						<!-- Query Form -->
-						<form novalidate method="post" action="#" class="bs-validate d-block bg-white shadow-md rounded p-4 mb-5 ">
-							<div class="row">
-								<div class="col-12 col-md-6">
-									<div class="form-label-group mb-3">
-										<input required placeholder="Name" id="name" type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Name">
-										<label for="comment_name">Name</label>
-									</div>
-								</div>
+<x-enquiry-form
+	layout="floating"
+	class="bs-validate d-block bg-white shadow-md rounded p-4 mb-5"
+	source="gemstone"
+	context="gemstone_recommendation"
+	subject="Gemstone Recommendation"
+	:show-name="false"
+	:show-email="false"
+	:show-phone="false"
+	:show-message="false"
+	message-label="Enter your query here.."
+	submit-label="Submit Query to buy Gemstone"
+>
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<input required placeholder="Name" type="text" class="form-control" name="name" value="{{ old('name', auth()->user()?->name) }}">
+				<label>Name</label>
+				@error('name')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
 
-								<div class="col-12 col-md-6">
-									<div class="form-label-group mb-3">
-										<select id="select_options2" class="form-control">
-											<option value="1">Male</option>
-											<option value="2">Female</option>
-										</select>
-										<label for="select_options2">Gender</label>
-									</div>
-								</div>
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<select id="gemstone_gender" class="form-control" name="meta[gender]">
+					<option value="male">Male</option>
+					<option value="female">Female</option>
+				</select>
+				<label for="gemstone_gender">Gender</label>
+				@error('meta.gender')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+	</div>
 
-							</div>
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<input required autocomplete="off" type="text" name="meta[dob_time]" class="form-control rangepicker" placeholder="Date of Birth and Time"
+					data-layout-rounded="false"
+					data-single-datepicker="true"
+					data-interval-years='[1982,2020]'
+					data-timepicker="true"
+					data-date-format="DD/MM/YYYY hh:mm: A"
+					data-quick-locale='{
+						"lang_apply" : "Apply",
+						"lang_cancel": "Cancel",
+						"lang_crange": "Custom Range",
+						"lang_months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+						"lang_weekdays": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+					}'>
+				<label>Date of Birth and Time</label>
+				@error('meta.dob_time')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<input required placeholder="Birth Place" type="text" class="form-control" name="meta[birth_place]">
+				<label>Birth Place</label>
+				<span class="fs--14 styleColor letter-spacing-03">* Select location from the list only.</span>
+				@error('meta.birth_place')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+	</div>
 
-							<div class="row">
-									<div class="col-12 col-md-6">
-										<div class="form-label-group mb-3">
-											<input required autocomplete="off" type="text" name="my_daterange" class="form-control rangepicker" placeholder="Date of Birth and Time" data-toggle="tooltip" data-placement="top" data-original-title="Date of Birth and Time"
-												data-layout-rounded="false" 
-												data-single-datepicker="true" 
-												data-interval-years='[1982,2020]'
-												data-timepicker="true" 
-												
-												data-date-format="DD/MM/YYYY hh:mm: A" 
-												 
-												data-quick-locale='{
-													"lang_apply"	: "Apply",
-													"lang_cancel"	: "Cancel",
-													"lang_crange"	: "Custom Range",
-													"lang_months" 	: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-													"lang_weekdays" : ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
-												}'
-											>
-											<label for="comment_name">Date of Birth and Time</label>
-										</div>
-									</div>
-									<div class="col-12 col-md-6">
-										<div class="form-label-group mb-3">
-											<input required placeholder="Birth Place" id="timepickerT" type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Birth Place">
-											<label for="comment_name">Birth Place</label>
-											<span class="fs--14 styleColor letter-spacing-03">* Select location from the list only.</span>
-										</div>
-									</div>
-							</div>
-							
-							<div class="row">
-								<div class="col-12 col-md-6">
-									<div class="form-label-group mb-3">
-										<select id="select_options2" class="form-control">
-											<option value="1">Blue Sapphire / Neelam</option>
-											<option value="2">Ruby / Manik</option>
-											<option value="2">Emerald / Panna</option>
-											<option value="2">Pearl / Moti</option>
-											<option value="2">Red Coral / Moonga</option>
-											<option value="2">Yellow Sapphire / Pukhraj</option>
-											<option value="2">Diamond / Heera</option>
-											<option value="2">Hessonite / Garnet</option>
-											<option value="2">Cats Eye / Lehsunia</option>
-											
-										</select>
-										<label for="select_options2">Expected Gemstone</label>
-									</div>
-								</div>
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<select id="gemstone_type" class="form-control" name="meta[expected_gemstone]">
+					<option value="blue_sapphire">Blue Sapphire / Neelam</option>
+					<option value="ruby">Ruby / Manik</option>
+					<option value="emerald">Emerald / Panna</option>
+					<option value="pearl">Pearl / Moti</option>
+					<option value="red_coral">Red Coral / Moonga</option>
+					<option value="yellow_sapphire">Yellow Sapphire / Pukhraj</option>
+					<option value="diamond">Diamond / Heera</option>
+					<option value="hessonite">Hessonite / Garnet</option>
+					<option value="cats_eye">Cats Eye / Lehsunia</option>
+				</select>
+				<label for="gemstone_type">Expected Gemstone</label>
+				@error('meta.expected_gemstone')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
 
-								<div class="col-12 col-md-6">
-									<div class="form-label-group mb-3">
-										<select id="select_options2" class="form-control">
-											<option value="0-3">Below 3 carat</option>
-											<option value="3-5">3 - 5 Carat</option>
-											<option value="5-7">5 - 7 Carat</option>
-											<option value="7-9">7 - 9 Carat</option>
-											<option value="9-100">9 Carat+</option>
-										</select>
-										<label for="select_options2">Select Carat Weight</label>
-									</div>
-								</div>
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<select id="gemstone_carat" class="form-control" name="meta[carat_weight]">
+					<option value="below_3">Below 3 carat</option>
+					<option value="3_5">3 - 5 Carat</option>
+					<option value="5_7">5 - 7 Carat</option>
+					<option value="7_9">7 - 9 Carat</option>
+					<option value="9_plus">9 Carat+</option>
+				</select>
+				<label for="gemstone_carat">Select Carat Weight</label>
+				@error('meta.carat_weight')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+	</div>
 
-							</div>
-
-							<div class="clearfix mb-3">
-								<div class="form-label-group">
-									<textarea required rows="3" id="comment_description"
-											data-output-target=".js-form-advanced-char-left" 
-											class="form-control js-form-advanced-char-count-down" 
-											maxlength="3000" placeholder="Your comment">Which gemstone should I wear for overall betterment ?</textarea>
-									<label for="comment_description">Enter your query here..</label>
-								</div>
-								<span class="fs--12 text-muted text-align-end float-end mt-1">
-									characters left: <span class="js-form-advanced-char-left">3000</span>
-								</span>
-
-							</div>
-
-							<button type="submit" class="btn btn-warning btn-sm">
-								Submit Query to buy Gemstone
-							</button>
-						</form>
-						<!-- /Query Form -->
+	<div class="clearfix mb-3">
+		<div class="form-label-group">
+			<textarea required rows="3" class="form-control js-form-advanced-char-count-down" name="message" maxlength="3000" placeholder="Your comment">{{ old('message', 'Which gemstone should I wear for overall betterment ?') }}</textarea>
+			<label>Enter your query here..</label>
+			@error('message')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+		</div>
+		<span class="fs--12 text-muted text-align-end float-end mt-1">
+			characters left: <span class="js-form-advanced-char-left">3000</span>
+		</span>
+	</div>
+</x-enquiry-form>
+<!-- /Query Form -->
 
 						
 
@@ -307,6 +314,7 @@
 
 @endsection
 <!-- End Section -->
+
 
 
 

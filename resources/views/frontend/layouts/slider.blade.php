@@ -9,7 +9,7 @@
 		"autoplay": { "delay" : 3500, "disableOnInteraction": false },
 	"pagination": { "type": "bullets" }
 -->
-<section class="swiper-container swiper-btn-group swiper-btn-group-end text-white p-0 h-58vh"
+<section class="swiper-container swiper-btn-group swiper-btn-group-end text-white p-0 home-main-slider"
 	data-swiper='{
 		"slidesPerView": 1,
 		"spaceBetween": 0,
@@ -22,6 +22,33 @@
 
 	<div class="swiper-wrapper h-100">
 
+		@if(isset($homeSlides) && $homeSlides->count())
+			@foreach($homeSlides as $slide)
+				<div class="swiper-slide h-100 bg-white bg-cover" style="background-image:url('{{ asset($slide->image_path) }}')">
+					<div class="container z-index-10 text-white slidintext">
+
+						<h2 class="fs--30 line-height-1">
+							{{ $slide->title }}
+						</h2>
+
+						@if($slide->subtitle || $slide->button_url)
+							<p>
+								@if($slide->subtitle)
+									{!! nl2br(e($slide->subtitle)) !!}
+								@endif
+								@if($slide->button_url)
+									<br/><br/>
+									<a href="{{ url($slide->button_url) }}" class="btn btn-sm btn-warning">
+										{{ $slide->button_text ?: 'Check it out' }}
+									</a>
+								@endif
+							</p>
+						@endif
+
+					</div>
+				</div>
+			@endforeach
+		@else
 
 		<!-- slide 1 -->
 		<div class="swiper-slide h-100 bg-white bg-cover" style="background-image:url('images/slider/gemstones.jpg')">
@@ -117,6 +144,7 @@
 		</div>
 		<!-- /slide 3 -->
 
+		@endif
 
 	</div>
 

@@ -70,140 +70,128 @@
 							Enter Details						
 						</h3>
 
-						<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
-							<span class="styleColor">*</span> You must <a href="{{ url('/account')}}" >Log in</a> to Book Astrologer.
-						</p><br><br>
+						@guest
+							<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
+								<span class="styleColor">*</span> You must <a href="{{ url('/account')}}" >Log in</a> to Book Astrologer.
+							</p>
+						@endguest
+						<br><br>
 
 						<!-- Query Form -->
-						<form novalidate method="post" action="#" class="bs-validate d-block bg-white shadow-md rounded p-4 mb-5 ">
-							<p>Enter the details of the person your query is about.</p>
-							<div class="row">
-								<div class="col-12 col-md-6">
-									<div class="form-label-group mb-3">
-										<input required placeholder="Name" id="name" type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Name">
-										<label for="comment_name">Name</label>
-									</div>
-								</div>
+<x-enquiry-form
+	layout="floating"
+	class="bs-validate d-block bg-white shadow-md rounded p-4 mb-5"
+	source="astrologer"
+	context="astrologer_booking"
+	subject="Astrologer Booking"
+	:show-name="false"
+	:show-email="false"
+	:show-phone="false"
+	:show-message="false"
+	message-label="Enter your query here.."
+	submit-label="Request to book astrologer"
+>
+	<p>Enter the details of the person your query is about.</p>
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<input required placeholder="Name" type="text" class="form-control" name="name" value="{{ old('name', auth()->user()?->name) }}">
+				<label>Name</label>
+				@error('name')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
 
-								<div class="col-12 col-md-6">
-									<div class="form-label-group mb-3">
-										<select id="select_options2" class="form-control">
-											<option value="male">Male</option>
-											<option value="female">Female</option>
-											<option value="other">Other</option>
-										</select>
-										<label for="select_options2">Gender</label>
-									</div>
-								</div>
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<select id="astrologer_gender" class="form-control" name="meta[gender]">
+					<option value="male">Male</option>
+					<option value="female">Female</option>
+					<option value="other">Other</option>
+				</select>
+				<label for="astrologer_gender">Gender</label>
+				@error('meta.gender')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+	</div>
 
-							</div>
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<input required autocomplete="off" type="text" name="meta[dob_time]" class="form-control rangepicker" placeholder="Date of Birth and Time"
+					data-layout-rounded="false"
+					data-single-datepicker="true"
+					data-interval-years='[1982,2020]'
+					data-timepicker="true"
+					data-date-format="DD/MM/YYYY hh:mm: A"
+					data-quick-locale='{
+						"lang_apply" : "Apply",
+						"lang_cancel": "Cancel",
+						"lang_crange": "Custom Range",
+						"lang_months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+						"lang_weekdays": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+					}'>
+				<label>Date of Birth and Time</label>
+				@error('meta.dob_time')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<input required placeholder="Birth Place" type="text" class="form-control" name="meta[birth_place]">
+				<label>Birth Place</label>
+				<span class="fs--14 styleColor letter-spacing-03">* Select location from the list only.</span>
+				@error('meta.birth_place')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+	</div>
 
-							<div class="row">
-									<div class="col-12 col-md-6">
-										<div class="form-label-group mb-3">
-											<input required autocomplete="off" type="text" name="my_daterange" class="form-control rangepicker" placeholder="Date of Birth and Time" data-toggle="tooltip" data-placement="top" data-original-title="Date of Birth and Time"
-												data-layout-rounded="false" 
-												data-single-datepicker="true" 
-												data-interval-years='[1982,2020]'
-												data-timepicker="true" 
-												
-												data-date-format="DD/MM/YYYY hh:mm: A" 
-												 
-												data-quick-locale='{
-													"lang_apply"	: "Apply",
-													"lang_cancel"	: "Cancel",
-													"lang_crange"	: "Custom Range",
-													"lang_months" 	: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-													"lang_weekdays" : ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
-												}'
-											>
-											<label for="comment_name">Date of Birth and Time</label>
-										</div>
-									</div>
-									<div class="col-12 col-md-6">
-										<div class="form-label-group mb-3">
-											<input required placeholder="Birth Place" id="timepickerT" type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Birth Place">
-											<label for="comment_name">Birth Place</label>
-											<span class="fs--14 styleColor letter-spacing-03">* Select location from the list only.</span>
-										</div>
-									</div>
-							</div>
-							
+	<div class="row">
+		<div class="col-12 col-md-6">
+			<div class="form-label-group mb-3">
+				<input required autocomplete="off" type="text" name="meta[preferred_datetime]"
+					class="form-control rangepicker"
+					placeholder="Preferred Date & Time"
+					data-single-datepicker="true"
+					data-timepicker="true"
+					data-min-date="moment()"
+					data-date-format="DD/MM/YYYY hh:mm A"
+					data-quick-locale='{
+						"lang_apply" : "Apply",
+						"lang_cancel": "Cancel",
+						"lang_crange": "Custom Range",
+						"lang_months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+						"lang_weekdays": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+					}'>
+				<label>Preferred Date & Time</label>
+				@error('meta.preferred_datetime')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
 
-							<div class="row">
+		<div class="col-12 col-md-3">
+			<div class="form-label-group mb-3">
+				<select id="consultation_type" class="form-control" name="meta[consultation_type]">
+					<option value="call">Call</option>
+					<option value="video">Video Call</option>
+					<option value="face_to_face">Face to Face</option>
+				</select>
+				<label for="consultation_type">Consultation Type</label>
+				@error('meta.consultation_type')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
 
-							<!-- Name (50%) -->
-							<div class="col-12 col-md-6">
-								<div class="form-label-group mb-3">
-									<input required autocomplete="off" type="text" name="my_daterange" 
-										class="form-control rangepicker" 
-										placeholder="Preferred Date & Time"
-										
-										data-single-datepicker="true"
-										data-timepicker="true"
-										data-min-date="moment()"   
-										
-										data-date-format="DD/MM/YYYY hh:mm A"
-
-										data-quick-locale='{
-											"lang_apply" : "Apply",
-											"lang_cancel": "Cancel",
-											"lang_crange": "Custom Range",
-											"lang_months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-											"lang_weekdays": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
-										}'
-									>
-									<label for="my_daterange">Preferred Date & Time</label>
-								</div>
-							</div>
-
-							<!-- Consultation Type (25%) -->
-							<div class="col-12 col-md-3">
-								<div class="form-label-group mb-3">
-									<select id="consultation_type" class="form-control">
-										<option value="c">Call</option>
-										<option value="v">Video Call</option>
-										<option value="f">Face to Face</option>
-									</select>
-									<label for="consultation_type">Consultation Type</label>
-								</div>
-							</div>
-
-							<!-- Language (25%) -->
-							<div class="col-12 col-md-3">
-								<div class="form-label-group mb-3">
-									<select id="language" class="form-control">
-										<option value="" selected disabled>Language</option>
-										<option value="hi">Hindi</option>
-										<option value="en">English</option>
-										<option value="gu">Gujarati</option>
-										
-									</select>
-									<label for="language">Language</label>
-								</div>
-							</div>
-
-						</div>
-
-							<div class="clearfix mb-3">
-								<div class="form-label-group">
-									<textarea required rows="3" id="comment_description"
-											data-output-target=".js-form-advanced-char-left" 
-											class="form-control js-form-advanced-char-count-down" 
-											maxlength="3000" placeholder="Your comment"></textarea>
-									<label for="comment_description">Enter your query here..</label>
-								</div>
-								<span class="fs--12 text-muted text-align-end float-end mt-1">
-									characters left: <span class="js-form-advanced-char-left">3000</span>
-								</span>
-
-							</div>
-
-							<button type="submit" class="btn btn-warning btn-sm">
-								Request to book astrologer
-							</button>
-						</form>
-						<!-- /Query Form -->
+		<div class="col-12 col-md-3">
+			<div class="form-label-group mb-3">
+				<select id="language" class="form-control" name="meta[language]">
+					<option value="hi">Hindi</option>
+					<option value="en">English</option>
+					<option value="gu">Gujarati</option>
+				</select>
+				<label for="language">Language</label>
+				@error('meta.language')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+			</div>
+		</div>
+	</div>
+</x-enquiry-form>
+<!-- /Query Form -->
 
 						<p class="font-weight-normal"><span class="font-weight-bold">Note :</span> Your request will be processed soon. Updates will be sent to your registered email or mobile number, and you can also check the status in your account. </p>
 						<br><br>
