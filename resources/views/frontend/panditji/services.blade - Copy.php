@@ -31,7 +31,7 @@
 					<div class="col-md-6">
 						<a href="{{ url('/panditji/puja-services') }}">
 							<figure>
-								<img class="img-responsive-services" style="height: 260px;" src="{{ asset('public/images/services/pt2.jpg') }}" alt="ask query"> 
+								<img class="img-responsive-services" style="height: 260px;" src="{{ asset('images/services/pt2.jpg') }}" alt="ask query"> 
 							</figure>
 							<h4 class='font500'>Puja Services</h4>
 						</a>
@@ -41,7 +41,7 @@
 					<div class="col-md-6">
 						<a href="{{ url('/panditji/havan-services') }}">
 							<figure>
-								<img class="img-responsive-services" style="height: 260px;" src="{{ asset('public/images/services/hvn.jpg') }}" alt="Birth Journal">
+								<img class="img-responsive-services" style="height: 260px;" src="{{ asset('images/services/hvn.jpg') }}" alt="Birth Journal">
 							</figure>						
 							<h4 class='font500'>Havan Services</h4>
 						</a>
@@ -55,7 +55,7 @@
 					<div class="col-md-6">
 						<a href="{{ url('/panditji/jaap') }}">
 							<figure>
-								<img class="img-responsive-services" style="height: 260px;" src="{{ asset('public/images/recent_work/nvs.jpg') }}" alt="ask query"> 
+								<img class="img-responsive-services" style="height: 260px;" src="{{ asset('images/recent_work/nvs.jpg') }}" alt="ask query"> 
 							</figure>
 							<h4 class='font500'>Jaap & Shanti Pujas</h4>
 						</a>
@@ -65,7 +65,7 @@
 					<div class="col-md-6">
 						<a href="{{ url('/panditji/katha') }}">
 							<figure>
-								<img class="img-responsive-services" style="height: 260px;" src="{{ asset('public/images/services/katha.jpg') }}" alt="Birth Journal">
+								<img class="img-responsive-services" style="height: 260px;" src="{{ asset('images/services/katha.jpg') }}" alt="Birth Journal">
 							</figure>						
 							<h4 class='font500'>Shreemad Katha</h4>
 						</a>
@@ -87,6 +87,5 @@
 
 @endsection
 <!-- End Section -->
-
 
 

@@ -76,8 +76,9 @@ If your current server only has **PHP 8.1 or lower**, this application will **no
 ## Production Installation
 
 1. Make sure the server is running PHP 8.2 or higher.
-2. Point the web root to the `public` directory.
-3. Install dependencies:
+2. Place the project in the web root of your hosting account.
+3. Keep the project root `.htaccess` file in place so requests are routed to Laravel without `/public` in the URL.
+4. Install dependencies:
 
    ```bash
    composer install --no-dev --optimize-autoloader
@@ -85,29 +86,29 @@ If your current server only has **PHP 8.1 or lower**, this application will **no
    npm run build
    ```
 
-4. Copy `.env.example` to `.env` and update production values:
+5. Copy `.env.example` to `.env` and update production values:
 
    - `APP_NAME`
    - `APP_ENV=production`
    - `APP_KEY`
    - `APP_DEBUG=false`
-   - `APP_URL`
+   - `APP_URL=https://your-domain.com` without `/public`
    - Database credentials
    - Mail settings
 
-5. Generate the key if needed:
+6. Generate the key if needed:
 
    ```bash
    php artisan key:generate
    ```
 
-6. Run migrations:
+7. Run migrations:
 
    ```bash
    php artisan migrate --force
    ```
 
-7. Clear and cache configuration:
+8. Clear and cache configuration:
 
    ```bash
    php artisan config:clear
@@ -119,8 +120,8 @@ If your current server only has **PHP 8.1 or lower**, this application will **no
    php artisan view:cache
    ```
 
-8. Set correct permissions for `storage` and `bootstrap/cache`.
-9. Set up the scheduler:
+9. Set correct permissions for `storage` and `bootstrap/cache`.
+10. Set up the scheduler:
 
    ```bash
    * * * * * php /path/to/project/artisan schedule:run >> /dev/null 2>&1
@@ -184,3 +185,9 @@ If your hosting panel provides PHP selector tools, make sure both these are set 
 - the command-line PHP version used by Composer and Artisan
 
 If the server only has PHP 8.1 available anywhere, this project will not install successfully until PHP 8.2+ is enabled.
+
+## Apache Production Setup Without `/public`
+
+If your hosting account points the domain at the project root instead of the `public` folder, the included root `.htaccess` file will keep the site working from the clean domain URL.
+
+If your host uses Nginx or does not support `.htaccess`, you will need an equivalent rewrite rule in the server config or you should point the web root directly at `public`.

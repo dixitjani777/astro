@@ -21,7 +21,7 @@ style= "height:' + (t + o) + 'px"
 			<div class="col-6 col-lg-3 p--15 d-flex d-block-xs text-center-xs">
 
 				<div class="pl--10 pr--20 fs--50 line-height-1 pt--6">
-					<img width="45" height="45" class="lazy" src="{{ asset('public/images/infobar/checked.png')}}" alt="...">
+					<img width="45" height="45" class="lazy" src="{{ asset('images/infobar/checked.png')}}" alt="...">
 				</div>
 
 				<div class="my-2">
@@ -41,7 +41,7 @@ style= "height:' + (t + o) + 'px"
 			<div class="col-6 col-lg-3 p--15 d-flex d-block-xs text-center-xs border-dashed border-dark bw--1 bt-0 br-0 bb-0 b-0-lg">
 
 				<div class="pl--10 pr--20 fs--50 line-height-1 pt--6">
-					<img width="45" height="45" class="lazy" src="{{ asset('public/images/infobar/checked.png')}}" alt="...">
+					<img width="45" height="45" class="lazy" src="{{ asset('images/infobar/checked.png')}}" alt="...">
 				</div>
 
 				<div class="my-2">
@@ -61,7 +61,7 @@ style= "height:' + (t + o) + 'px"
 			<div class="col-6 col-lg-3 p--15 d-flex d-block-xs text-center-xs border-dashed border-dark bw--1 bl-0 br-0 bb-0 b-0-lg">
 
 				<div class="pl--10 pr--20 fs--50 line-height-1 pt--6">
-					<img width="45" height="45" class="lazy" src="{{ asset('public/images/infobar/checked.png')}}" alt="...">
+					<img width="45" height="45" class="lazy" src="{{ asset('images/infobar/checked.png')}}" alt="...">
 				</div>
 
 				<div class="my-2">
@@ -84,7 +84,7 @@ style= "height:' + (t + o) + 'px"
 				<a href="#!" class="text-dark text-decoration-none d-flex d-block-xs text-center-xs">
 
 					<div class="pl--10 pr--20 fs--50 line-height-1 pt--6">
-						<img width="45" height="47" class="lazy" src="{{ asset('public/images/infobar/checked.png')}}" alt="...">
+						<img width="45" height="47" class="lazy" src="{{ asset('images/infobar/checked.png')}}" alt="...">
 					</div>
 
 					<div class="my-2">
@@ -119,19 +119,19 @@ address
 </p>
 </ul>
 
-<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('public/images/recent_work/nvs.jpg')">
+<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('{{ asset('images/recent_work/nvs.jpg') }}')">
 	<div class="badge badge-success badge-soft position-absolute top-0 end-2 m-1">Vastu Shanti</div>
 	<!-- required empty image / background used -->
 	<img class="w-100 py-5" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAKCAQAAADxnt1TAAAAEUlEQVR42mNkIBowjiodaKUACusAC4zze1kAAAAASUVORK5CYII=" alt="...">
 </div>
 
-<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('public/images/recent_work/sn.jpg')">
+<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('{{ asset('images/recent_work/sn.jpg') }}')">
 	<div class="badge badge-success badge-soft position-absolute top-0 end-2 m-1">Satyanarayan</div>
 	<!-- required empty image / background used -->
 	<img class="w-100 py-5" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAKCAQAAADxnt1TAAAAEUlEQVR42mNkIBowjiodaKUACusAC4zze1kAAAAASUVORK5CYII=" alt="...">
 </div>
 
-<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('public/images/recent_work/vs.jpg')">
+<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('{{ asset('images/recent_work/vs.jpg') }}')">
 	<div class="badge badge-success badge-soft position-absolute top-0 end-2 m-1">Navgraha Shanti</div>
 	<!-- required empty image / background used -->
 	<img class="w-100 py-5" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAKCAQAAADxnt1TAAAAEUlEQVR42mNkIBowjiodaKUACusAC4zze1kAAAAASUVORK5CYII=" alt="...">
@@ -193,25 +193,25 @@ address
 						-->
 						<div class="swiper-wrapper">
 
-							<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('public/images/recent_work/rd.jpg')">
+							<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('{{ asset('images/recent_work/rd.jpg') }}')">
 								<div class="badge badge-success badge-soft position-absolute top-0 end-2 m-1">Rudrabhishek</div>
 								<!-- required empty image / background used -->
 								<img class="w-100 py-5" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAKCAQAAADxnt1TAAAAEUlEQVR42mNkIBowjiodaKUACusAC4zze1kAAAAASUVORK5CYII=" alt="...">
 							</div>
 
-							<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('public/images/recent_work/nvs.jpg')">
+							<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('{{ asset('images/recent_work/nvs.jpg') }}')">
 								<div class="badge badge-success badge-soft position-absolute top-0 end-2 m-1">Vastu Shanti</div>
 								<!-- required empty image / background used -->
 								<img class="w-100 py-5" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAKCAQAAADxnt1TAAAAEUlEQVR42mNkIBowjiodaKUACusAC4zze1kAAAAASUVORK5CYII=" alt="...">
 							</div>
 
-							<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('public/images/recent_work/sn.jpg')">
+							<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('{{ asset('images/recent_work/sn.jpg') }}')">
 								<div class="badge badge-success badge-soft position-absolute top-0 end-2 m-1">Satyanarayan</div>
 								<!-- required empty image / background used -->
 								<img class="w-100 py-5" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAKCAQAAADxnt1TAAAAEUlEQVR42mNkIBowjiodaKUACusAC4zze1kAAAAASUVORK5CYII=" alt="...">
 							</div>
 
-							<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('public/images/recent_work/vs.jpg')">
+							<div class="swiper-slide overlay-dark overlay-opacity-3 bg-cover" style="background:url('{{ asset('images/recent_work/vs.jpg') }}')">
 								<div class="badge badge-success badge-soft position-absolute top-0 end-2 m-1">Navgraha Shanti</div>
 								<!-- required empty image / background used -->
 								<img class="w-100 py-5" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAKCAQAAADxnt1TAAAAEUlEQVR42mNkIBowjiodaKUACusAC4zze1kAAAAASUVORK5CYII=" alt="...">
@@ -264,7 +264,7 @@ address
 				<a href="niche.classifieds-item.html" class="d-block p-2 shadow-xs b-0 text-decoration-none shadow-md-hover transition-hover-top transition-all-ease-250">
 					
 					
-					<div class="text-center bg-light rounded h--200 bg-cover lazy" style="background-image:url('public/images/recent_work/rd.jpg')"></div>
+					<div class="text-center bg-light rounded h--200 bg-cover lazy" style="background-image:url('{{ asset('images/recent_work/rd.jpg') }}')"></div>
 
 					<div class="card-body">
 
@@ -281,7 +281,7 @@ address
 
 				
 					
-					<div class="text-center bg-light rounded h--200 bg-cover lazy" style="background-image:url('public/images/recent_work/vs.jpg')"></div>
+					<div class="text-center bg-light rounded h--200 bg-cover lazy" style="background-image:url('{{ asset('images/recent_work/vs.jpg') }}')"></div>
 
 					<div class="card-body">
 
@@ -302,7 +302,7 @@ address
 				<a href="niche.classifieds-item.html" class="d-block p-2 shadow-xs b-0 text-decoration-none shadow-md-hover transition-hover-top transition-all-ease-250">
 					
 					
-					<div class="text-center bg-light rounded h--200 bg-cover lazy" style="background-image:url('public/images/recent_work/sn.jpg')"></div>
+					<div class="text-center bg-light rounded h--200 bg-cover lazy" style="background-image:url('{{ asset('images/recent_work/sn.jpg') }}')"></div>
 
 					<div class="card-body">
 
@@ -323,7 +323,7 @@ address
 				<a href="niche.classifieds-item.html" class="d-block p-2 shadow-xs b-0 text-decoration-none shadow-md-hover transition-hover-top transition-all-ease-250">
 					
 					
-					<div class="text-center bg-light rounded h--200 bg-cover lazy" style="background-image:url('public/images/recent_work/nvs.jpg')"></div>
+					<div class="text-center bg-light rounded h--200 bg-cover lazy" style="background-image:url('{{ asset('images/recent_work/nvs.jpg') }}')"></div>
 
 					<div class="card-body">
 
@@ -368,7 +368,7 @@ address
 			<!-- <div class="p-3 rounded shadow-md shadow-3d-hover transition-hover-top transition-all-ease-250">
 
 				<a href="niche.realestate-item.html">
-					<figure class="text-center overflow-hidden rounded-top bg-cover lazy" data-background-image="{{ asset('public/images/services/question.jpg') }}">
+					<figure class="text-center overflow-hidden rounded-top bg-cover lazy" data-background-image="{{ asset('images/services/question.jpg') }}">
 						<img class="w-100" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiA5IiAvPg==" alt="..."> 
 					</figure>
 			
@@ -384,7 +384,7 @@ address
 			<div class="card b-0 shadow-md shadow-lg-hover transition-hover-top h-100">
 
 				<div class="clearfix position-relative">
-					<img class="img-fluid" src="{{ asset('public/images/services/question.jpg') }}" alt="ask a free query to astrologer">
+					<img class="img-fluid" src="{{ asset('images/services/question.jpg') }}" alt="ask a free query to astrologer">
 
 					<!-- bottom waves -->
 					<div class="h--1">
@@ -397,7 +397,7 @@ address
 
 					<!-- lines, looks like through a glass -->
 					<div class="absolute-full w-100">
-						<img class="img-fluid" width="2000" height="2000" src="{{ asset('public/images/other/shape-line-lense.svg') }}" alt="...">
+						<img class="img-fluid" width="2000" height="2000" src="{{ asset('images/other/shape-line-lense.svg') }}" alt="...">
 					</div>
 				
 				</div>
@@ -443,7 +443,7 @@ address
 			<div class="card b-0 shadow-md shadow-lg-hover transition-hover-top h-100">
 
 				<div class="clearfix position-relative">
-					<img class="img-fluid" src="{{ asset('public/images/services/kundli_places.jpg') }}" alt="horoscope report">
+					<img class="img-fluid" src="{{ asset('images/services/kundli_places.jpg') }}" alt="horoscope report">
 
 					<!-- bottom waves -->
 					<div class="h--1">
@@ -456,7 +456,7 @@ address
 
 					<!-- lines, looks like through a glass -->
 					<div class="absolute-full w-100">
-						<img class="img-fluid" width="2000" height="2000" src="{{ asset('public/images/other/shape-line-lense.svg') }}" alt="...">
+						<img class="img-fluid" width="2000" height="2000" src="{{ asset('images/other/shape-line-lense.svg') }}" alt="...">
 					</div>
 				
 				</div>
@@ -501,7 +501,7 @@ address
 			<div class="card b-0 shadow-md shadow-lg-hover transition-hover-top h-100">
 
 				<div class="clearfix position-relative">
-					<img class="img-fluid" src="{{ asset('public/images/services/online_communication.jpg') }}" alt="book astrologer">
+					<img class="img-fluid" src="{{ asset('images/services/online_communication.jpg') }}" alt="book astrologer">
 
 					<!-- bottom waves -->
 					<div class="h--1">
@@ -514,7 +514,7 @@ address
 
 					<!-- lines, looks like through a glass -->
 					<div class="absolute-full w-100">
-						<img class="img-fluid" width="2000" height="2000" src="{{ asset('public/images/other/shape-line-lense.svg') }}" alt="...">
+						<img class="img-fluid" width="2000" height="2000" src="{{ asset('images/other/shape-line-lense.svg') }}" alt="...">
 					</div>
 				
 				</div>
@@ -559,7 +559,7 @@ address
 			<div class="card b-0 shadow-md shadow-lg-hover transition-hover-top h-100">
 
 				<div class="clearfix position-relative">
-					<img class="img-fluid" src="{{ asset('public/images/services/match_making.jpg') }}" alt="match making">
+					<img class="img-fluid" src="{{ asset('images/services/match_making.jpg') }}" alt="match making">
 
 					<!-- bottom waves -->
 					<div class="h--1">
@@ -572,7 +572,7 @@ address
 
 					<!-- lines, looks like through a glass -->
 					<div class="absolute-full w-100">
-						<img class="img-fluid" width="2000" height="2000" src="{{ asset('public/images/other/shape-line-lense.svg') }}" alt="...">
+						<img class="img-fluid" width="2000" height="2000" src="{{ asset('images/other/shape-line-lense.svg') }}" alt="...">
 					</div>
 				
 				</div>
@@ -617,7 +617,7 @@ address
 			<div class="card b-0 shadow-md shadow-lg-hover transition-hover-top h-100">
 
 				<div class="clearfix position-relative">
-					<img class="img-fluid" src="{{ asset('public/images/services/gems.png') }}" alt="gemstones">
+					<img class="img-fluid" src="{{ asset('images/services/gems.png') }}" alt="gemstones">
 
 					<!-- bottom waves -->
 					<div class="h--1">
@@ -630,7 +630,7 @@ address
 
 					<!-- lines, looks like through a glass -->
 					<div class="absolute-full w-100">
-						<img class="img-fluid" width="2000" height="2000" src="{{ asset('public/images/other/shape-line-lense.svg') }}" alt="...">
+						<img class="img-fluid" width="2000" height="2000" src="{{ asset('images/other/shape-line-lense.svg') }}" alt="...">
 					</div>
 				
 				</div>
@@ -675,7 +675,7 @@ address
 			<div class="card b-0 shadow-md shadow-lg-hover transition-hover-top h-100">
 
 				<div class="clearfix position-relative">
-					<img class="img-fluid" src="{{ asset('public/images/services/pt2.jpg') }}" alt="book panditji">
+					<img class="img-fluid" src="{{ asset('images/services/pt2.jpg') }}" alt="book panditji">
 
 					<!-- bottom waves -->
 					<div class="h--1">
@@ -688,7 +688,7 @@ address
 
 					<!-- lines, looks like through a glass -->
 					<div class="absolute-full w-100">
-						<img class="img-fluid" width="2000" height="2000" src="{{ asset('public/images/other/shape-line-lense.svg') }}" alt="...">
+						<img class="img-fluid" width="2000" height="2000" src="{{ asset('images/other/shape-line-lense.svg') }}" alt="...">
 					</div>
 				
 				</div>
@@ -733,7 +733,7 @@ address
 			<div class="card b-0 shadow-md shadow-lg-hover transition-hover-top h-100">
 
 				<div class="clearfix position-relative">
-					<img class="img-fluid" src="{{ asset('public/images/services/vastu_shastra.jpg') }}" alt="vastu shastra">
+					<img class="img-fluid" src="{{ asset('images/services/vastu_shastra.jpg') }}" alt="vastu shastra">
 
 					<!-- bottom waves -->
 					<div class="h--1">
@@ -746,7 +746,7 @@ address
 
 					<!-- lines, looks like through a glass -->
 					<div class="absolute-full w-100">
-						<img class="img-fluid" width="2000" height="2000" src="{{ asset('public/images/other/shape-line-lense.svg') }}" alt="...">
+						<img class="img-fluid" width="2000" height="2000" src="{{ asset('images/other/shape-line-lense.svg') }}" alt="...">
 					</div>
 				
 				</div>
@@ -791,7 +791,7 @@ address
 			<div class="card b-0 shadow-md shadow-lg-hover transition-hover-top h-100">
 
 				<div class="clearfix position-relative">
-					<img class="img-fluid" src="{{ asset('public/images/services/vst.jpg') }}" alt="our puja">
+					<img class="img-fluid" src="{{ asset('images/services/vst.jpg') }}" alt="our puja">
 
 					<!-- bottom waves -->
 					<div class="h--1">
@@ -804,7 +804,7 @@ address
 
 					<!-- lines, looks like through a glass -->
 					<div class="absolute-full w-100">
-						<img class="img-fluid" width="2000" height="2000" src="{{ asset('public/images/other/shape-line-lense.svg') }}" alt="...">
+						<img class="img-fluid" width="2000" height="2000" src="{{ asset('images/other/shape-line-lense.svg') }}" alt="...">
 					</div>
 				
 				</div>
@@ -848,7 +848,7 @@ address
 			<div class="card b-0 shadow-md shadow-lg-hover transition-hover-top h-100">
 
 				<div class="clearfix position-relative">
-					<img class="img-fluid" src="{{ asset('public/images/services/team_activity.jpg') }}" alt="team activity">
+					<img class="img-fluid" src="{{ asset('images/services/team_activity.jpg') }}" alt="team activity">
 
 					<!-- bottom waves -->
 					<div class="h--1">
@@ -861,7 +861,7 @@ address
 
 					<!-- lines, looks like through a glass -->
 					<div class="absolute-full w-100">
-						<img class="img-fluid" width="2000" height="2000" src="{{ asset('public/images/other/shape-line-lense.svg') }}" alt="...">
+						<img class="img-fluid" width="2000" height="2000" src="{{ asset('images/other/shape-line-lense.svg') }}" alt="...">
 					</div>
 				
 				</div>
