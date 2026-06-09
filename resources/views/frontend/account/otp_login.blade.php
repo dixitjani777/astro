@@ -34,7 +34,7 @@
 						<div class="alert alert-danger py-2">Please fix the highlighted fields.</div>
 					@endif
 
-					<form method="post" action="{{ route('otp.send') }}" data-recaptcha-action="otp-send">
+					<form method="post" action="{{ route('otp.send') }}" data-recaptcha-action="otp_send">
 						@csrf
 						<div class="mb-3">
 							<label class="fs--16 text-muted">Email</label>
@@ -61,7 +61,7 @@
 
 					<hr>
 
-					<form method="post" action="{{ route('otp.verify') }}" data-recaptcha-action="otp-verify">
+					<form method="post" action="{{ route('otp.verify') }}" data-recaptcha-action="otp_verify">
 						@csrf
 						<div class="mb-3">
 							<label class="fs--16 text-muted">Email</label>

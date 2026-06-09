@@ -21,7 +21,7 @@
 	<div class="container">
 		<div class="row ">
 			<div class="col-12 col-sm-8 col-md-8 col-lg-6 offset-sm-2 offset-md-2 offset-lg-3">
-				<form method="post" action="{{ route('password.email') }}" data-recaptcha-action="password-reset-link">
+				<form method="post" action="{{ route('password.email') }}" data-recaptcha-action="password_reset_link">
 					@csrf
 
 					<div class="p-4 rounded shadow-xs">

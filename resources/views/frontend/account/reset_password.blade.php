@@ -17,7 +17,7 @@
 	<div class="container">
 		<div class="row ">
 			<div class="col-12 col-sm-8 col-md-8 col-lg-6 offset-sm-2 offset-md-2 offset-lg-3">
-				<form method="post" action="{{ route('password.update', $token) }}" data-recaptcha-action="password-reset-submit">
+				<form method="post" action="{{ route('password.update', $token) }}" data-recaptcha-action="password_reset_submit">
 					@csrf
 					<input type="hidden" name="token" value="{{ $token }}">
 

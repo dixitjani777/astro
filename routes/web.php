@@ -34,16 +34,16 @@ Route::post('/enquiries', [EnquiryController::class, 'store'])
 
 /* OTP auth */
 Route::get('/account/loginwithotp', [OtpAuthController::class, 'show'])->name('otp.show');
-Route::post('/otp/send', [OtpAuthController::class, 'send'])->middleware(['honeypot', 'recaptcha:otp-send', 'throttle:8,1'])->name('otp.send');
-Route::post('/otp/verify', [OtpAuthController::class, 'verify'])->middleware(['honeypot', 'recaptcha:otp-verify', 'throttle:12,1'])->name('otp.verify');
+Route::post('/otp/send', [OtpAuthController::class, 'send'])->middleware(['honeypot', 'recaptcha:otp_send', 'throttle:8,1'])->name('otp.send');
+Route::post('/otp/verify', [OtpAuthController::class, 'verify'])->middleware(['honeypot', 'recaptcha:otp_verify', 'throttle:12,1'])->name('otp.verify');
 Route::match(['get', 'post'], '/logout', [OtpAuthController::class, 'logout'])->name('logout');
 
 /* password auth (frontend) */
-Route::post('/account/login/password', [Account::class, 'loginWithPassword'])->middleware(['honeypot', 'recaptcha:account-login-password', 'throttle:10,1'])->name('account.login.password');
+Route::post('/account/login/password', [Account::class, 'loginWithPassword'])->middleware(['honeypot', 'recaptcha:account_login_password', 'throttle:10,1'])->name('account.login.password');
 
 /* admin auth */
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
-Route::post('/admin/login', [AdminAuthController::class, 'login'])->middleware(['honeypot', 'recaptcha:admin-login', 'throttle:10,1'])->name('admin.login.post');
+Route::post('/admin/login', [AdminAuthController::class, 'login'])->middleware(['honeypot', 'recaptcha:admin_login', 'throttle:10,1'])->name('admin.login.post');
 
 /* chatbot */
 Route::post('/chatbot/ai', [ChatbotController::class, 'ai'])->middleware(['throttle:30,1'])->name('chatbot.ai');
@@ -115,9 +115,9 @@ Route::get('/query',[Query::class,'index']);
 /* account */
 Route::get('/account',[Account::class,'index']);
 Route::get('/account/resetpassword',[Account::class,'forgotpassword']);
-Route::post('/account/resetpassword', [Account::class, 'sendPasswordResetLink'])->middleware(['honeypot', 'recaptcha:password-reset-link', 'throttle:10,1'])->name('password.email');
+Route::post('/account/resetpassword', [Account::class, 'sendPasswordResetLink'])->middleware(['honeypot', 'recaptcha:password_reset_link', 'throttle:10,1'])->name('password.email');
 Route::get('/account/resetpassword/{token}', [Account::class, 'showResetForm'])->name('password.reset');
-Route::post('/account/resetpassword/{token}', [Account::class, 'resetPassword'])->middleware(['honeypot', 'recaptcha:password-reset-submit', 'throttle:10,1'])->name('password.update');
+Route::post('/account/resetpassword/{token}', [Account::class, 'resetPassword'])->middleware(['honeypot', 'recaptcha:password_reset_submit', 'throttle:10,1'])->name('password.update');
 
 /* My account */
 Route::middleware('auth')->group(function () {
@@ -134,7 +134,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/myaccount/setting', [Account::class, 'updateSettings'])->name('myaccount.settings.update');
     Route::post('/myaccount/password', [Account::class, 'updatePassword'])->name('myaccount.password.update');
-    Route::post('/myaccount/password/otp/send', [Account::class, 'sendPasswordOtp'])->middleware(['honeypot', 'recaptcha:password-otp-send', 'throttle:6,1'])->name('myaccount.password.otp.send');
+    Route::post('/myaccount/password/otp/send', [Account::class, 'sendPasswordOtp'])->middleware(['honeypot', 'recaptcha:password_otp_send', 'throttle:6,1'])->name('myaccount.password.otp.send');
     Route::post('/myaccount/password/otp/verify', [Account::class, 'verifyPasswordOtp'])->name('myaccount.password.otp.verify');
 });
 

@@ -115,7 +115,7 @@
 
 						<div class="row">
 							<div class="col-lg-6 mb-4">
-								<form method="post" action="{{ route('myaccount.password.otp.send') }}" data-recaptcha-action="password-otp-send">
+								<form method="post" action="{{ route('myaccount.password.otp.send') }}" data-recaptcha-action="password_otp_send">
 									@csrf
 									<div class="mb-3">
 										<label class="form-label">Send OTP to Email</label>

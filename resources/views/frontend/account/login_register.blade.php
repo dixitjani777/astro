@@ -467,7 +467,7 @@
 				if (resendButton) resendButton.disabled = true;
 
 				var payloadData = new FormData(form);
-				payloadData.set('recaptcha_token', await recaptchaToken('otp-send'));
+				payloadData.set('recaptcha_token', await recaptchaToken('otp_send'));
 				var payload = await postJson(form.action, payloadData);
 				showMessage('success', payload.message || 'OTP sent successfully. Please check your inbox.');
 				showOtpStep();
@@ -500,7 +500,7 @@
 				var payload = await postJson(document.querySelector('#account-login-shell').getAttribute('data-verify-url'), {
 					email: document.getElementById('reg_email').value.trim(),
 					otp: otpInput.value.trim(),
-					recaptcha_token: await recaptchaToken('otp-verify'),
+					recaptcha_token: await recaptchaToken('otp_verify'),
 				});
 				showMessage('success', payload.message || 'Account created successfully.');
 				window.location.href = payload.redirect_url || document.querySelector('#account-login-shell').getAttribute('data-redirect-url');
@@ -731,7 +731,7 @@
 
 				var payload = await postJson(sendUrl, {
 					email: otpEmail.value.trim(),
-					recaptcha_token: await recaptchaToken('otp-send'),
+					recaptcha_token: await recaptchaToken('otp_send'),
 				});
 				showMessage('success', payload.message || 'OTP sent successfully.');
 				if (otpBlock) otpBlock.classList.remove('d-none');
@@ -774,7 +774,7 @@
 				var payload = await postJson(verifyUrl, {
 					email: otpEmail.value.trim(),
 					otp: otpCode.value.trim(),
-					recaptcha_token: await recaptchaToken('otp-verify'),
+					recaptcha_token: await recaptchaToken('otp_verify'),
 				});
 
 				showMessage('success', payload.message || 'Logged in successfully.');
