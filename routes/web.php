@@ -14,6 +14,7 @@ use App\Http\Controllers\Vastu;
 use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\OtpAuthController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\Admin\EmailTemplatesController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\EmailInboxController;
 
@@ -86,6 +87,8 @@ Route::middleware(['auth', 'admin', 'admin.log'])->prefix('admin')->name('admin.
 
     Route::middleware('perm:admin.settings')->resource('settings', \App\Http\Controllers\Admin\SettingsController::class)->except(['show']);
     Route::post('settings/bulk-delete', [\App\Http\Controllers\Admin\SettingsController::class, 'bulkDestroy'])->name('settings.bulk-delete')->middleware('perm:admin.settings');
+
+    Route::middleware('perm:admin.email_templates')->resource('email-templates', EmailTemplatesController::class)->only(['index', 'edit', 'update'])->parameters(['email-templates' => 'email_template']);
 
     Route::middleware('perm:admin.daily_horoscopes')->resource('daily-horoscopes', \App\Http\Controllers\Admin\DailyHoroscopesController::class)->only(['index', 'edit', 'update'])->parameters(['daily-horoscopes' => 'daily_horoscope']);
 

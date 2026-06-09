@@ -239,8 +239,17 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         if (array_key_exists('mail.encryption', $settings)) {
-            $enc = $settings['mail.encryption'];
-            config(['mail.mailers.smtp.scheme' => $enc ?: null]);
+            $enc = strtolower(trim((string) $settings['mail.encryption']));
+
+            // Symfony Mailer only accepts `smtp` or `smtps` as the scheme.
+            // The admin UI still lets us store `tls` / `ssl`, so normalize here.
+            $scheme = match ($enc) {
+                'ssl', 'smtps' => 'smtps',
+                'tls', 'smtp' => 'smtp',
+                default => null,
+            };
+
+            config(['mail.mailers.smtp.scheme' => $scheme]);
         }
 
         if (!empty($settings['mail.from_address'])) {

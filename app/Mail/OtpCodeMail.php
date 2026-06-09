@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Services\EmailTemplateService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -16,9 +17,19 @@ class OtpCodeMail extends Mailable
 
     public function build()
     {
+        $payload = app(EmailTemplateService::class)->compose(
+            'otp-code',
+            [
+                'code' => $this->code,
+                'expires_seconds' => 180,
+            ],
+            'Your OTP code',
+            '<p>Use the one-time password below to continue.</p><p style="font-size:32px; letter-spacing:6px; font-weight:bold; text-align:center; background:#fff7e6; padding:16px; border-radius:12px;">{{code}}</p><p>This code expires in {{expires_minutes}} minutes.</p>'
+        );
+
         return $this
-            ->subject('Your OTP code')
-            ->view('mail.auth.otp')
-            ->with(['code' => $this->code]);
+            ->subject($payload['subject'])
+            ->view('mail.render')
+            ->with($payload);
     }
 }

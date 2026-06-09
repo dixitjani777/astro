@@ -48,6 +48,7 @@
             border-radius: 999px;
         }
     </style>
+    @stack('styles')
 </head>
 <body>
     <div class="page">
@@ -222,6 +223,15 @@
                             </li>
                         @endif
 
+                        @if($me && $me->hasPermission('admin.email_templates'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.email-templates.index') }}">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-template"></i></span>
+                                    <span class="nav-link-title">Email Templates</span>
+                                </a>
+                            </li>
+                        @endif
+
                         @if($me && $me->hasPermission('admin.contact'))
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.contact-settings.edit') }}">
@@ -289,6 +299,7 @@
         </div>
     </div>
 
+    @stack('scripts')
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/js/tabler.min.js"></script>
     <script>
         (function () {

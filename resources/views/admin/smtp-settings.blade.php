@@ -50,12 +50,13 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label">Encryption</label>
+                        <label class="form-label">Encryption / Scheme</label>
+                        <div class="text-secondary small mb-1">Use TLS for port 587 or SSL for port 465.</div>
                         @php($enc = old('encryption', $settings['mail.encryption'] ?? 'tls'))
                         <select class="form-select" name="encryption">
-                            <option value="" @selected($enc==='')>none</option>
-                            <option value="tls" @selected($enc==='tls')>tls</option>
-                            <option value="ssl" @selected($enc==='ssl')>ssl</option>
+                            <option value="" @selected($enc==='')>None</option>
+                            <option value="tls" @selected($enc==='tls')>TLS (587)</option>
+                            <option value="ssl" @selected($enc==='ssl')>SSL (465)</option>
                         </select>
                     </div>
 
