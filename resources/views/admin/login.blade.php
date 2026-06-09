@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin Login - {{ config('app.name') }}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler.min.css">
+    <x-recaptcha-script />
 </head>
 <body class="border-top-wide border-primary d-flex flex-column">
     <div class="page page-center">
@@ -23,8 +24,11 @@
                         @if (session('status'))
                             <div class="alert alert-success py-2">{{ session('status') }}</div>
                         @endif
+                        @if ($errors->any())
+                            <div class="alert alert-danger py-2">{{ $errors->first() }}</div>
+                        @endif
 
-                        <form method="post" action="{{ route('admin.login.post') }}">
+                        <form method="post" action="{{ route('admin.login.post') }}" data-recaptcha-action="admin-login">
                             @csrf
                             <input type="hidden" name="hp_time" value="{{ time() }}">
                             <input type="text" name="website" value="" autocomplete="off" tabindex="-1" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;opacity:0">

@@ -31,6 +31,9 @@
 				@if(session('error'))
 					<div class="alert alert-danger mb-3">{{ session('error') }}</div>
 				@endif
+				@if($errors->any())
+					<div class="alert alert-danger mb-3">{{ $errors->first() }}</div>
+				@endif
 
 				<div class="portlet mb-4">
 					<div class="portlet-header border-bottom">
@@ -52,8 +55,8 @@
 							</div>
 
 							<div class="mb-3">
-								<label class="form-label">Mobile Number</label>
-								<input id="profile_mobile_input" type="tel" class="form-control @error('mobile') is-invalid @enderror" value="{{ old('mobile', $user->mobile) }}" placeholder="+91 9876543210">
+								<label class="form-label">WhatsApp / Mobile Number</label>
+								<input id="profile_mobile_input" name="mobile_raw" type="tel" class="form-control @error('mobile') is-invalid @enderror" value="{{ old('mobile_raw', $user->mobile) }}" placeholder="+91 9876543210">
 								<input id="profile_mobile" name="mobile" type="hidden" value="{{ old('mobile', $user->mobile) }}">
 								@error('mobile')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
 							</div>
@@ -112,7 +115,7 @@
 
 						<div class="row">
 							<div class="col-lg-6 mb-4">
-								<form method="post" action="{{ route('myaccount.password.otp.send') }}">
+								<form method="post" action="{{ route('myaccount.password.otp.send') }}" data-recaptcha-action="password-otp-send">
 									@csrf
 									<div class="mb-3">
 										<label class="form-label">Send OTP to Email</label>

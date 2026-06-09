@@ -27,6 +27,7 @@ class OtpAuthController extends Controller
             'email' => ['required', 'email', 'max:255'],
             'name' => ['nullable', 'string', 'max:150'],
             'mobile' => ['nullable', 'string', 'max:32', 'regex:/^\\+\\d{6,20}$/'],
+            'mobile_raw' => ['nullable', 'string', 'max:32'],
         ]);
 
         $email = strtolower($data['email']);
@@ -46,9 +47,11 @@ class OtpAuthController extends Controller
 
         Mail::to($email)->send(new OtpCodeMail($code));
 
+        $mobile = $this->normalizeMobile($data['mobile'] ?? $data['mobile_raw'] ?? null);
+
         $request->session()->put('otp_email', $email);
         $request->session()->put('otp_name', $data['name'] ?? null);
-        $request->session()->put('otp_mobile', $data['mobile'] ?? null);
+        $request->session()->put('otp_mobile', $mobile);
 
         $message = 'OTP sent to your email. Please check your inbox.';
 
@@ -130,5 +133,18 @@ class OtpAuthController extends Controller
     private function otpCacheKey(string $email): string
     {
         return 'otp:email:' . $email;
+    }
+
+    private function normalizeMobile(?string $mobile): ?string
+    {
+        $mobile = trim((string) $mobile);
+
+        if ($mobile === '') {
+            return null;
+        }
+
+        $mobile = preg_replace('/[^\d+]/', '', $mobile);
+
+        return $mobile !== '' ? $mobile : null;
     }
 }

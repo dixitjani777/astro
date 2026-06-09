@@ -22,7 +22,7 @@
     $metaPayload = is_array($meta) ? $meta : [];
 @endphp
 
-<form method="post" action="{{ route('enquiries.store') }}" {{ $attributes }}>
+<form method="post" action="{{ route('enquiries.store') }}" data-recaptcha-action="enquiry" {{ $attributes }}>
     @csrf
 
     <input type="hidden" name="source" value="{{ $source }}">
@@ -123,6 +123,13 @@
     @if($showSubmit)
         <button type="submit" class="{{ $submitClass }}">{{ $submitLabel }}</button>
     @endif
+
+    @error('recaptcha_token')
+        <div class="text-danger small mt-2">{{ $message }}</div>
+    @enderror
+    @error('form')
+        <div class="text-danger small mt-2">{{ $message }}</div>
+    @enderror
 
     {{ $afterSubmit ?? '' }}
 

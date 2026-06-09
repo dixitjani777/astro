@@ -28,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.log' => \App\Http\Middleware\AdminActivityLogger::class,
             'perm' => \App\Http\Middleware\EnsurePermission::class,
             'honeypot' => \App\Http\Middleware\HoneypotGuard::class,
+            'recaptcha' => \App\Http\Middleware\RecaptchaGuard::class,
         ]);
 
         Authenticate::redirectUsing(function (Request $request) {

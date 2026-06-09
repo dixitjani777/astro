@@ -130,12 +130,13 @@ class Account extends Controller
         $user = $request->user();
 
         $request->merge([
-            'mobile' => preg_replace('/[^\d+]/', '', (string) $request->input('mobile')),
+            'mobile' => $this->normalizeMobile($request->input('mobile') ?: $request->input('mobile_raw')),
         ]);
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:150'],
             'mobile' => ['nullable', 'string', 'max:32', 'regex:/^\+\d{6,20}$/'],
+            'mobile_raw' => ['nullable', 'string', 'max:32'],
             'dob' => ['nullable', 'date'],
             'location' => ['nullable', 'string', 'max:255'],
             'state' => ['nullable', 'string', 'max:120'],
@@ -250,6 +251,19 @@ class Account extends Controller
         return $status === Password::PASSWORD_RESET
             ? redirect('/account')->with('status', __($status))
             : back()->withErrors(['email' => __($status)]);
+    }
+
+    private function normalizeMobile(?string $mobile): ?string
+    {
+        $mobile = trim((string) $mobile);
+
+        if ($mobile === '') {
+            return null;
+        }
+
+        $mobile = preg_replace('/[^\d+]/', '', $mobile);
+
+        return $mobile !== '' ? $mobile : null;
     }
 
     private function renderEnquiryHistoryPage(string $title, string $subtitle, ?callable $scope = null)

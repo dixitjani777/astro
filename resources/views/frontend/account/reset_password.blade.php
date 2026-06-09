@@ -17,11 +17,15 @@
 	<div class="container">
 		<div class="row ">
 			<div class="col-12 col-sm-8 col-md-8 col-lg-6 offset-sm-2 offset-md-2 offset-lg-3">
-				<form method="post" action="{{ route('password.update', $token) }}">
+				<form method="post" action="{{ route('password.update', $token) }}" data-recaptcha-action="password-reset-submit">
 					@csrf
 					<input type="hidden" name="token" value="{{ $token }}">
 
 					<div class="p-4 rounded shadow-xs">
+						@if ($errors->any())
+							<div class="alert alert-danger">{{ $errors->first() }}</div>
+						@endif
+
 						<div class="mb-3">
 							<label class="fs--16 text-muted">Email</label>
 							<input name="email" type="email" class="form-control" value="{{ old('email', $email) }}" required>
@@ -55,4 +59,3 @@
 	</div>
 </section>
 @endsection
-

@@ -46,7 +46,7 @@
 							Login to your account
 						</b>
 
-						<form method="post" action="{{ route('account.login.password') }}" id="passwordLoginForm">
+						<form method="post" action="{{ route('account.login.password') }}" id="passwordLoginForm" data-recaptcha-action="account-login-password">
 							@csrf
 
 							<div class="mb-3">
@@ -204,8 +204,8 @@
 							</div>
 							
 							<div class="form-label-group mb-3">
-								<label for="reg_mobile_input" class="fs--16">Enter Mobile (with country code)</label>
-								<input required id="reg_mobile_input" type="tel" class="form-control" placeholder="+91 9876543210">
+								<label for="reg_mobile_input" class="fs--16">Enter WhatsApp / Mobile (with country code)</label>
+								<input required id="reg_mobile_input" name="mobile_raw" type="tel" class="form-control" placeholder="+91 9876543210">
 								<input id="reg_mobile" name="mobile" type="hidden" value="{{ old('mobile') }}">
 								@error('mobile')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
 								<span id="valid-msg-reg" class="hide fs--15 font-weight-normal">Valid</span>
@@ -283,6 +283,14 @@
 		function csrfToken() {
 			var el = document.querySelector('meta[name="csrf-token"]');
 			return el ? el.getAttribute('content') : '';
+		}
+
+		function recaptchaToken(action) {
+			if (window.appRecaptcha && typeof window.appRecaptcha.execute === 'function') {
+				return window.appRecaptcha.execute(action || 'submit');
+			}
+
+			return Promise.resolve('');
 		}
 
 		function showMessage(type, text) {
@@ -366,6 +374,8 @@
 		}
 
 		async function postJson(url, data) {
+			var payload = data instanceof FormData ? new URLSearchParams(data) : new URLSearchParams(data || {});
+
 			var response = await fetch(url, {
 				method: 'POST',
 				headers: {
@@ -374,7 +384,7 @@
 					'X-CSRF-TOKEN': csrfToken(),
 					'X-Requested-With': 'XMLHttpRequest',
 				},
-				body: new URLSearchParams(data).toString(),
+				body: payload.toString(),
 			});
 
 			var payload = {};
@@ -456,7 +466,9 @@
 				if (sendButton) sendButton.disabled = true;
 				if (resendButton) resendButton.disabled = true;
 
-				var payload = await postJson(form.action, new FormData(form));
+				var payloadData = new FormData(form);
+				payloadData.set('recaptcha_token', await recaptchaToken('otp-send'));
+				var payload = await postJson(form.action, payloadData);
 				showMessage('success', payload.message || 'OTP sent successfully. Please check your inbox.');
 				showOtpStep();
 				startTimer(parseInt(payload.expires_in || 180, 10));
@@ -488,6 +500,7 @@
 				var payload = await postJson(document.querySelector('#account-login-shell').getAttribute('data-verify-url'), {
 					email: document.getElementById('reg_email').value.trim(),
 					otp: otpInput.value.trim(),
+					recaptcha_token: await recaptchaToken('otp-verify'),
 				});
 				showMessage('success', payload.message || 'Account created successfully.');
 				window.location.href = payload.redirect_url || document.querySelector('#account-login-shell').getAttribute('data-redirect-url');
@@ -716,7 +729,10 @@
 				if (sendButton) sendButton.disabled = true;
 				if (resendButton) resendButton.disabled = true;
 
-				var payload = await postJson(sendUrl, { email: otpEmail.value.trim() });
+				var payload = await postJson(sendUrl, {
+					email: otpEmail.value.trim(),
+					recaptcha_token: await recaptchaToken('otp-send'),
+				});
 				showMessage('success', payload.message || 'OTP sent successfully.');
 				if (otpBlock) otpBlock.classList.remove('d-none');
 				if (otpActionRow) otpActionRow.classList.remove('d-none');
@@ -758,6 +774,7 @@
 				var payload = await postJson(verifyUrl, {
 					email: otpEmail.value.trim(),
 					otp: otpCode.value.trim(),
+					recaptcha_token: await recaptchaToken('otp-verify'),
 				});
 
 				showMessage('success', payload.message || 'Logged in successfully.');

@@ -30,8 +30,11 @@
 					@if (session('status'))
 						<div class="alert alert-success py-2">{{ session('status') }}</div>
 					@endif
+					@if ($errors->any())
+						<div class="alert alert-danger py-2">Please fix the highlighted fields.</div>
+					@endif
 
-					<form method="post" action="{{ route('otp.send') }}">
+					<form method="post" action="{{ route('otp.send') }}" data-recaptcha-action="otp-send">
 						@csrf
 						<div class="mb-3">
 							<label class="fs--16 text-muted">Email</label>
@@ -46,8 +49,8 @@
 						</div>
 
 						<div class="mb-3">
-							<label class="fs--16 text-muted">Mobile (optional)</label>
-							<input id="otp_mobile_input" type="tel" class="form-control" value="{{ old('mobile', session('otp_mobile')) }}" placeholder="+91 9876543210">
+							<label class="fs--16 text-muted">WhatsApp / Mobile (optional)</label>
+							<input id="otp_mobile_input" name="mobile_raw" type="tel" class="form-control" value="{{ old('mobile_raw', session('otp_mobile')) }}" placeholder="+91 9876543210">
 							<input id="otp_mobile" name="mobile" type="hidden" value="{{ old('mobile', session('otp_mobile')) }}">
 							@error('mobile')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
 							<small class="text-muted">Include country code. Max 1MB uploads apply to images only.</small>
@@ -58,7 +61,7 @@
 
 					<hr>
 
-					<form method="post" action="{{ route('otp.verify') }}">
+					<form method="post" action="{{ route('otp.verify') }}" data-recaptcha-action="otp-verify">
 						@csrf
 						<div class="mb-3">
 							<label class="fs--16 text-muted">Email</label>

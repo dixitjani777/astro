@@ -56,7 +56,8 @@
     <script src="{{asset('js/intlTelInput.js')}}"></script>
     <link rel="shortcut icon" href="{{asset('favicon.png')}}">
     <meta name="author" content="Astroduniya">
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+<x-recaptcha-script />
 
 </head><!--/head-->
 
