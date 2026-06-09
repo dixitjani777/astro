@@ -13,14 +13,14 @@ class RecaptchaService
         return filled(config('services.recaptcha.site_key')) && filled(config('services.recaptcha.secret_key'));
     }
 
-    public function verify(?string $token, string $action, ?string $ip = null): bool
+    public function verify(?string $token, string $action, ?string $ip = null): array
     {
         if (! $this->enabled()) {
-            return true;
+            return ['ok' => true, 'reason' => null, 'response' => null];
         }
 
         if (blank($token)) {
-            return false;
+            return ['ok' => false, 'reason' => 'Missing reCAPTCHA token.', 'response' => null];
         }
 
         try {
@@ -35,20 +35,43 @@ class RecaptchaService
                 ->json();
         } catch (RequestException|\Throwable $e) {
             report($e);
-            return false;
+            return ['ok' => false, 'reason' => 'Unable to contact reCAPTCHA verification service.', 'response' => null];
         }
 
         if (! is_array($response)) {
-            return false;
+            return ['ok' => false, 'reason' => 'Invalid response from reCAPTCHA verification service.', 'response' => null];
         }
 
         $expectedAction = trim($action);
         $actualAction = (string) ($response['action'] ?? '');
         $score = (float) ($response['score'] ?? 0);
         $threshold = (float) config('services.recaptcha.threshold', 0.5);
+        $errorCodes = (array) ($response['error-codes'] ?? []);
 
-        return ! empty($response['success'])
-            && ($actualAction === '' || $actualAction === $expectedAction)
-            && $score >= $threshold;
+        if (empty($response['success'])) {
+            $reason = ! empty($errorCodes)
+                ? 'reCAPTCHA rejected the token: ' . implode(', ', $errorCodes)
+                : 'reCAPTCHA rejected the token.';
+
+            return ['ok' => false, 'reason' => $reason, 'response' => $response];
+        }
+
+        if ($actualAction !== '' && $actualAction !== $expectedAction) {
+            return [
+                'ok' => false,
+                'reason' => "reCAPTCHA action mismatch. Expected {$expectedAction}, got {$actualAction}.",
+                'response' => $response,
+            ];
+        }
+
+        if ($score < $threshold) {
+            return [
+                'ok' => false,
+                'reason' => "reCAPTCHA score too low ({$score}).",
+                'response' => $response,
+            ];
+        }
+
+        return ['ok' => true, 'reason' => null, 'response' => $response];
     }
 }

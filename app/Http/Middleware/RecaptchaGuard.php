@@ -20,28 +20,30 @@ class RecaptchaGuard
         }
 
         $token = (string) $request->input('recaptcha_token', '');
+        $result = $this->recaptcha->verify($token, $action, $request->ip());
 
-        if (! $this->recaptcha->verify($token, $action, $request->ip())) {
-            return $this->reject($request);
+        if (! ($result['ok'] ?? false)) {
+            return $this->reject($request, (string) ($result['reason'] ?? 'Captcha verification failed. Please try again.'));
         }
 
         return $next($request);
     }
 
-    private function reject(Request $request): Response
+    private function reject(Request $request, string $detail): Response
     {
         $message = 'Captcha verification failed. Please try again.';
+        $fullMessage = trim($message . ($detail ? ' ' . $detail : ''));
 
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => false,
-                'message' => $message,
+                'message' => $fullMessage,
                 'errors' => [
-                    'recaptcha_token' => [$message],
+                    'recaptcha_token' => [$fullMessage],
                 ],
             ], 422);
         }
 
-        return back()->withErrors(['recaptcha_token' => $message])->withInput();
+        return back()->withErrors(['recaptcha_token' => $fullMessage])->withInput();
     }
 }
