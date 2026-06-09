@@ -49,10 +49,6 @@ class OtpAuthController extends Controller
         $request->session()->put('otp_name', $data['name'] ?? null);
         $request->session()->put('otp_mobile', $data['mobile'] ?? null);
 
-        if ($request->expectsJson()) {
-            return response()->json(['success' => true]);
-        }
-
         $message = 'OTP sent to your email. Please check your inbox.';
 
         if ($request->expectsJson()) {

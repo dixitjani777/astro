@@ -218,6 +218,23 @@
 							<p class="mb-3 text-muted fs--14">
 								Passwordless signup: we will email you an OTP.
 							</p>
+
+							<div id="createOtpBlock" class="mb-3 d-none">
+								<label for="create_account_otp" class="fs--16">Enter OTP</label>
+								<input id="create_account_otp" name="otp" type="text" inputmode="numeric" maxlength="6" class="form-control" placeholder="6-digit code" autocomplete="one-time-code">
+								@error('otp')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+							</div>
+
+							<div class="row d-none" id="createOtpActionRow">
+								<div class="col-12 col-sm-6 col-md-6 mb-2">
+									<button type="button" id="verifyCreateOtpButton" class="btn btn-warning btn-block">Verify &amp; Create Account</button>
+								</div>
+								<div class="col-12 col-sm-6 col-md-6 mb-2">
+									<button type="button" id="resendCreateOtpButton" class="btn btn-soft btn-link text-dark btn-block">Resend OTP</button>
+								</div>
+							</div>
+
+							<div id="createOtpCountdown" class="text-muted fs--13 mb-3 d-none"></div>
 							<p class="mb-3 fs--12 p-2"> 	
 								I consent that my data is being stored in 
 								line with the guidelines set out in  
@@ -225,7 +242,7 @@
 							</p>
 
 							<div>
-								<button type="submit" class="btn btn-warning btn-block">Continue with OTP</button>
+								<button type="button" id="sendCreateOtpButton" class="btn btn-warning btn-block">Continue with OTP</button>
 							</div>
                             
 
@@ -253,6 +270,133 @@
 		var mobileInput = document.getElementById('reg_mobile_input');
 		var mobileHidden = document.getElementById('reg_mobile');
 		var form = document.getElementById('create_account_form');
+		var otpBlock = document.getElementById('createOtpBlock');
+		var otpInput = document.getElementById('create_account_otp');
+		var otpActionRow = document.getElementById('createOtpActionRow');
+		var otpCountdown = document.getElementById('createOtpCountdown');
+		var sendButton = document.getElementById('sendCreateOtpButton');
+		var resendButton = document.getElementById('resendCreateOtpButton');
+		var verifyButton = document.getElementById('verifyCreateOtpButton');
+		var otpExpiresAt = 0;
+		var timerId = null;
+
+		function csrfToken() {
+			var el = document.querySelector('meta[name="csrf-token"]');
+			return el ? el.getAttribute('content') : '';
+		}
+
+		function showMessage(type, text) {
+			if (!form) return;
+			var existing = form.querySelector('[data-create-otp-message="1"]');
+			if (!existing) {
+				existing = document.createElement('div');
+				existing.setAttribute('data-create-otp-message', '1');
+				existing.className = 'alert py-2 d-none';
+				form.insertBefore(existing, form.querySelector('.p-4') || form.firstChild);
+			}
+			existing.className = 'alert py-2 alert-' + (type === 'success' ? 'success' : 'danger');
+			existing.textContent = text;
+			existing.classList.remove('d-none');
+		}
+
+		function clearMessage() {
+			if (!form) return;
+			var existing = form.querySelector('[data-create-otp-message="1"]');
+			if (existing) {
+				existing.textContent = '';
+				existing.classList.add('d-none');
+			}
+		}
+
+		function formatTime(totalSeconds) {
+			var minutes = Math.floor(totalSeconds / 60);
+			var seconds = totalSeconds % 60;
+			return String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+		}
+
+		function stopTimer(showResend) {
+			if (timerId) {
+				clearInterval(timerId);
+				timerId = null;
+			}
+			if (otpCountdown) {
+				otpCountdown.classList.toggle('d-none', !showResend);
+			}
+			if (sendButton) {
+				sendButton.classList.toggle('d-none', showResend);
+				sendButton.disabled = false;
+				sendButton.textContent = 'Continue with OTP';
+			}
+			if (resendButton) {
+				resendButton.classList.toggle('d-none', !showResend);
+				resendButton.disabled = false;
+			}
+			if (otpActionRow) {
+				otpActionRow.classList.remove('d-none');
+			}
+			otpExpiresAt = 0;
+		}
+
+		function tickTimer() {
+			var remaining = Math.max(0, Math.ceil((otpExpiresAt - Date.now()) / 1000));
+			if (remaining <= 0) {
+				stopTimer(true);
+				if (otpCountdown) otpCountdown.textContent = 'OTP expired. You can resend now.';
+				return;
+			}
+			if (otpCountdown) {
+				otpCountdown.textContent = 'OTP expires in ' + formatTime(remaining);
+				otpCountdown.classList.remove('d-none');
+			}
+			if (sendButton) {
+				sendButton.disabled = true;
+				sendButton.classList.remove('d-none');
+				sendButton.textContent = 'OTP Sent';
+			}
+			if (resendButton) {
+				resendButton.classList.add('d-none');
+			}
+		}
+
+		function startTimer(durationSeconds) {
+			otpExpiresAt = Date.now() + (durationSeconds * 1000);
+			if (timerId) clearInterval(timerId);
+			tickTimer();
+			timerId = setInterval(tickTimer, 1000);
+		}
+
+		async function postJson(url, data) {
+			var response = await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+					'X-CSRF-TOKEN': csrfToken(),
+					'X-Requested-With': 'XMLHttpRequest',
+				},
+				body: new URLSearchParams(data).toString(),
+			});
+
+			var payload = {};
+			try {
+				payload = await response.json();
+			} catch (e) {
+				payload = {};
+			}
+
+			if (!response.ok) {
+				var errorMessage = payload.message || 'Something went wrong.';
+				if (payload.errors) {
+					var firstKey = Object.keys(payload.errors)[0];
+					if (firstKey && payload.errors[firstKey] && payload.errors[firstKey][0]) {
+						errorMessage = payload.errors[firstKey][0];
+					}
+				}
+				throw new Error(errorMessage);
+			}
+
+			return payload;
+		}
 
 		function syncName() {
 			if (!nameHidden) return;
@@ -279,13 +423,95 @@
 		mobileInput && mobileInput.addEventListener('keyup', syncMobile);
 		mobileInput && mobileInput.addEventListener('change', syncMobile);
 
-		form && form.addEventListener('submit', function () {
+		form && form.addEventListener('submit', function (event) {
+			event.preventDefault();
 			syncName();
 			syncMobile();
+			sendCreateOtp();
 		});
 
 		syncName();
 		syncMobile();
+
+		function showOtpStep() {
+			if (otpBlock) otpBlock.classList.remove('d-none');
+			if (otpActionRow) otpActionRow.classList.remove('d-none');
+			if (otpInput) {
+				otpInput.value = '';
+				otpInput.focus();
+			}
+		}
+
+		async function sendCreateOtp() {
+			if (!form) return;
+			if (!mobileHidden || !mobileHidden.value.trim()) syncMobile();
+			if (!document.getElementById('reg_email').value.trim()) {
+				showMessage('error', 'Please enter your email address.');
+				return;
+			}
+
+			clearMessage();
+
+			try {
+				if (sendButton) sendButton.disabled = true;
+				if (resendButton) resendButton.disabled = true;
+
+				var payload = await postJson(form.action, new FormData(form));
+				showMessage('success', payload.message || 'OTP sent successfully. Please check your inbox.');
+				showOtpStep();
+				startTimer(parseInt(payload.expires_in || 180, 10));
+			} catch (error) {
+				showMessage('error', error.message || 'Unable to send OTP.');
+				if (timerId) {
+					clearInterval(timerId);
+					timerId = null;
+				}
+				if (sendButton) {
+					sendButton.disabled = false;
+					sendButton.classList.remove('d-none');
+					sendButton.textContent = 'Continue with OTP';
+				}
+				if (otpActionRow) otpActionRow.classList.add('d-none');
+			}
+		}
+
+		async function verifyCreateOtp() {
+			if (!otpInput || !otpInput.value.trim()) {
+				showMessage('error', 'Please enter the OTP.');
+				return;
+			}
+
+			clearMessage();
+
+			try {
+				if (verifyButton) verifyButton.disabled = true;
+				var payload = await postJson(document.querySelector('#account-login-shell').getAttribute('data-verify-url'), {
+					email: document.getElementById('reg_email').value.trim(),
+					otp: otpInput.value.trim(),
+				});
+				showMessage('success', payload.message || 'Account created successfully.');
+				window.location.href = payload.redirect_url || document.querySelector('#account-login-shell').getAttribute('data-redirect-url');
+			} catch (error) {
+				showMessage('error', error.message || 'OTP verification failed.');
+			} finally {
+				if (verifyButton) verifyButton.disabled = false;
+			}
+		}
+
+		if (sendButton) sendButton.addEventListener('click', function (e) {
+			e.preventDefault();
+			syncName();
+			syncMobile();
+			sendCreateOtp();
+		});
+		if (resendButton) resendButton.addEventListener('click', function (e) {
+			e.preventDefault();
+			sendCreateOtp();
+		});
+		if (verifyButton) verifyButton.addEventListener('click', function (e) {
+			e.preventDefault();
+			verifyCreateOtp();
+		});
 	})();
 </script>
 
