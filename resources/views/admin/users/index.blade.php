@@ -72,6 +72,7 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Mobile</th>
                         <th>Role</th>
                         <th>Created</th>
                         <th class="w-1"></th>
@@ -86,6 +87,7 @@
                             <td>{{ $user->id }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
+                            <td>{{ $user->mobile ?: '-' }}</td>
                             <td><span class="badge bg-blue-lt">{{ $user->role }}</span></td>
                             <td class="text-secondary">{{ $user->created_at }}</td>
                             <td>

@@ -30,6 +30,10 @@
                         <input class="form-control" type="email" name="email" value="{{ old('email', $user->email) }}" required>
                     </div>
                     <div class="col-md-6">
+                        <label class="form-label">Mobile / WhatsApp</label>
+                        <input class="form-control" type="text" name="mobile" value="{{ old('mobile', $user->mobile) }}" placeholder="+91 9876543210">
+                    </div>
+                    <div class="col-md-6">
                         <label class="form-label">Role</label>
                         <select class="form-select" name="role" required>
                             @php($roleValue = old('role', $user->role ?: 'user'))

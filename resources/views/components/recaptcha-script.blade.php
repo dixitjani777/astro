@@ -59,9 +59,17 @@
 			fillForm: function (form, action) {
 				return execute(action).then(function (token) {
 					ensureHiddenToken(form).value = token;
-					return token;
-				});
-			},
+				return token;
+			});
+		},
+	};
+
+		window.recaptchaToken = function (action) {
+			if (window.appRecaptcha && typeof window.appRecaptcha.execute === 'function') {
+				return window.appRecaptcha.execute(action || 'submit');
+			}
+
+			return Promise.resolve('');
 		};
 
 		document.addEventListener('DOMContentLoaded', function () {

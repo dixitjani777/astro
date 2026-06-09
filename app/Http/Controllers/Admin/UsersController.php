@@ -44,10 +44,10 @@ class UsersController extends Controller
             return response()->streamDownload(function () use ($query) {
                 $out = fopen('php://output', 'w');
                 fwrite($out, "\xEF\xBB\xBF");
-                fputcsv($out, ['ID', 'Name', 'Email', 'Role', 'Created At']);
+                fputcsv($out, ['ID', 'Name', 'Email', 'Mobile', 'Role', 'Created At']);
                 $query->chunk(500, function ($rows) use ($out) {
                     foreach ($rows as $u) {
-                        fputcsv($out, [$u->id, $u->name, $u->email, $u->role, optional($u->created_at)->toDateTimeString()]);
+                        fputcsv($out, [$u->id, $u->name, $u->email, $u->mobile, $u->role, optional($u->created_at)->toDateTimeString()]);
                     }
                 });
                 fclose($out);
@@ -73,6 +73,7 @@ class UsersController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'mobile' => ['nullable', 'string', 'max:32'],
             'password' => ['required', 'string', 'min:6', 'max:255'],
             'role' => ['required', 'string', 'max:50'],
         ]);
@@ -80,6 +81,7 @@ class UsersController extends Controller
         User::create([
             'name' => $data['name'],
             'email' => strtolower($data['email']),
+            'mobile' => $this->normalizeMobile($data['mobile'] ?? null),
             'password' => Hash::make($data['password']),
             'role' => $data['role'],
         ]);
@@ -100,12 +102,14 @@ class UsersController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'mobile' => ['nullable', 'string', 'max:32'],
             'password' => ['nullable', 'string', 'min:6', 'max:255'],
             'role' => ['required', 'string', 'max:50'],
         ]);
 
         $user->name = $data['name'];
         $user->email = strtolower($data['email']);
+        $user->mobile = $this->normalizeMobile($data['mobile'] ?? null);
         $user->role = $data['role'];
         if (!empty($data['password'])) {
             $user->password = Hash::make($data['password']);
@@ -147,5 +151,18 @@ class UsersController extends Controller
         }
 
         return redirect()->route('admin.users.index')->with('status', $msg);
+    }
+
+    private function normalizeMobile(?string $mobile): ?string
+    {
+        $mobile = trim((string) $mobile);
+
+        if ($mobile === '') {
+            return null;
+        }
+
+        $mobile = preg_replace('/[^\d+]/', '', $mobile);
+
+        return $mobile !== '' ? $mobile : null;
     }
 }
