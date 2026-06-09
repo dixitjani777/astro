@@ -67,15 +67,6 @@
                             </li>
                         @endif
 
-                        @if($me && $me->hasPermission('admin.inbox'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.inbox.index') }}">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-mailbox"></i></span>
-                                    <span class="nav-link-title">Email Inbox</span>
-                                </a>
-                            </li>
-                        @endif
-
                         @if($me && $me->hasPermission('admin.pages'))
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.pages.index') }}">
