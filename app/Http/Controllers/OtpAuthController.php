@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\OtpCodeMail;
+use App\Mail\RegistrationCompletedMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -86,6 +87,7 @@ class OtpAuthController extends Controller
             ['email' => $email],
             ['name' => $name, 'mobile' => $mobile, 'password' => Hash::make(Str::random(32))]
         );
+        $wasRecentlyCreated = $user->wasRecentlyCreated;
 
         if ($mobile && ! $user->mobile) {
             $user->forceFill(['mobile' => $mobile])->save();
@@ -96,6 +98,14 @@ class OtpAuthController extends Controller
         }
 
         Auth::login($user, true);
+
+        if ($wasRecentlyCreated) {
+            try {
+                Mail::to($user->email)->send(new RegistrationCompletedMail($user));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
 
         if ($request->expectsJson()) {
             return response()->json([

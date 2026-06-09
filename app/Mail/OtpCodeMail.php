@@ -22,4 +22,3 @@ class OtpCodeMail extends Mailable
             ->with(['code' => $this->code]);
     }
 }
-

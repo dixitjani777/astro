@@ -148,7 +148,7 @@
 							Aries
 						</h5>
 						<p class="card-text cus_mar styleColor">
-							<b>Mar 21 to Apr 20</b>
+							<b>21 Mar to 20 Apr</b>
 						</p><br>
 						<p class="card-text">
 							Energetic, Honest<br>Moody, Aggressive
@@ -168,7 +168,7 @@
 							Taurus
 						</h5>
 						<p class="card-text cus_mar styleColor">
-							<b>Apr 21 to May 21</b>
+							<b>21 Apr to 21 May</b>
 						</p><br>
 						<p class="card-text">
 							Trusty, Stable<br>Stubborn, Selfish
@@ -188,7 +188,7 @@
 							Gemini
 						</h5>
 						<p class="card-text cus_mar styleColor">
-							<b>May 22 to Jun 21</b>
+							<b>22 May to 21 Jun</b>
 						</p><br>
 						<p class="card-text">
 							Gentle, Flexible<br>Nervous, Unstable
@@ -208,7 +208,7 @@
 							Cancer
 						</h5>
 						<p class="card-text cus_mar styleColor">
-							<b>Jun 22 to Jul 22</b>
+							<b>22 Jun to 22 Jul</b>
 						</p><br>
 						<p class="card-text">
 							Loyal, Emotional<br>Moody, Insecure
@@ -228,7 +228,7 @@
 							Leo
 						</h5>
 						<p class="card-text cus_mar styleColor">
-							<b>Jul 23 to Aug 22</b>
+							<b>23 Jul to 22 Aug</b>
 						</p><br>
 						<p class="card-text">
 							Comic, Creative<br>Arrogant, Lazy
@@ -248,7 +248,7 @@
 							Virgo
 						</h5>
 						<p class="card-text cus_mar styleColor">
-							<b>Aug 23 to Sep 23</b>
+							<b>23 Aug to 23 Sep</b>
 						</p><br>
 						<p class="card-text">
 							Kind, Dedicated<br>Shyness, Worry
@@ -268,7 +268,7 @@
 							Libra
 						</h5>
 						<p class="card-text cus_mar styleColor">
-							<b>Sep 24 to Oct 23</b>
+							<b>24 Sep to 23 Oct</b>
 						</p><br>
 						<p class="card-text">
 							Social, Diplomatic<br>Unsure, Self-pity
@@ -288,7 +288,7 @@
 							Scorpio
 						</h5>
 						<p class="card-text cus_mar styleColor">
-							<b>Oct 24 to Nov 22</b>
+							<b>24 Oct to 22 Nov</b>
 						</p><br>
 						<p class="card-text">
 							Brave, Passionate<br>Jealous, Violent
@@ -308,7 +308,7 @@
 							Sagittarius
 						</h5>
 						<p class="card-text cus_mar styleColor">
-							<b>Nov 23 to Dec 21</b>
+							<b>23 Nov to 21 Dec</b>
 						</p><br>
 						<p class="card-text">
 							Helpful, Romantic<br>Impatient, Aloof
@@ -328,7 +328,7 @@
 							Capricorn
 						</h5>
 						<p class="card-text cus_mar styleColor">
-							<b>Dec 22 to Jan 20</b>
+							<b>22 Dec to 20 Jan</b>
 						</p><br>
 						<p class="card-text">
 							Sincere, Liable<br>Unkind, Rude
@@ -348,7 +348,7 @@
 							Aquarius
 						</h5>
 						<p class="card-text cus_mar styleColor">
-							<b>Jan 21 to Feb 19</b>
+							<b>21 Jan to 19 Feb</b>
 						</p><br>
 						<p class="card-text">
 							Modern, Original<br>Aloof, Irritable
@@ -368,7 +368,7 @@
 							Pisces
 						</h5>
 						<p class="card-text cus_mar styleColor">
-							<b>Feb 20 to Mar 20</b>
+							<b>20 Feb to 20 Mar</b>
 						</p><br>
 						<p class="card-text">
 							Kindhearted, Wise<br>Fearful, Sad

@@ -63,6 +63,7 @@ class DatabaseSeeder extends Seeder
         $this->call(HomeSlidersSeeder::class);
         $this->call(HoroscopeCmsSeeder::class);
         $this->call(HoroscopePeriodSignsSeeder::class);
+        $this->call(EmailTemplatesSeeder::class);
 
         $general = BlogCategory::updateOrCreate(['slug' => 'general'], ['name' => 'General', 'description' => 'General posts']);
         BlogPost::updateOrCreate(

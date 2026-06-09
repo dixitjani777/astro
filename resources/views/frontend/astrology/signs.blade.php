@@ -38,7 +38,7 @@
 										Aries
 									</h5>
 									<p class="card-text cus_mar font-weight-normal">
-										<span>Mar 21 to Apr 20</span>
+										<span>21 Mar to 20 Apr</span>
 									</p>
 									</a>
 								</div>
@@ -56,7 +56,7 @@
 										Taurus
 									</h5>
 									<p class="card-text cus_mar font-weight-normal">
-										<span>Apr 21 to May 21</span>
+										<span>21 Apr to 21 May</span>
 									</p>
 									</a>
 								</div>
@@ -74,7 +74,7 @@
 										Gemini
 									</h5>
 									<p class="card-text cus_mar font-weight-normal">
-										<span>May 22 to Jun 21</span>
+										<span>22 May to 21 Jun</span>
 									</p>
 									</a>
 								</div>
@@ -92,7 +92,7 @@
 										Cancer
 									</h5>
 									<p class="card-text cus_mar font-weight-normal">
-										<span>Jun 22 to Jul 22</span>
+										<span>22 Jun to 22 Jul</span>
 									</p>
 									</a>
 								</div>
@@ -114,7 +114,7 @@
 										Leo
 									</h5>
 									<p class="card-text cus_mar font-weight-normal">
-										<span>Jul 23 to Aug 22</span>
+										<span>23 Jul to 22 Aug</span>
 									</p>
 									</a>
 								</div>
@@ -132,7 +132,7 @@
 										Virgo
 									</h5>
 									<p class="card-text cus_mar font-weight-normal">
-										<span>Aug 23 to Sep 23</span>
+										<span>23 Aug to 23 Sep</span>
 									</p>
 									</a>
 								</div>
@@ -150,7 +150,7 @@
 										Libra
 									</h5>
 									<p class="card-text cus_mar font-weight-normal">
-										<span>Sep 24 to Oct 23</span>
+										<span>24 Sep to 23 Oct</span>
 									</p>
 									</a>
 								</div>
@@ -168,7 +168,7 @@
 										Scorpio
 									</h5>
 									<p class="card-text cus_mar font-weight-normal">
-										<span>Oct 24 to Nov 22</span>
+										<span>24 Oct to 22 Nov</span>
 									</p>
 									</a>
 								</div>
@@ -190,7 +190,7 @@
 										Sagittarius
 									</h5>
 									<p class="card-text cus_mar font-weight-normal">
-										<span>Nov 23 to Dec 21</span>
+										<span>23 Nov to 21 Dec</span>
 									</p>
 									</a>
 								</div>
@@ -208,7 +208,7 @@
 										Capricorn
 									</h5>
 									<p class="card-text cus_mar font-weight-normal">
-										<span>Dec 22 to Jan 20</span>
+										<span>22 Dec to 20 Jan</span>
 									</p>
 									</a>
 								</div>
@@ -226,7 +226,7 @@
 										Aquarius
 									</h5>
 									<p class="card-text cus_mar font-weight-normal">
-										<span>Jan 21 to Feb 19</span>
+										<span>21 Jan to 19 Feb</span>
 									</p>
 									</a>
 								</div>
@@ -244,7 +244,7 @@
 										Pisces
 									</h5>
 									<p class="card-text cus_mar font-weight-normal">
-										<span>Feb 20 to Mar 20</span>
+										<span>20 Feb to 20 Mar</span>
 									</p>
 									</a>
 								</div>

@@ -27,6 +27,26 @@
             letter-spacing: .2px;
             white-space: nowrap;
         }
+        .form-label {
+            color: #1f2937;
+            font-weight: 600;
+            font-size: 0.92rem;
+            margin-bottom: 0.45rem;
+        }
+        .form-hint,
+        .text-secondary {
+            color: #64748b !important;
+        }
+        .badge {
+            font-weight: 600;
+            letter-spacing: .01em;
+        }
+        .badge-status {
+            min-width: 92px;
+            text-align: center;
+            padding: .55rem .8rem;
+            border-radius: 999px;
+        }
     </style>
 </head>
 <body>

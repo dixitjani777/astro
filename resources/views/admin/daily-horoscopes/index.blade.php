@@ -7,7 +7,7 @@
         <div class="row align-items-center">
             <div class="col">
                 <h2 class="page-title">Daily Horoscope Entries</h2>
-                <div class="text-secondary">Edit the main “today” text shown on `/horoscope/daily/{sign}`.</div>
+                <div class="text-secondary">Edit the main "today" text shown on `/horoscope/daily/{sign}`.</div>
             </div>
         </div>
     </div>
@@ -57,9 +57,9 @@
                             <td class="text-secondary">{{ $e->source ?? '-' }}</td>
                             <td>
                                 @if($e->admin_description)
-                                    <span class="badge bg-green">Yes</span>
+                                    <span class="badge badge-status bg-success-subtle text-success-emphasis border border-success-subtle">Active</span>
                                 @else
-                                    <span class="badge bg-secondary">No</span>
+                                    <span class="badge badge-status bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">None</span>
                                 @endif
                             </td>
                             <td>

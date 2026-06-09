@@ -242,7 +242,7 @@
 							</p>
 
 							<div>
-								<button type="button" id="sendCreateOtpButton" class="btn btn-warning btn-block">Continue with OTP</button>
+								<button type="submit" id="sendCreateOtpButton" class="btn btn-warning btn-block">Continue with OTP</button>
 							</div>
                             
 

@@ -7,7 +7,7 @@
         <div class="row align-items-center">
             <div class="col">
                 <h2 class="page-title">Edit Daily Horoscope</h2>
-                <div class="text-secondary">{{ ucfirst($entry->sign) }} — {{ $entry->for_date?->format('Y-m-d') }}</div>
+                <div class="text-secondary">{{ ucfirst($entry->sign) }} - {{ $entry->for_date?->format('Y-m-d') }}</div>
             </div>
             <div class="col-auto ms-auto d-print-none">
                 <a href="{{ route('admin.daily-horoscopes.index', ['date' => $entry->for_date?->toDateString(), 'sign' => $entry->sign]) }}" class="btn btn-outline-secondary">Back</a>
