@@ -16,7 +16,7 @@
 							{{ $e->subject ?: 'Enquiry #' . $e->id }}
 						</span>
 						<div class="fs--13 d-block d-xl-none">
-							<span class="d-block text-muted">{{ optional($e->created_at)->format('M d, Y H:i') }}</span>
+							<span class="d-block text-muted">{{ optional($e->created_at)->format('M d, Y h:i A') }}</span>
 							<span class="d-block font-weight-medium">{{ $e->context ?: ($e->source ?: '-') }}</span>
 						</div>
 						@if($e->message)
@@ -26,7 +26,7 @@
 						@endif
 					</td>
 					<td class="hidden-lg-down">{{ $e->context ?: ($e->source ?: '-') }}</td>
-					<td class="hidden-lg-down">{{ optional($e->created_at)->format('M d, Y H:i') }}</td>
+					<td class="hidden-lg-down">{{ optional($e->created_at)->format('M d, Y h:i A') }}</td>
 					<td class="hidden-lg-down">Received</td>
 				</tr>
 			@empty
@@ -41,4 +41,3 @@
 <div class="d-flex justify-content-end">
 	{{ $enquiries->links() }}
 </div>
-

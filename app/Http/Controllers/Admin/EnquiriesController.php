@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\EnquiryReplyMail;
 use App\Models\Enquiry;
 use App\Models\EnquiryReply;
+use App\Services\WhatsAppService;
 use App\Support\IpGeolocation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class EnquiriesController extends Controller
 {
@@ -149,6 +152,22 @@ class EnquiriesController extends Controller
         }
 
         $reply->save();
+
+        $enquiry->loadMissing('user');
+
+        if ($recipientEmail = ($enquiry->email ?: $enquiry->user?->email)) {
+            try {
+                Mail::to($recipientEmail)->send(new EnquiryReplyMail($enquiry, $reply));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
+
+        try {
+            app(WhatsAppService::class)->sendEnquiryReply($enquiry, $reply);
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return redirect()->route('admin.enquiries.show', $enquiry)->with('status', 'Reply sent.');
     }

@@ -60,6 +60,12 @@ class EmailTemplatesSeeder extends Seeder
                 'subject' => 'Welcome to AstroDuniya',
                 'body_html' => '<p>Your account has been created successfully.</p><p><strong>Name:</strong> {{name}}</p><p><strong>Email:</strong> {{email}}</p><p><strong>Mobile:</strong> {{mobile}}</p><p><a href="{{login_url}}">Log in to your account</a></p>',
             ],
+            [
+                'name' => 'Enquiry Reply',
+                'slug' => 'enquiry-reply',
+                'subject' => 'We replied to your enquiry',
+                'body_html' => '<p>Hello {{name}},</p><p>We have replied to your enquiry.</p><p><strong>Subject:</strong> {{subject}}</p><p>{{reply_body}}</p><p><a href="{{login_url}}">View your account</a></p>',
+            ],
         ];
 
         foreach ($templates as $template) {

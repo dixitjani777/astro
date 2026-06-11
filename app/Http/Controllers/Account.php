@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Schema;
 
 class Account extends Controller
 {
-    public function index(){
+	public function index(){
         if (auth()->check()) {
             if (auth()->user()?->isAdmin()) {
                 return redirect()->route('admin.dashboard');
@@ -23,7 +23,7 @@ class Account extends Controller
         }
 
     	return view('frontend/account/login_register', [
-            'loginMode' => request('mode') === 'otp' ? 'otp' : 'password',
+            'loginMode' => request('mode') === 'password' ? 'password' : 'otp',
         ]);
 	}
 

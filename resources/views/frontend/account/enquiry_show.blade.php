@@ -36,7 +36,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="p-3 bg-light rounded">
                                     <div class="text-muted fs--13">Submission Date</div>
-                                    <div class="font-weight-medium">{{ optional($enquiry->created_at)->format('M d, Y H:i') }}</div>
+                                    <div class="font-weight-medium">{{ optional($enquiry->created_at)->format('M d, Y h:i A') }}</div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
@@ -65,7 +65,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="p-3 bg-light rounded">
                                     <div class="text-muted fs--13">Last Updated</div>
-                                    <div class="font-weight-medium">{{ optional($enquiry->last_updated_at)->format('M d, Y H:i') ?: '-' }}</div>
+                                    <div class="font-weight-medium">{{ optional($enquiry->last_updated_at)->format('M d, Y h:i A') ?: '-' }}</div>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                                             <span class="text-muted">({{ $r->senderUser->email }})</span>
                                         @endif
                                     </div>
-                                    <div class="text-muted fs--13">{{ optional($r->created_at)->format('M d, Y H:i') }}</div>
+                                    <div class="text-muted fs--13">{{ optional($r->created_at)->format('M d, Y h:i A') }}</div>
                                 </div>
                                 @if($r->body)
                                     <div class="mt-2">{!! nl2br(e($r->body)) !!}</div>
@@ -118,9 +118,14 @@
                                 @if($r->attachment_path)
                                     <div class="mt-2">
                                         <span class="text-muted">Attachment:</span>
-                                        <a href="{{ \Illuminate\Support\Facades\Storage::disk($r->attachment_disk ?: 'public')->url($r->attachment_path) }}" target="_blank" rel="noopener noreferrer">
+                                        <a href="{{ $r->attachment_url }}" target="_blank" rel="noopener noreferrer">
                                             {{ $r->attachment_original_name ?: 'Download' }}
                                         </a>
+                                        @if($r->attachment_is_image && $r->attachment_url)
+                                            <div class="mt-2">
+                                                <img src="{{ $r->attachment_url }}" alt="Attachment preview" class="img-fluid rounded border" style="max-width: 320px;">
+                                            </div>
+                                        @endif
                                     </div>
                                 @endif
                             </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\OtpCodeMail;
 use App\Mail\RegistrationCompletedMail;
 use App\Models\User;
+use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -23,19 +24,36 @@ class OtpAuthController extends Controller
 
     public function send(Request $request)
     {
-        $data = $request->validate([
+        $purpose = strtolower((string) $request->input('purpose', 'login'));
+        $purpose = in_array($purpose, ['login', 'register'], true) ? $purpose : 'login';
+
+        $rules = [
             'email' => ['required', 'email', 'max:255'],
-            'name' => ['nullable', 'string', 'max:150'],
-            'mobile' => ['nullable', 'string', 'max:32', 'regex:/^\\+\\d{6,20}$/'],
-            'mobile_raw' => ['nullable', 'string', 'max:32'],
-        ]);
+            'purpose' => ['nullable', 'string', 'in:login,register'],
+        ];
+
+        if ($purpose === 'register') {
+            $rules['name'] = ['required', 'string', 'max:150'];
+            $rules['mobile'] = ['required', 'string', 'max:32', 'regex:/^\\+\\d{6,20}$/'];
+            $rules['mobile_raw'] = ['nullable', 'string', 'max:32'];
+            $rules['password'] = ['required', 'string', 'min:8', 'confirmed'];
+        }
+
+        $data = $request->validate($rules);
 
         $email = strtolower($data['email']);
-
-        // Admin users must use /admin/login (do not allow frontend OTP login).
         $existing = User::query()->where('email', $email)->first();
+
+        if ($purpose === 'login' && !$existing) {
+            return back()->withErrors(['email' => 'No account found with this email. Please register first.'])->withInput();
+        }
+
         if ($existing && $existing->isAdmin()) {
             return back()->withErrors(['email' => 'Admin accounts must log in from the Admin panel.'])->withInput();
+        }
+
+        if ($purpose === 'register' && $existing) {
+            return back()->withErrors(['email' => 'An account already exists with this email. Please log in instead.'])->withInput();
         }
 
         $code = (string) random_int(100000, 999999);
@@ -47,13 +65,24 @@ class OtpAuthController extends Controller
 
         Mail::to($email)->send(new OtpCodeMail($code));
 
-        $mobile = $this->normalizeMobile($data['mobile'] ?? $data['mobile_raw'] ?? null);
+        $mobile = $this->normalizeMobile($data['mobile'] ?? $data['mobile_raw'] ?? null) ?: $existing?->mobile;
+        if ($mobile) {
+            app(WhatsAppService::class)->sendOtp($mobile, $code, [
+                'purpose' => $purpose,
+                'name' => $purpose === 'register' ? ($data['name'] ?? '') : ($existing?->name ?? ''),
+                'email' => $email,
+            ]);
+        }
 
         $request->session()->put('otp_email', $email);
-        $request->session()->put('otp_name', $data['name'] ?? null);
+        $request->session()->put('otp_purpose', $purpose);
+        $request->session()->put('otp_name', $purpose === 'register' ? ($data['name'] ?? null) : ($existing?->name ?? null));
         $request->session()->put('otp_mobile', $mobile);
+        $request->session()->put('otp_password', $purpose === 'register' ? (string) ($data['password'] ?? '') : null);
 
-        $message = 'OTP sent to your email. Please check your inbox.';
+        $message = $mobile
+            ? 'OTP sent to your email and WhatsApp. Please check both inboxes.'
+            : 'OTP sent to your email. Please check your inbox.';
 
         if ($request->expectsJson()) {
             return response()->json([
@@ -61,6 +90,7 @@ class OtpAuthController extends Controller
                 'message' => $message,
                 'expires_in' => self::OTP_TTL_SECONDS,
                 'email' => $email,
+                'purpose' => $purpose,
             ]);
         }
 
@@ -72,9 +102,12 @@ class OtpAuthController extends Controller
         $data = $request->validate([
             'email' => ['required', 'email', 'max:255'],
             'otp' => ['required', 'digits:6'],
+            'purpose' => ['nullable', 'string', 'in:login,register'],
         ]);
 
         $email = strtolower($data['email']);
+        $purpose = strtolower((string) ($data['purpose'] ?? $request->session()->get('otp_purpose', 'login')));
+        $purpose = in_array($purpose, ['login', 'register'], true) ? $purpose : 'login';
         $payload = Cache::get($this->otpCacheKey($email));
 
         if (!$payload || empty($payload['hash']) || !Hash::check($data['otp'], $payload['hash'])) {
@@ -83,14 +116,30 @@ class OtpAuthController extends Controller
 
         Cache::forget($this->otpCacheKey($email));
 
-        $name = (string) ($request->session()->get('otp_name') ?: Str::before($email, '@'));
+        $existing = User::query()->where('email', $email)->first();
+        $name = (string) ($request->session()->get('otp_name') ?: $existing?->name ?: Str::before($email, '@'));
         $mobile = $request->session()->get('otp_mobile');
 
-        $user = User::firstOrCreate(
-            ['email' => $email],
-            ['name' => $name, 'mobile' => $mobile, 'password' => Hash::make(Str::random(32))]
-        );
-        $wasRecentlyCreated = $user->wasRecentlyCreated;
+        if ($purpose === 'register') {
+            if ($existing) {
+                return back()->withErrors(['email' => 'An account already exists with this email. Please log in instead.'])->withInput();
+            }
+
+            $user = User::create([
+                'email' => $email,
+                'name' => $name,
+                'mobile' => $mobile,
+                'password' => (string) ($request->session()->get('otp_password') ?: Str::random(32)),
+            ]);
+            $wasRecentlyCreated = true;
+        } else {
+            if (!$existing) {
+                return back()->withErrors(['email' => 'No account found with this email. Please register first.'])->withInput();
+            }
+
+            $user = $existing;
+            $wasRecentlyCreated = false;
+        }
 
         if ($mobile && ! $user->mobile) {
             $user->forceFill(['mobile' => $mobile])->save();
@@ -105,16 +154,26 @@ class OtpAuthController extends Controller
         if ($wasRecentlyCreated) {
             try {
                 Mail::to($user->email)->send(new RegistrationCompletedMail($user));
+                app(WhatsAppService::class)->sendRegistrationWelcome($user);
             } catch (\Throwable $e) {
                 report($e);
             }
         }
+
+        $request->session()->forget([
+            'otp_email',
+            'otp_purpose',
+            'otp_name',
+            'otp_mobile',
+            'otp_password',
+        ]);
 
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'redirect_url' => url('/myaccount/querystatus'),
                 'message' => 'Logged in successfully.',
+                'purpose' => $purpose,
             ]);
         }
 

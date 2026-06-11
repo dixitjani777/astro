@@ -49,7 +49,7 @@
 						</div>
 
 						<div class="mb-3">
-							<label class="fs--16 text-muted">WhatsApp / Mobile (optional)</label>
+							<label class="fs--16 text-muted">WhatsApp / Mobile</label>
 							<input id="otp_mobile_input" name="mobile_raw" type="tel" class="form-control" value="{{ old('mobile_raw', session('otp_mobile')) }}" placeholder="+91 9876543210">
 							<input id="otp_mobile" name="mobile" type="hidden" value="{{ old('mobile', session('otp_mobile')) }}">
 							@error('mobile')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
@@ -94,7 +94,13 @@
 		var iti = window.intlTelInput(input, {
 			separateDialCode: true,
 			nationalMode: false,
-			initialCountry: 'in',
+			initialCountry: 'auto',
+			geoIpLookup: function (success) {
+				fetch('https://ipapi.co/json/')
+					.then(function (response) { return response.json(); })
+					.then(function (data) { success((data && data.country_code ? String(data.country_code) : 'in').toLowerCase()); })
+					.catch(function () { success('in'); });
+			},
 		});
 
 		function sync() {

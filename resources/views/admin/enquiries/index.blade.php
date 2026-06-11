@@ -82,7 +82,7 @@
                         <td>{{ $enquiry->name }}</td>
                         <td>{{ $enquiry->email }}</td>
                         <td>{{ $enquiry->phone }}</td>
-                        <td>{{ $enquiry->created_at }}</td>
+                        <td>{{ optional($enquiry->created_at)->format('M d, Y h:i A') }}</td>
                         <td>
                             <div class="btn-list flex-nowrap">
                                 <a class="btn btn-sm btn-outline-secondary" href="{{ route('admin.enquiries.show', $enquiry) }}">View</a>

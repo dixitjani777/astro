@@ -101,7 +101,7 @@
 												<div class="font-weight-medium text-dark">{{ $e->request_type_label }}</div>
 												<div class="fs--13 text-muted">{{ $e->source ?: '-' }}</div>
 											</td>
-											<td>{{ optional($e->created_at)->format('M d, Y H:i') }}</td>
+											<td>{{ optional($e->created_at)->format('M d, Y h:i A') }}</td>
 											<td>
 												<span class="d-inline-block px-3 py-2 rounded-pill small font-weight-bold" style="background: {{ $statusStyles['bg'] }}; color: {{ $statusStyles['color'] }}; border: 1px solid {{ $statusStyles['border'] }};">
 													{{ $e->current_status_label }}
@@ -128,15 +128,20 @@
 												@elseif($latestAdminReply?->attachment_path)
 													<div class="fs--13 text-dark">
 														Attachment:
-														<a href="{{ \Illuminate\Support\Facades\Storage::disk($latestAdminReply->attachment_disk ?: 'public')->url($latestAdminReply->attachment_path) }}" target="_blank" rel="noopener noreferrer">
+														<a href="{{ $latestAdminReply->attachment_url }}" target="_blank" rel="noopener noreferrer">
 															{{ $latestAdminReply->attachment_original_name ?: 'Download' }}
 														</a>
+														@if($latestAdminReply->attachment_is_image && $latestAdminReply->attachment_url)
+															<div class="mt-2">
+																<img src="{{ $latestAdminReply->attachment_url }}" alt="Attachment preview" class="img-fluid rounded border" style="max-width: 220px;">
+															</div>
+														@endif
 													</div>
 												@else
 													<div class="fs--13 text-muted">No admin/pandit response yet.</div>
 												@endif
 											</td>
-											<td>{{ optional($e->last_updated_at)->format('M d, Y H:i') ?: '-' }}</td>
+											<td>{{ optional($e->last_updated_at)->format('M d, Y h:i A') ?: '-' }}</td>
 											<td>
 												<a class="btn btn-sm btn-outline-secondary" href="{{ route('account.enquiries.show', $e) }}">View</a>
 											</td>

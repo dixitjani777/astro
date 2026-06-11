@@ -223,6 +223,33 @@
                             </li>
                         @endif
 
+                        @if($me && $me->hasPermission('admin.whatsapp'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.whatsapp.settings.edit') }}">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-brand-whatsapp"></i></span>
+                                    <span class="nav-link-title">WhatsApp</span>
+                                </a>
+                            </li>
+                        @endif
+
+                        @if($me && $me->hasPermission('admin.whatsapp_templates'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.whatsapp-templates.index') }}">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-template"></i></span>
+                                    <span class="nav-link-title">WhatsApp Templates</span>
+                                </a>
+                            </li>
+                        @endif
+
+                        @if($me && $me->hasPermission('admin.whatsapp_logs'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.whatsapp-logs.index') }}">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-clipboard-text"></i></span>
+                                    <span class="nav-link-title">WhatsApp Logs</span>
+                                </a>
+                            </li>
+                        @endif
+
                         @if($me && $me->hasPermission('admin.email_templates'))
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.email-templates.index') }}">

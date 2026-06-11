@@ -7,6 +7,7 @@ use App\Mail\ClientEnquiryReceived;
 use App\Models\Enquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 
 class ChatbotController extends Controller
 {
@@ -65,11 +66,11 @@ class ChatbotController extends Controller
             } else {
                 $answers['Email'] = $userMessage;
                 $step = 3;
-                $response['ai_message'] = "Got it. What's your phone number? (optional)";
+                $response['ai_message'] = "Got it. What's your phone number with country code?";
             }
         } elseif ($step === 3) {
-            if ($userMessage !== '' && !preg_match('/^\\+?[0-9\\s\\-()]{7,20}$/', $userMessage)) {
-                $response['ai_message'] = "Please enter a valid phone number (or leave it blank).";
+            if ($userMessage === '' || !preg_match('/^\\+?[0-9\\s\\-()]{7,20}$/', $userMessage)) {
+                $response['ai_message'] = "Please enter a valid phone number with country code.";
             } else {
                 $answers['Phone'] = $userMessage;
                 $step = 4;
@@ -109,6 +110,7 @@ class ChatbotController extends Controller
             'source' => 'chatbot',
             'context' => $answers['Service'] ?? null,
             'page_url' => $request->headers->get('referer'),
+            'user_id' => $request->user()?->id && Schema::hasColumn('enquiries', 'user_id') ? $request->user()->id : null,
             'name' => $answers['Name'] ?? null,
             'email' => $answers['Email'] ?? null,
             'phone' => $answers['Phone'] ?? null,
@@ -132,4 +134,3 @@ class ChatbotController extends Controller
         return response()->json(['success' => true]);
     }
 }
-

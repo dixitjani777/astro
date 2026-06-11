@@ -19,7 +19,7 @@
 @include('frontend.layouts.subnav')
 
 @php
-	$loginMode = ($loginMode ?? 'password') === 'otp' ? 'otp' : 'password';
+	$loginMode = ($loginMode ?? 'otp') === 'password' ? 'password' : 'otp';
 @endphp
 
 
@@ -151,6 +151,7 @@
 				<!-- SIGN UP -->
 					<form method="post" action="{{ route('otp.send') }}" id="create_account_form">
 						@csrf
+						<input type="hidden" name="purpose" value="register">
 							<b class="mb-4 b-0 fs--18">
 								&nbsp;&nbsp;Create account
 							</b>
@@ -213,10 +214,22 @@
 								
 							</div>
 
+							<div class="row g-3 mb-3">
+								<div class="col-12 col-md-6">
+									<label for="reg_password" class="fs--16">Create Password</label>
+									<input required id="reg_password" name="password" type="password" class="form-control" autocomplete="new-password">
+									@error('password')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+								</div>
+								<div class="col-12 col-md-6">
+									<label for="reg_password_confirmation" class="fs--16">Confirm Password</label>
+									<input required id="reg_password_confirmation" name="password_confirmation" type="password" class="form-control" autocomplete="new-password">
+								</div>
+							</div>
+
 							
 
 							<p class="mb-3 text-muted fs--14">
-								Passwordless signup: we will email you an OTP.
+								We will verify your account with an OTP and store your password securely for future password login.
 							</p>
 
 							<div id="createOtpBlock" class="mb-3 d-none">
@@ -283,6 +296,18 @@
 		function csrfToken() {
 			var el = document.querySelector('meta[name="csrf-token"]');
 			return el ? el.getAttribute('content') : '';
+		}
+
+		function detectCountry(callback) {
+			if (!callback) return;
+			fetch('https://ipapi.co/json/')
+				.then(function (response) { return response.json(); })
+				.then(function (data) {
+					callback((data && data.country_code ? String(data.country_code) : 'in').toLowerCase());
+				})
+				.catch(function () {
+					callback('in');
+				});
 		}
 
 		function recaptchaToken(action) {
@@ -419,7 +444,8 @@
 			iti = window.intlTelInput(mobileInput, {
 				separateDialCode: true,
 				nationalMode: false,
-				initialCountry: 'in',
+				initialCountry: 'auto',
+				geoIpLookup: detectCountry,
 			});
 		}
 
@@ -500,6 +526,7 @@
 				var payload = await postJson(document.querySelector('#account-login-shell').getAttribute('data-verify-url'), {
 					email: document.getElementById('reg_email').value.trim(),
 					otp: otpInput.value.trim(),
+					purpose: 'register',
 					recaptcha_token: await recaptchaToken('otp_verify'),
 				});
 				showMessage('success', payload.message || 'Account created successfully.');
@@ -731,6 +758,7 @@
 
 				var payload = await postJson(sendUrl, {
 					email: otpEmail.value.trim(),
+					purpose: 'login',
 					recaptcha_token: await recaptchaToken('otp_send'),
 				});
 				showMessage('success', payload.message || 'OTP sent successfully.');
@@ -774,6 +802,7 @@
 				var payload = await postJson(verifyUrl, {
 					email: otpEmail.value.trim(),
 					otp: otpCode.value.trim(),
+					purpose: 'login',
 					recaptcha_token: await recaptchaToken('otp_verify'),
 				});
 

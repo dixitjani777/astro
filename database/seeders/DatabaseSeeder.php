@@ -100,5 +100,13 @@ class DatabaseSeeder extends Seeder
         Setting::updateOrCreate(['key' => 'mail.encryption'], ['type' => 'string', 'value' => 'tls']);
         Setting::updateOrCreate(['key' => 'mail.from_address'], ['type' => 'string', 'value' => 'hello@example.com']);
         Setting::updateOrCreate(['key' => 'mail.from_name'], ['type' => 'string', 'value' => 'AstroDuniya']);
+
+        Setting::updateOrCreate(['key' => 'whatsapp.enabled'], ['type' => 'bool', 'value' => '1']);
+        Setting::updateOrCreate(['key' => 'whatsapp.api_url'], ['type' => 'string', 'value' => '']);
+        Setting::updateOrCreate(['key' => 'whatsapp.api_token'], ['type' => 'string', 'value' => '']);
+        Setting::updateOrCreate(['key' => 'whatsapp.api_key'], ['type' => 'string', 'value' => '']);
+        Setting::updateOrCreate(['key' => 'whatsapp.timeout'], ['type' => 'number', 'value' => '20']);
+        Setting::updateOrCreate(['key' => 'whatsapp.sender'], ['type' => 'string', 'value' => '']);
+        Setting::updateOrCreate(['key' => 'whatsapp.default_country'], ['type' => 'string', 'value' => 'in']);
     }
 }

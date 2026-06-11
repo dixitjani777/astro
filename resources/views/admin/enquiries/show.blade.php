@@ -55,7 +55,7 @@
                                 <span class="text-muted">({{ $r->senderUser->email }})</span>
                             @endif
                         </div>
-                        <div class="text-muted">{{ optional($r->created_at)->format('M d, Y H:i') }}</div>
+                        <div class="text-muted">{{ optional($r->created_at)->format('M d, Y h:i A') }}</div>
                     </div>
                     @if($r->body)
                         <div class="mt-2">{!! nl2br(e($r->body)) !!}</div>
@@ -69,11 +69,16 @@
                     @if($r->attachment_path)
                         <div class="mt-2">
                             <span class="text-muted">Attachment:</span>
-                            <a href="{{ \Illuminate\Support\Facades\Storage::disk($r->attachment_disk ?: 'public')->url($r->attachment_path) }}" target="_blank" rel="noopener noreferrer">
+                            <a href="{{ $r->attachment_url }}" target="_blank" rel="noopener noreferrer">
                                 {{ $r->attachment_original_name ?: 'Download' }}
                             </a>
                             @if($r->attachment_mime)
                                 <span class="text-muted">({{ $r->attachment_mime }})</span>
+                            @endif
+                            @if($r->attachment_is_image && $r->attachment_url)
+                                <div class="mt-2">
+                                    <img src="{{ $r->attachment_url }}" alt="Attachment preview" class="img-fluid rounded border" style="max-width: 320px;">
+                                </div>
                             @endif
                         </div>
                     @endif
@@ -106,7 +111,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Attachment (optional)</label>
+                        <label class="form-label">Attachment</label>
                         <input class="form-control @error('attachment') is-invalid @enderror" type="file" name="attachment">
                         @error('attachment')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         <div class="form-hint">Allowed: image/pdf/doc/docx/audio/video. Max 50MB.</div>
