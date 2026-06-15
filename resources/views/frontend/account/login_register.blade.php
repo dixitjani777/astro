@@ -1,4 +1,3 @@
-
 <!-- layout, title, description, keywords -->
 @extends('frontend.layouts.master')
 @section('title','Account - Astroduniya')
@@ -6,15 +5,11 @@
 @section('keywords','Account')
 <!-- End of layout, title, description, keywords -->
 
-<!-- toolbar page title -->
-<?php 
-	$toolbar_page="Account"; 
-	$toolbar_title="My Account";
+<?php
+	$toolbar_page = "Account";
+	$toolbar_title = "My Account";
 ?>
-<!-- /toolbar page title -->
 
-
-<!-- Start Section -->
 @section('content')
 @include('frontend.layouts.subnav')
 
@@ -22,11 +17,10 @@
 	$loginMode = ($loginMode ?? 'otp') === 'password' ? 'password' : 'otp';
 @endphp
 
-
-<section>
+<section class="py-4 py-lg-5">
 	<div class="container">
-		<div class="row">
-			<div class="col-12 col-sm-12 col-md-5 col-lg-5">
+		<div class="row g-4 align-items-start">
+			<div class="col-12 col-lg-5">
 				<div class="p-4 rounded shadow-xs" id="account-login-shell"
 					data-login-mode="{{ $loginMode }}"
 					data-send-url="{{ route('otp.send') }}"
@@ -39,25 +33,29 @@
 					@if ($errors->any())
 						<div class="alert alert-danger py-2">Please fix the highlighted fields.</div>
 					@endif
+
 					<div id="loginInlineMessage" class="alert d-none py-2"></div>
 
 					<div id="passwordLoginPane">
-						<b class="mb-4 b-0 fs--18 d-block">
-							Login to your account
-						</b>
+						<b class="mb-4 b-0 fs--18 d-block">Login to your account</b>
 
 						<form method="post" action="{{ route('account.login.password') }}" id="passwordLoginForm" data-recaptcha-action="account-login-password">
 							@csrf
 
 							<div class="mb-3">
-								<label for="account_email" class="fs--16">Enter Email</label>
-								<input required class="form-control" id="account_email" name="email" type="email" value="{{ old('email') }}" autocomplete="username">
-								@error('email')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+								<label for="account_identifier" class="fs--16">Enter Email or Mobile</label>
+								<input required class="form-control" id="account_identifier" name="identifier" type="text" value="{{ old('identifier') }}" autocomplete="username" placeholder="Email or mobile with country code">
+								@error('identifier')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
 							</div>
 
 							<div class="mb-3">
 								<label for="account_password" class="fs--16">Enter Password</label>
-								<input required class="form-control" id="account_password" name="password" type="password" autocomplete="current-password">
+								<div class="input-group">
+									<input required class="form-control" id="account_password" name="password" type="password" autocomplete="current-password">
+									<button type="button" class="btn btn-outline-secondary" data-toggle-password="#account_password" aria-label="Toggle password visibility">
+										<i class="fa fa-eye"></i>
+									</button>
+								</div>
 								@error('password')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
 							</div>
 
@@ -71,17 +69,15 @@
 							</div>
 
 							<p class="mb-2 fs--12 p-2">
-								I consent that my data is being stored in
-								line with the guidelines set out in
-								<a href="page-terms-and-conditions.html" target="_blank">Privacy Policy</a>.
+								I consent that my data is being stored in line with the guidelines set out in
+								<a href="{{ url('/privacy') }}" target="_blank">Privacy Policy</a>.
 							</p>
 
 							<div class="row">
-								<div class="col-12 col-sm-6 col-md-6 mb-2">
+								<div class="col-12 col-sm-6 mb-2">
 									<button type="submit" class="btn btn-warning btn-block">Login With Password</button>
 								</div>
-
-								<div class="col-12 col-sm-6 col-md-6 mb-2">
+								<div class="col-12 col-sm-6 mb-2">
 									<button type="button" id="showOtpLogin" class="btn btn-soft btn-link text-dark btn-block">Login with OTP</button>
 								</div>
 							</div>
@@ -93,17 +89,18 @@
 					</div>
 
 					<div id="otpLoginPane" class="d-none">
-						<b class="mb-4 b-0 fs--18 d-block">
-							Login to your account
-						</b>
+						<b class="mb-4 b-0 fs--18 d-block">Login with OTP</b>
 
-						<p class="mb-3 text-muted fs--14">
-							We will send a 6-digit OTP to your registered email. The code expires in 3 minutes.
+						<p class="mb-2 text-muted fs--14" id="otpLoginHint">
+							Enter your email or mobile number. Indian accounts can use mobile OTP login, while NRI accounts use email only.
 						</p>
 
+						<input type="hidden" id="otp_login_country_code" value="">
+						<input type="hidden" id="otp_login_email" value="">
+
 						<div class="mb-3">
-							<label for="otp_login_email" class="fs--16">Enter Email</label>
-							<input required class="form-control" id="otp_login_email" type="email" value="{{ old('email') }}" autocomplete="username">
+							<label for="otp_login_identifier" class="fs--16">Enter Email or Mobile</label>
+							<input required class="form-control" id="otp_login_identifier" type="text" autocomplete="username" placeholder="Email or mobile with country code">
 						</div>
 
 						<div id="otpVerificationBlock" class="d-none">
@@ -114,11 +111,10 @@
 						</div>
 
 						<div class="row">
-							<div class="col-12 col-sm-6 col-md-6 mb-2">
+							<div class="col-12 col-sm-6 mb-2">
 								<button type="button" id="sendOtpButton" class="btn btn-warning btn-block">Send OTP</button>
 							</div>
-
-							<div class="col-12 col-sm-6 col-md-6 mb-2">
+							<div class="col-12 col-sm-6 mb-2">
 								<button type="button" id="resendOtpButton" class="btn btn-soft btn-link text-dark btn-block d-none">Resend OTP</button>
 							</div>
 						</div>
@@ -129,149 +125,109 @@
 						</div>
 
 						<div class="row d-none" id="otpActionRow">
-							<div class="col-12 col-sm-6 col-md-6 mb-2">
+							<div class="col-12 col-sm-6 mb-2">
 								<button type="button" id="verifyOtpButton" class="btn btn-warning btn-block">Verify &amp; Login</button>
 							</div>
-							<div class="col-12 col-sm-6 col-md-6 mb-2">
-								<button type="button" id="changeOtpEmail" class="btn btn-soft btn-link text-dark btn-block">Change Email</button>
+							<div class="col-12 col-sm-6 mb-2">
+								<button type="button" id="changeOtpEmail" class="btn btn-soft btn-link text-dark btn-block">Change Email / Mobile</button>
 							</div>
 						</div>
 					</div>
-
 				</div>
-
 			</div>
 
-			<div class="col-12 col-sm-12 col-md-2 col-lg-2">
+			<div class="col-12 col-lg-2">
 				<center><h2 class="or mt-7 mb-7 font-weight-normal">OR</h2></center>
 			</div>
 
-			<div class="col-12 col-sm-12 col-md-5 col-lg-5">
+			<div class="col-12 col-lg-5">
+				<form method="post" action="{{ route('otp.send') }}" id="create_account_form">
+					@csrf
+					<input type="hidden" name="purpose" value="register">
+					<input type="hidden" name="country_code" id="reg_country_code" value="">
 
-				<!-- SIGN UP -->
-					<form method="post" action="{{ route('otp.send') }}" id="create_account_form">
-						@csrf
-						<input type="hidden" name="purpose" value="register">
-							<b class="mb-4 b-0 fs--18">
-								&nbsp;&nbsp;Create account
-							</b>
-						
-						<div class="p-4 rounded shadow-xs">
+					<b class="mb-4 b-0 fs--18 d-block">Create account</b>
 
-							@if (session('status'))
-								<div class="alert alert-success py-2">{{ session('status') }}</div>
-							@endif
-							@if ($errors->any())
-								<div class="alert alert-danger py-2">Please fix the highlighted fields.</div>
-							@endif
+					<div class="p-4 rounded shadow-xs">
+						@if (session('status'))
+							<div class="alert alert-success py-2">{{ session('status') }}</div>
+						@endif
+						@if ($errors->any())
+							<div class="alert alert-danger py-2">Please fix the highlighted fields.</div>
+						@endif
 
-							<!-- <div class="mb-3">
-								<label for="reg_first_name" class="reg_mobile fs--16">Enter Full Name</label>
-								<input required id="reg_first_name" name="reg_first_name" type="text" placeholder="Name Surname" class="form-control">
-							</div> -->
-
-							<div class="mb-3">
-								<label class="reg_mobile fs--16">Enter Name</label>
-
-								<div class="row">
-									<div class="col-md-6">
-										<input 
-											required 
-											id="first_name" 
-											name="first_name" 
-											type="text" 
-											placeholder="First Name" 
-											class="form-control">
-									</div>
-
-									<div class="col-md-6">
-										<input 
-											required 
-											id="last_name" 
-											name="last_name" 
-											type="text" 
-											placeholder="Last Name" 
-											class="form-control">
-									</div>
+						<div class="mb-3">
+							<label class="reg_mobile fs--16">Enter Name</label>
+							<div class="row">
+								<div class="col-md-6 mb-2 mb-md-0">
+									<input required id="first_name" name="first_name" type="text" placeholder="First Name" class="form-control" value="{{ old('first_name') }}">
+								</div>
+								<div class="col-md-6">
+									<input required id="last_name" name="last_name" type="text" placeholder="Last Name" class="form-control" value="{{ old('last_name') }}">
 								</div>
 							</div>
-
-							<input id="reg_name" name="name" type="hidden" value="">
-
-							<div class="form-label-group mb-3">
-								<label for="reg_email" class="fs--16">Enter Email</label>
-								<input required id="reg_email" name="email" type="email" class="form-control" value="{{ old('email') }}">
-								@error('email')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-							</div>
-							
-							<div class="form-label-group mb-3">
-								<label for="reg_mobile_input" class="fs--16">Enter WhatsApp / Mobile (with country code)</label>
-								<input required id="reg_mobile_input" name="mobile_raw" type="tel" class="form-control" placeholder="+91 9876543210">
-								<input id="reg_mobile" name="mobile" type="hidden" value="{{ old('mobile') }}">
-								@error('mobile')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-								<span id="valid-msg-reg" class="hide fs--15 font-weight-normal">Valid</span>
-								<span id="error-msg-reg" class="hide fs--15 font-weight-normal letter-spacing-03 styleColor"></span>
-								
-							</div>
-
-							<div class="row g-3 mb-3">
-								<div class="col-12 col-md-6">
-									<label for="reg_password" class="fs--16">Create Password</label>
-									<input required id="reg_password" name="password" type="password" class="form-control" autocomplete="new-password">
-									@error('password')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-								</div>
-								<div class="col-12 col-md-6">
-									<label for="reg_password_confirmation" class="fs--16">Confirm Password</label>
-									<input required id="reg_password_confirmation" name="password_confirmation" type="password" class="form-control" autocomplete="new-password">
-								</div>
-							</div>
-
-							
-
-							<p class="mb-3 text-muted fs--14">
-								We will verify your account with an OTP and store your password securely for future password login.
-							</p>
-
-							<div id="createOtpBlock" class="mb-3 d-none">
-								<label for="create_account_otp" class="fs--16">Enter OTP</label>
-								<input id="create_account_otp" name="otp" type="text" inputmode="numeric" maxlength="6" class="form-control" placeholder="6-digit code" autocomplete="one-time-code">
-								@error('otp')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-							</div>
-
-							<div class="row d-none" id="createOtpActionRow">
-								<div class="col-12 col-sm-6 col-md-6 mb-2">
-									<button type="button" id="verifyCreateOtpButton" class="btn btn-warning btn-block">Verify &amp; Create Account</button>
-								</div>
-								<div class="col-12 col-sm-6 col-md-6 mb-2">
-									<button type="button" id="resendCreateOtpButton" class="btn btn-soft btn-link text-dark btn-block">Resend OTP</button>
-								</div>
-							</div>
-
-							<div id="createOtpCountdown" class="text-muted fs--13 mb-3 d-none"></div>
-							<p class="mb-3 fs--12 p-2"> 	
-								I consent that my data is being stored in 
-								line with the guidelines set out in  
-								<a href="page-terms-and-conditions.html" target="_blank">Privacy Policy</a>. 
-							</p>
-
-							<div>
-								<button type="submit" id="sendCreateOtpButton" class="btn btn-warning btn-block">Continue with OTP</button>
-							</div>
-                            
-
-	                        
-
-	                        
-
 						</div>
 
-					</form>
-					<!-- /SIGN UP -->
+						<input id="reg_name" name="name" type="hidden" value="{{ old('name') }}">
 
+						<div class="form-label-group mb-3">
+							<label for="reg_email" class="fs--16">Enter Email</label>
+							<input required id="reg_email" name="email" type="email" class="form-control" value="{{ old('email') }}" autocomplete="email">
+							@error('email')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+						</div>
+
+						<div class="form-label-group mb-3">
+							<label for="reg_mobile_input" class="fs--16">Enter WhatsApp / Mobile (with country code)</label>
+							<input required id="reg_mobile_input" name="mobile_raw" type="tel" class="form-control" placeholder="+91 9876543210">
+							<input id="reg_mobile" name="mobile" type="hidden" value="{{ old('mobile') }}">
+							@error('mobile')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+							<span id="valid-msg-reg" class="hide fs--15 font-weight-normal">Valid</span>
+							<span id="error-msg-reg" class="hide fs--15 font-weight-normal letter-spacing-03 styleColor"></span>
+						</div>
+
+						<div class="mb-3">
+							<label for="reg_password" class="fs--16">Create Password</label>
+							<div class="input-group">
+								<input required id="reg_password" name="password" type="password" class="form-control" autocomplete="new-password">
+								<button type="button" class="btn btn-outline-secondary" data-toggle-password="#reg_password" aria-label="Toggle password visibility">
+									<i class="fa fa-eye"></i>
+								</button>
+							</div>
+							@error('password')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+						</div>
+
+						<p class="mb-3 text-muted fs--14" id="registrationFlowHint">
+							Indian users will verify both email and mobile. NRI users will verify email only and their mobile will be stored for profile use.
+						</p>
+
+						<div id="createOtpBlock" class="mb-3 d-none">
+							<label for="create_account_otp" class="fs--16">Enter OTP</label>
+							<input id="create_account_otp" name="otp" type="text" inputmode="numeric" maxlength="6" class="form-control" placeholder="6-digit code" autocomplete="one-time-code">
+							@error('otp')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+						</div>
+
+						<div class="row d-none" id="createOtpActionRow">
+							<div class="col-12 col-sm-6 mb-2">
+								<button type="button" id="verifyCreateOtpButton" class="btn btn-warning btn-block">Verify &amp; Create Account</button>
+							</div>
+							<div class="col-12 col-sm-6 mb-2">
+								<button type="button" id="resendCreateOtpButton" class="btn btn-soft btn-link text-dark btn-block">Resend OTP</button>
+							</div>
+						</div>
+
+						<div id="createOtpCountdown" class="text-muted fs--13 mb-3 d-none"></div>
+						<p class="mb-3 fs--12 p-2">
+							I consent that my data is being stored in line with the guidelines set out in
+							<a href="{{ url('/privacy') }}" target="_blank">Privacy Policy</a>.
+						</p>
+
+						<div>
+							<button type="submit" id="sendCreateOtpButton" class="btn btn-warning btn-block">Continue with OTP</button>
+						</div>
+					</div>
+				</form>
 			</div>
-
 		</div>
-
 	</div>
 </section>
 
@@ -282,6 +238,7 @@
 		var nameHidden = document.getElementById('reg_name');
 		var mobileInput = document.getElementById('reg_mobile_input');
 		var mobileHidden = document.getElementById('reg_mobile');
+		var countryHidden = document.getElementById('reg_country_code');
 		var form = document.getElementById('create_account_form');
 		var otpBlock = document.getElementById('createOtpBlock');
 		var otpInput = document.getElementById('create_account_otp');
@@ -292,6 +249,7 @@
 		var verifyButton = document.getElementById('verifyCreateOtpButton');
 		var otpExpiresAt = 0;
 		var timerId = null;
+		var currentCountryCode = 'in';
 
 		function csrfToken() {
 			var el = document.querySelector('meta[name="csrf-token"]');
@@ -299,7 +257,6 @@
 		}
 
 		function detectCountry(callback) {
-			if (!callback) return;
 			fetch('https://ipapi.co/json/')
 				.then(function (response) { return response.json(); })
 				.then(function (data) {
@@ -399,8 +356,6 @@
 		}
 
 		async function postJson(url, data) {
-			var payload = data instanceof FormData ? new URLSearchParams(data) : new URLSearchParams(data || {});
-
 			var response = await fetch(url, {
 				method: 'POST',
 				headers: {
@@ -409,7 +364,7 @@
 					'X-CSRF-TOKEN': csrfToken(),
 					'X-Requested-With': 'XMLHttpRequest',
 				},
-				body: payload.toString(),
+				body: new URLSearchParams(data).toString(),
 			});
 
 			var payload = {};
@@ -450,8 +405,34 @@
 		}
 
 		function syncMobile() {
-			if (!iti || !mobileHidden) return;
-			try { mobileHidden.value = iti.getNumber() || ''; } catch (e) { mobileHidden.value = ''; }
+			if (!mobileHidden) return;
+			if (iti) {
+				try {
+					mobileHidden.value = iti.getNumber() || (mobileInput ? mobileInput.value.trim() : '');
+				} catch (e) {
+					mobileHidden.value = mobileInput ? mobileInput.value.trim() : '';
+				}
+				return;
+			}
+
+			mobileHidden.value = mobileInput ? mobileInput.value.trim() : '';
+		}
+
+		function setCountryCode(code) {
+			currentCountryCode = (code || 'in').toLowerCase();
+			if (countryHidden) countryHidden.value = currentCountryCode;
+			var hint = document.getElementById('otpLoginHint');
+			if (hint) {
+				hint.textContent = currentCountryCode === 'in'
+					? 'Indian accounts can use mobile OTP login or email OTP login.'
+					: 'NRI accounts use email OTP login.';
+			}
+		}
+
+		function syncCountryCode() {
+			detectCountry(function (code) {
+				setCountryCode(code);
+			});
 		}
 
 		first && first.addEventListener('keyup', syncName);
@@ -468,6 +449,7 @@
 
 		syncName();
 		syncMobile();
+		syncCountryCode();
 
 		function showOtpStep() {
 			if (otpBlock) otpBlock.classList.remove('d-none');
@@ -493,6 +475,7 @@
 				if (resendButton) resendButton.disabled = true;
 
 				var payloadData = new FormData(form);
+				payloadData.set('country_code', currentCountryCode);
 				payloadData.set('recaptcha_token', await recaptchaToken('otp_send'));
 				var payload = await postJson(form.action, payloadData);
 				showMessage('success', payload.message || 'OTP sent successfully. Please check your inbox.');
@@ -569,19 +552,22 @@
 		var resendButton = document.getElementById('resendOtpButton');
 		var verifyButton = document.getElementById('verifyOtpButton');
 		var otpActionRow = document.getElementById('otpActionRow');
-		var passwordEmail = document.getElementById('account_email');
 		var passwordInput = document.getElementById('account_password');
-		var otpEmail = document.getElementById('otp_login_email');
+		var otpIdentifier = document.getElementById('otp_login_identifier');
 		var otpCode = document.getElementById('otp_login_code');
 		var otpBlock = document.getElementById('otpVerificationBlock');
 		var countdownEl = document.getElementById('otpCountdown');
 		var inlineMessage = document.getElementById('loginInlineMessage');
+		var otpEmail = document.getElementById('otp_login_email');
+		var otpCountry = document.getElementById('otp_login_country_code');
 		var sendUrl = shell.getAttribute('data-send-url');
 		var verifyUrl = shell.getAttribute('data-verify-url');
 		var redirectUrl = shell.getAttribute('data-redirect-url');
 		var initialMode = shell.getAttribute('data-login-mode') || 'password';
 		var timerId = null;
 		var otpExpiresAt = 0;
+		var currentCountryCode = 'in';
+		var pendingEmail = '';
 
 		function csrfToken() {
 			var el = document.querySelector('meta[name="csrf-token"]');
@@ -601,6 +587,20 @@
 			inlineMessage.classList.add('d-none');
 		}
 
+		function normalizeCountry(code) {
+			return (code || 'in').toLowerCase();
+		}
+
+		function setCountryAwareCopy(code) {
+			currentCountryCode = normalizeCountry(code);
+			if (otpCountry) otpCountry.value = currentCountryCode;
+			if (otpIdentifier) {
+				otpIdentifier.placeholder = currentCountryCode === 'in'
+					? 'Email or mobile with country code'
+					: 'Email address';
+			}
+		}
+
 		function setPaneState(mode) {
 			var showOtp = mode === 'otp';
 
@@ -613,10 +613,7 @@
 			}
 
 			if (showOtp) {
-				if (otpEmail && passwordEmail && !otpEmail.value.trim()) {
-					otpEmail.value = passwordEmail.value.trim();
-				}
-				if (otpEmail) otpEmail.disabled = false;
+				if (otpIdentifier) otpIdentifier.disabled = false;
 				if (otpCode) otpCode.disabled = false;
 				if (otpActionRow) otpActionRow.classList.add('d-none');
 				if (sendButton && !otpExpiresAt) {
@@ -629,7 +626,7 @@
 					clearInterval(timerId);
 					timerId = null;
 				}
-				if (otpEmail) otpEmail.disabled = true;
+				if (otpIdentifier) otpIdentifier.disabled = false;
 				if (otpCode) otpCode.disabled = true;
 				if (otpActionRow) otpActionRow.classList.add('d-none');
 				if (sendButton) {
@@ -642,6 +639,7 @@
 				}
 				if (countdownEl) countdownEl.classList.add('d-none');
 				otpExpiresAt = 0;
+				pendingEmail = '';
 			}
 		}
 
@@ -744,9 +742,48 @@
 			return payload;
 		}
 
+		function syncOtpEmailFromIdentifier() {
+			if (!otpIdentifier || !otpEmail) return;
+			otpEmail.value = otpIdentifier.value.trim();
+		}
+
+		function syncCountryFromIndicator(code) {
+			setCountryAwareCopy(code || 'in');
+		}
+
+		function detectCountry(callback) {
+			fetch('https://ipapi.co/json/')
+				.then(function (response) { return response.json(); })
+				.then(function (data) {
+					callback((data && data.country_code ? String(data.country_code) : 'in').toLowerCase());
+				})
+				.catch(function () {
+					callback('in');
+				});
+		}
+
+		function recaptchaToken(action) {
+			if (window.appRecaptcha && typeof window.appRecaptcha.execute === 'function') {
+				return window.appRecaptcha.execute(action || 'submit');
+			}
+
+			return Promise.resolve('');
+		}
+
+		function showLoginOtpStep(email) {
+			pendingEmail = email || pendingEmail;
+			if (otpEmail) otpEmail.value = pendingEmail;
+			if (otpBlock) otpBlock.classList.remove('d-none');
+			if (otpActionRow) otpActionRow.classList.remove('d-none');
+			if (otpCode) {
+				otpCode.value = '';
+				otpCode.focus();
+			}
+		}
+
 		async function sendOtp() {
-			if (!otpEmail || !otpEmail.value.trim()) {
-				showMessage('error', 'Please enter your email address.');
+			if (!otpIdentifier || !otpIdentifier.value.trim()) {
+				showMessage('error', 'Please enter your email or mobile number.');
 				return;
 			}
 
@@ -757,17 +794,15 @@
 				if (resendButton) resendButton.disabled = true;
 
 				var payload = await postJson(sendUrl, {
-					email: otpEmail.value.trim(),
+					identifier: otpIdentifier.value.trim(),
 					purpose: 'login',
+					country_code: currentCountryCode,
 					recaptcha_token: await recaptchaToken('otp_send'),
 				});
+
 				showMessage('success', payload.message || 'OTP sent successfully.');
-				if (otpBlock) otpBlock.classList.remove('d-none');
-				if (otpActionRow) otpActionRow.classList.remove('d-none');
-				if (otpCode) {
-					otpCode.value = '';
-					otpCode.focus();
-				}
+				syncLoginCountryText();
+				showLoginOtpStep(payload.email || otpIdentifier.value.trim());
 				startTimer(parseInt(payload.expires_in || 180, 10));
 			} catch (error) {
 				showMessage('error', error.message || 'Unable to send OTP.');
@@ -786,7 +821,7 @@
 
 		async function verifyOtp() {
 			if (!otpEmail || !otpEmail.value.trim()) {
-				showMessage('error', 'Please enter your email address.');
+				showMessage('error', 'Please enter your email or mobile number again.');
 				return;
 			}
 
@@ -815,13 +850,22 @@
 			}
 		}
 
+		function syncLoginCountryText() {
+			var hint = document.getElementById('otpLoginHint');
+			if (!hint) return;
+			hint.textContent = currentCountryCode === 'in'
+				? 'Indian accounts can use mobile OTP login or email OTP login.'
+				: 'NRI accounts use email OTP login.';
+		}
+
 		function activateOtpMode() {
 			clearMessage();
 			setPaneState('otp');
-			if (otpEmail && passwordEmail) {
-				otpEmail.value = passwordEmail.value.trim();
+			if (otpIdentifier && document.getElementById('account_identifier') && !otpIdentifier.value.trim()) {
+				otpIdentifier.value = document.getElementById('account_identifier').value.trim();
 			}
-			if (otpEmail) otpEmail.focus();
+			syncOtpEmailFromIdentifier();
+			if (otpIdentifier) otpIdentifier.focus();
 		}
 
 		function activatePasswordMode() {
@@ -830,25 +874,44 @@
 			if (passwordInput) passwordInput.focus();
 		}
 
+		function bindPasswordToggle() {
+			Array.prototype.forEach.call(document.querySelectorAll('[data-toggle-password]'), function (button) {
+				button.addEventListener('click', function () {
+					var selector = button.getAttribute('data-toggle-password');
+					var input = selector ? document.querySelector(selector) : null;
+					if (!input) return;
+
+					var isPassword = input.getAttribute('type') === 'password';
+					input.setAttribute('type', isPassword ? 'text' : 'password');
+					button.innerHTML = isPassword ? '<i class="fa fa-eye-slash"></i>' : '<i class="fa fa-eye"></i>';
+				});
+			});
+		}
+
 		if (showOtpButton) showOtpButton.addEventListener('click', activateOtpMode);
 		if (backButton) backButton.addEventListener('click', activatePasswordMode);
 		if (changeEmailButton) changeEmailButton.addEventListener('click', activatePasswordMode);
 		if (sendButton) sendButton.addEventListener('click', sendOtp);
 		if (resendButton) resendButton.addEventListener('click', sendOtp);
 		if (verifyButton) verifyButton.addEventListener('click', verifyOtp);
-		if (passwordEmail && otpEmail) {
-			passwordEmail.addEventListener('input', function () {
-				if (otpPane && !otpPane.classList.contains('d-none') && !otpEmail.value.trim()) {
-					otpEmail.value = passwordEmail.value.trim();
-				}
+		if (otpIdentifier) {
+			otpIdentifier.addEventListener('input', function () {
+				syncOtpEmailFromIdentifier();
 			});
 		}
 
+		bindPasswordToggle();
+
+		detectCountry(function (code) {
+			syncCountryFromIndicator(code);
+			syncLoginCountryText();
+		});
+
 		setPaneState(initialMode);
+		syncLoginCountryText();
 		if (initialMode === 'otp') {
 			activateOtpMode();
 		}
 	})();
 </script>
 @endsection
-<!-- End Section -->

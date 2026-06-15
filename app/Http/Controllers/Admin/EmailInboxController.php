@@ -45,7 +45,21 @@ class EmailInboxController extends Controller
         $top = (int) ($data['top'] ?? 25);
 
         $payload = $graph->listInboxMessages($mailbox, $nextLink, $top);
-        $messages = $payload['value'] ?? [];
+        $messages = array_values(array_map(function (array $msg) use ($graph, $mailbox) {
+            $attachmentCount = 0;
+            if (!empty($msg['hasAttachments'])) {
+                $attachmentsPayload = $graph->listAttachments($mailbox, (string) ($msg['id'] ?? ''));
+                $attachments = $attachmentsPayload['value'] ?? [];
+                $attachmentCount = is_array($attachments) ? count($attachments) : 0;
+            }
+
+            $categories = array_values(array_filter($msg['categories'] ?? [], fn ($category) => is_string($category) && $category !== ''));
+
+            return array_merge($msg, [
+                'attachmentCount' => $attachmentCount,
+                'automationStatus' => count($categories) ? implode(', ', $categories) : 'Manual',
+            ]);
+        }, is_array($payload['value'] ?? null) ? $payload['value'] : []));
         $odataNext = $payload['@odata.nextLink'] ?? null;
         $next = is_string($odataNext) && $odataNext !== ''
             ? rtrim(strtr(base64_encode($odataNext), '+/', '-_'), '=')
@@ -55,7 +69,7 @@ class EmailInboxController extends Controller
             'configured' => true,
             'mailboxes' => $mailboxes,
             'mailbox' => $mailbox,
-            'messages' => is_array($messages) ? $messages : [],
+            'messages' => $messages,
             'next' => $next,
             'error' => null,
         ]);
@@ -120,4 +134,3 @@ class EmailInboxController extends Controller
         ]);
     }
 }
-

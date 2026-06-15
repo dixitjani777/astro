@@ -26,7 +26,7 @@
 
 					<div class="p-4 rounded shadow-xs">
 						<p class="mb-4 font-weight-normal fs--16 styleColor b-0">
-							Enter your email address to receive a password reset link.
+							Enter your email address or mobile number to receive a password reset link.
 						</p>
 
 						@if(session('error'))
@@ -37,9 +37,9 @@
 						@endif
 
 						<div class="mb-3">
-							<label class="fs--16 text-muted">Email</label>
-							<input name="email" type="email" class="form-control" value="{{ old('email') }}" required>
-							@error('email')
+							<label class="fs--16 text-muted">Email or Mobile</label>
+							<input name="identifier" type="text" class="form-control" value="{{ old('identifier') }}" required placeholder="Email or mobile with country code">
+							@error('identifier')
 								<div class="text-danger mt-1">{{ $message }}</div>
 							@enderror
 						</div>

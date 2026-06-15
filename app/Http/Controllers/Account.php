@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\OtpCodeMail;
 use App\Models\Enquiry;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class Account extends Controller
 {
@@ -30,26 +32,38 @@ class Account extends Controller
     public function loginWithPassword(Request $request)
     {
         $data = $request->validate([
-            'email' => ['required', 'email', 'max:255'],
+            'identifier' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string'],
             'remember' => ['nullable', 'boolean'],
         ]);
 
-        $email = strtolower($data['email']);
-
+        $identifier = strtolower(trim($data['identifier']));
         $remember = (bool) ($data['remember'] ?? false);
-        if (Auth::attempt(['email' => $email, 'password' => $data['password']], $remember)) {
+        $user = $this->findUserByIdentifier($identifier);
+        $credentials = ['password' => $data['password']];
+
+        if ($user) {
+            $credentials[$this->isEmail($identifier) ? 'email' : 'mobile'] = $this->isEmail($identifier)
+                ? $user->email
+                : $user->mobile;
+        } elseif ($this->isEmail($identifier)) {
+            $credentials['email'] = $identifier;
+        } else {
+            $credentials['mobile'] = $this->normalizeMobile($identifier) ?: $identifier;
+        }
+
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
             if (auth()->user()?->isAdmin()) {
                 Auth::logout();
-                return back()->withErrors(['email' => 'Admin accounts must log in from the Admin panel.'])->withInput();
+                return back()->withErrors(['identifier' => 'Admin accounts must log in from the Admin panel.'])->withInput();
             }
 
             return redirect('/myaccount/querystatus')->with('status', 'Logged in successfully.');
         }
 
-        return back()->withErrors(['email' => 'Invalid email or password.'])->withInput();
+        return back()->withErrors(['identifier' => 'Invalid email/mobile or password.'])->withInput();
     }
 
 	public function forgotpassword(){
@@ -212,10 +226,15 @@ class Account extends Controller
     public function sendPasswordResetLink(Request $request)
     {
         $data = $request->validate([
-            'email' => ['required', 'email', 'max:255'],
+            'identifier' => ['required', 'string', 'max:255'],
         ]);
 
-        $status = Password::sendResetLink(['email' => $data['email']]);
+        $user = $this->findUserByIdentifier($data['identifier']);
+        if (!$user) {
+            return back()->withErrors(['identifier' => 'We could not find an account for that email or mobile number.'])->withInput();
+        }
+
+        $status = Password::sendResetLink(['email' => $user->email]);
 
         return back()->with(
             $status === Password::RESET_LINK_SENT ? 'status' : 'error',
@@ -264,6 +283,48 @@ class Account extends Controller
         $mobile = preg_replace('/[^\d+]/', '', $mobile);
 
         return $mobile !== '' ? $mobile : null;
+    }
+
+    private function isEmail(string $value): bool
+    {
+        return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    private function findUserByIdentifier(string $identifier): ?User
+    {
+        $identifier = trim($identifier);
+        if ($identifier === '') {
+            return null;
+        }
+
+        if ($this->isEmail($identifier)) {
+            return User::query()->whereRaw('LOWER(email) = ?', [Str::lower($identifier)])->first();
+        }
+
+        foreach ($this->mobileLookupCandidates($identifier) as $mobile) {
+            $user = User::query()->where('mobile', $mobile)->first();
+            if ($user) {
+                return $user;
+            }
+        }
+
+        return null;
+    }
+
+    private function mobileLookupCandidates(string $identifier): array
+    {
+        $mobile = $this->normalizeMobile($identifier);
+        if (!$mobile) {
+            return [];
+        }
+
+        $candidates = [$mobile];
+
+        if (!Str::startsWith($mobile, '+') && preg_match('/^\d{10}$/', $mobile)) {
+            $candidates[] = '+91' . $mobile;
+        }
+
+        return array_values(array_unique($candidates));
     }
 
     private function renderEnquiryHistoryPage(string $title, string $subtitle, ?callable $scope = null)

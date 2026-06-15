@@ -56,25 +56,21 @@
                     <thead>
                     <tr>
                         <th>Subject</th>
-                        <th>From</th>
                         <th>Received</th>
                         <th class="text-center">Read</th>
+                        <th>Automation Status</th>
+                        <th>Message</th>
                         <th class="text-center">Attachments</th>
                     </tr>
                     </thead>
                     <tbody>
                     @forelse($messages as $msg)
-                        @php($from = $msg['from']['emailAddress']['address'] ?? null)
                         <tr>
                             <td>
                                 <a href="{{ route('admin.inbox.show', [$msg['id']]) }}?mailbox={{ urlencode($mailbox) }}">
                                     {{ $msg['subject'] ?? '(no subject)' }}
                                 </a>
-                                @if(!empty($msg['bodyPreview']))
-                                    <div class="text-secondary small">{{ $msg['bodyPreview'] }}</div>
-                                @endif
                             </td>
-                            <td class="text-secondary">{{ $from ?? '-' }}</td>
                             <td class="text-secondary">
                                 {{ !empty($msg['receivedDateTime']) ? \Illuminate\Support\Carbon::parse($msg['receivedDateTime'])->timezone(config('app.timezone'))->toDayDateTimeString() : '-' }}
                             </td>
@@ -85,17 +81,27 @@
                                     <span class="badge bg-yellow-lt">No</span>
                                 @endif
                             </td>
-                            <td class="text-center">
-                                @if(!empty($msg['hasAttachments']))
-                                    <span class="badge bg-blue-lt">Yes</span>
+                            <td class="text-secondary">
+                                @if(!empty($msg['automationStatus']))
+                                    <span class="badge bg-azure-lt">{{ $msg['automationStatus'] }}</span>
                                 @else
                                     <span class="text-secondary">-</span>
+                                @endif
+                            </td>
+                            <td class="text-secondary">
+                                {{ !empty($msg['bodyPreview']) ? \Illuminate\Support\Str::limit($msg['bodyPreview'], 120) : '-' }}
+                            </td>
+                            <td class="text-center">
+                                @if(!empty($msg['hasAttachments']))
+                                    <span class="badge bg-blue-lt">Yes ({{ (int) ($msg['attachmentCount'] ?? 0) }})</span>
+                                @else
+                                    <span class="badge bg-secondary-lt">No (0)</span>
                                 @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center text-secondary p-4">No messages found.</td>
+                            <td colspan="6" class="text-center text-secondary p-4">No messages found.</td>
                         </tr>
                     @endforelse
                     </tbody>
