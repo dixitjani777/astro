@@ -271,7 +271,7 @@ class OtpAuthController extends Controller
 
         $sendToMobile = $countryCode === 'in' && $mobile;
         if ($sendToMobile) {
-            app(WhatsAppService::class)->sendOtp($mobile, $code, [
+            app(WhatsAppService::class)->sendRegistrationOtp($mobile, $code, [
                 'purpose' => 'register',
                 'name' => $data['name'] ?? '',
                 'email' => $email,

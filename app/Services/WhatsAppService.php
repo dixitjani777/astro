@@ -28,6 +28,13 @@ class WhatsAppService
         return $this->sendOtpViaProvider($recipient, $code, $context);
     }
 
+    public function sendRegistrationOtp(string $recipient, string $code, array $context = []): ?WhatsappLog
+    {
+        $context['purpose'] = 'register';
+
+        return $this->sendOtp($recipient, $code, $context);
+    }
+
     public function sendRegistrationWelcome(User $user): ?WhatsappLog
     {
         if (empty($user->mobile)) {
