@@ -23,6 +23,19 @@
                 <dt class="col-sm-3">Name</dt><dd class="col-sm-9">{{ $enquiry->name }}</dd>
                 <dt class="col-sm-3">Email</dt><dd class="col-sm-9">{{ $enquiry->email ?: optional($enquiry->user)->email }}</dd>
                 <dt class="col-sm-3">Phone</dt><dd class="col-sm-9">{{ $enquiry->phone ?: optional($enquiry->user)->mobile }}</dd>
+                <dt class="col-sm-3">Priority</dt>
+                <dd class="col-sm-9">
+                    <form method="post" action="{{ route('admin.enquiries.priority.update', $enquiry) }}" class="d-inline-flex gap-2 align-items-center">
+                        @csrf
+                        @method('PATCH')
+                        <select class="form-select" name="priority" onchange="this.form.submit()">
+                            <option value="" @selected(!$enquiry->priority)>Normal</option>
+                            <option value="low" @selected($enquiry->priority==='low')>Low</option>
+                            <option value="medium" @selected($enquiry->priority==='medium')>Medium</option>
+                            <option value="important" @selected($enquiry->priority==='important')>Important</option>
+                        </select>
+                    </form>
+                </dd>
                 <dt class="col-sm-3">Subject</dt><dd class="col-sm-9">{{ $enquiry->subject }}</dd>
                 <dt class="col-sm-3">Message</dt><dd class="col-sm-9">{{ $enquiry->message }}</dd>
                 <dt class="col-sm-3">Meta</dt><dd class="col-sm-9"><pre class="mb-0">{{ json_encode($enquiry->meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre></dd>
@@ -38,88 +51,12 @@
                     @endif
                 </dd>
             </dl>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header">
-            <strong>Replies</strong>
-        </div>
-        <div class="card-body">
-            @forelse($enquiry->replies as $r)
-                <div class="border rounded p-3 mb-3">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <strong>{{ $r->sender_type === 'admin' ? 'Admin' : 'User' }}</strong>
-                            @if($r->senderUser)
-                                <span class="text-muted">({{ $r->senderUser->email }})</span>
-                            @endif
-                        </div>
-                        <div class="text-muted">{{ optional($r->created_at)->format('M d, Y h:i A') }}</div>
-                    </div>
-                    @if($r->body)
-                        <div class="mt-2">{!! nl2br(e($r->body)) !!}</div>
-                    @endif
-                    @if($r->payment_url)
-                        <div class="mt-2">
-                            <span class="text-muted">Payment link:</span>
-                            <a href="{{ $r->payment_url }}" target="_blank" rel="noopener noreferrer">{{ $r->payment_url }}</a>
-                        </div>
-                    @endif
-                    @if($r->attachment_path)
-                        <div class="mt-2">
-                            <span class="text-muted">Attachment:</span>
-                            <a href="{{ $r->attachment_url }}" target="_blank" rel="noopener noreferrer">
-                                {{ $r->attachment_original_name ?: 'Download' }}
-                            </a>
-                            @if($r->attachment_mime)
-                                <span class="text-muted">({{ $r->attachment_mime }})</span>
-                            @endif
-                            @if($r->attachment_is_image && $r->attachment_url)
-                                <div class="mt-2">
-                                    <img src="{{ $r->attachment_url }}" alt="Attachment preview" class="img-fluid rounded border" style="max-width: 320px;">
-                                </div>
-                            @endif
-                        </div>
-                    @endif
-                </div>
-            @empty
-                <div class="text-muted">No replies yet.</div>
-            @endforelse
-        </div>
-    </div>
-
-    @if(auth()->user()?->hasPermission('admin.enquiries.reply'))
-        <div class="card mt-3">
-            <div class="card-header">
-                <strong>Send Reply</strong>
-            </div>
-            <div class="card-body">
-                <form method="post" action="{{ route('admin.enquiries.replies.store', $enquiry) }}" enctype="multipart/form-data">
+            <div class="mt-3">
+                <form method="post" action="{{ route('admin.enquiries.block-requester', $enquiry) }}" class="d-inline" onsubmit="return confirm('Block the linked requester?')">
                     @csrf
-
-                    <div class="mb-3">
-                        <label class="form-label">Message</label>
-                        <textarea class="form-control @error('body') is-invalid @enderror" name="body" rows="4">{{ old('body') }}</textarea>
-                        @error('body')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Payment Link (optional)</label>
-                        <input class="form-control @error('payment_url') is-invalid @enderror" name="payment_url" value="{{ old('payment_url') }}" placeholder="https://...">
-                        @error('payment_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Attachment</label>
-                        <input class="form-control @error('attachment') is-invalid @enderror" type="file" name="attachment">
-                        @error('attachment')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        <div class="form-hint">Allowed: image/pdf/doc/docx/audio/video. Max 50MB.</div>
-                    </div>
-
-                    <button class="btn btn-primary" type="submit">Send</button>
+                    <button class="btn btn-outline-warning" type="submit">Block requester</button>
                 </form>
             </div>
         </div>
-    @endif
+    </div>
 @endsection

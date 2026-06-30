@@ -74,6 +74,9 @@
 				<div>
 					<header class="text-center">
 						<h2>{{ ucfirst($zodiac) }}<span class="styleColor"> Monthly Horoscope</span></h2>
+						@if($cms?->updated_at)
+							<div class="text-muted fs--13 mt-2">Selected horoscope date: {{ $cms->updated_at->format('M d, Y') }}</div>
+						@endif
 						<div class="divider half-margins"><!-- divider -->
 							<i class="fa fa-chevron-down"></i>
 						</div>

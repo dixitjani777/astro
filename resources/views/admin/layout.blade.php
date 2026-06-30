@@ -167,6 +167,12 @@
                                     <span class="nav-link-title">Settings</span>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.settings.site-controls') }}">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-shield-lock"></i></span>
+                                    <span class="nav-link-title">Site Controls</span>
+                                </a>
+                            </li>
                         @endif
 
                         @if($me && $me->hasPermission('admin.daily_horoscopes'))

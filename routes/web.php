@@ -14,6 +14,7 @@ use App\Http\Controllers\Vastu;
 use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\OtpAuthController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\LocationLookupController;
 use App\Http\Controllers\Admin\EmailTemplatesController;
 use App\Http\Controllers\Admin\WhatsappLogsController;
 use App\Http\Controllers\Admin\WhatsappSettingsController;
@@ -51,6 +52,7 @@ Route::post('/admin/login', [AdminAuthController::class, 'login'])->middleware([
 /* chatbot */
 Route::post('/chatbot/ai', [ChatbotController::class, 'ai'])->middleware(['throttle:30,1'])->name('chatbot.ai');
 Route::post('/chatbot/submit', [ChatbotController::class, 'submit'])->middleware(['throttle:20,1'])->name('chatbot.submit');
+Route::get('/locations/search', [LocationLookupController::class, 'search'])->name('locations.search');
 
 /* admin */
 Route::middleware(['auth', 'admin', 'admin.log'])->prefix('admin')->name('admin.')->group(function () {
@@ -60,6 +62,8 @@ Route::middleware(['auth', 'admin', 'admin.log'])->prefix('admin')->name('admin.
     Route::post('/enquiries/{enquiry}/replies', [\App\Http\Controllers\Admin\EnquiriesController::class, 'storeReply'])->name('enquiries.replies.store')->middleware('perm:admin.enquiries.reply');
     Route::delete('/enquiries/{enquiry}', [\App\Http\Controllers\Admin\EnquiriesController::class, 'destroy'])->name('enquiries.destroy')->middleware('perm:admin.enquiries');
     Route::post('/enquiries/bulk-delete', [\App\Http\Controllers\Admin\EnquiriesController::class, 'bulkDestroy'])->name('enquiries.bulk-delete')->middleware('perm:admin.enquiries');
+    Route::patch('/enquiries/{enquiry}/priority', [\App\Http\Controllers\Admin\EnquiriesController::class, 'updatePriority'])->name('enquiries.priority.update')->middleware('perm:admin.enquiries');
+    Route::post('/enquiries/{enquiry}/block-requester', [\App\Http\Controllers\Admin\EnquiriesController::class, 'blockRequester'])->name('enquiries.block-requester')->middleware('perm:admin.enquiries');
 
     Route::get('/inbox', [EmailInboxController::class, 'index'])->name('inbox.index')->middleware('perm:admin.inbox');
     Route::get('/inbox/{messageId}', [EmailInboxController::class, 'show'])->name('inbox.show')->middleware('perm:admin.inbox');
@@ -67,6 +71,8 @@ Route::middleware(['auth', 'admin', 'admin.log'])->prefix('admin')->name('admin.
 
     Route::middleware('perm:admin.users')->resource('users', \App\Http\Controllers\Admin\UsersController::class)->except(['show']);
     Route::post('users/bulk-delete', [\App\Http\Controllers\Admin\UsersController::class, 'bulkDestroy'])->name('users.bulk-delete')->middleware('perm:admin.users');
+    Route::patch('users/{user}/priority', [\App\Http\Controllers\Admin\UsersController::class, 'updatePriority'])->name('users.priority.update')->middleware('perm:admin.users');
+    Route::post('users/{user}/toggle-block', [\App\Http\Controllers\Admin\UsersController::class, 'toggleBlock'])->name('users.toggle-block')->middleware('perm:admin.users');
     Route::middleware('perm:admin.roles')->resource('roles', \App\Http\Controllers\Admin\RolesController::class)->except(['show']);
     Route::post('roles/bulk-delete', [\App\Http\Controllers\Admin\RolesController::class, 'bulkDestroy'])->name('roles.bulk-delete')->middleware('perm:admin.roles');
     Route::middleware('perm:admin.pages')->resource('pages', \App\Http\Controllers\Admin\CmsPagesController::class)->except(['show'])->parameters(['pages' => 'page']);
@@ -90,6 +96,8 @@ Route::middleware(['auth', 'admin', 'admin.log'])->prefix('admin')->name('admin.
 
     Route::middleware('perm:admin.settings')->resource('settings', \App\Http\Controllers\Admin\SettingsController::class)->except(['show']);
     Route::post('settings/bulk-delete', [\App\Http\Controllers\Admin\SettingsController::class, 'bulkDestroy'])->name('settings.bulk-delete')->middleware('perm:admin.settings');
+    Route::get('site-controls', [\App\Http\Controllers\Admin\SettingsController::class, 'siteControls'])->name('settings.site-controls')->middleware('perm:admin.settings');
+    Route::put('site-controls', [\App\Http\Controllers\Admin\SettingsController::class, 'updateSiteControls'])->name('settings.site-controls.update')->middleware('perm:admin.settings');
 
     Route::middleware('perm:admin.email_templates')->resource('email-templates', EmailTemplatesController::class)->only(['index', 'edit', 'update'])->parameters(['email-templates' => 'email_template']);
     Route::get('whatsapp-settings', [WhatsappSettingsController::class, 'edit'])->name('whatsapp.settings.edit')->middleware('perm:admin.whatsapp');

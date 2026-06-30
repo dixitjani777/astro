@@ -31,6 +31,8 @@ class User extends Authenticatable
         'pincode',
         'password',
         'role',
+        'priority',
+        'is_blocked',
     ];
 
     /**
@@ -54,6 +56,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'mobile_verified_at' => 'datetime',
             'dob' => 'date',
+            'is_blocked' => 'boolean',
             'password' => 'hashed',
         ];
     }
@@ -87,5 +90,10 @@ class User extends Authenticatable
         }
 
         return $role->permissions()->where('key', $permissionKey)->exists();
+    }
+
+    public function isBlocked(): bool
+    {
+        return (bool) ($this->is_blocked ?? false);
     }
 }

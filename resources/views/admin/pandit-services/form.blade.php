@@ -25,6 +25,10 @@
                         <label class="form-label">Title</label>
                         <input class="form-control" name="title" value="{{ old('title', $service->title) }}" required>
                     </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Category</label>
+                        <input class="form-control" name="category" value="{{ old('category', $service->category) }}" placeholder="Puja / Havan / Jaap">
+                    </div>
                     <div class="col-md-2">
                         <label class="form-label">Order</label>
                         <input class="form-control" type="number" min="0" name="sort_order" value="{{ old('sort_order', $service->sort_order) }}">
@@ -39,6 +43,14 @@
                     <div class="col-12">
                         <label class="form-label">Short Text</label>
                         <textarea class="form-control" rows="4" name="short_text">{{ old('short_text', $service->short_text) }}</textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Benefits</label>
+                        <textarea class="form-control" rows="4" name="benefits" placeholder="List the spiritual / practical benefits">{{ old('benefits', $service->benefits) }}</textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Additional Details</label>
+                        <textarea class="form-control" rows="6" name="details_html" placeholder="HTML allowed">{{ old('details_html', $service->details_html) }}</textarea>
                     </div>
 
                     <div class="col-md-6">
@@ -59,4 +71,3 @@
         </div>
     </div>
 @endsection
-

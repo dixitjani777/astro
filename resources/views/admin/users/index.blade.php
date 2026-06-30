@@ -71,14 +71,16 @@
                         </th>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Email</th>
-                        <th>Mobile</th>
-                        <th>Role</th>
-                        <th>Created</th>
-                        <th class="w-1"></th>
-                    </tr>
-                </thead>
-                <tbody>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Role</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th class="w-1"></th>
+                </tr>
+            </thead>
+            <tbody>
                     @foreach($users as $user)
                         <tr>
                             <td>
@@ -89,10 +91,35 @@
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->mobile ?: '-' }}</td>
                             <td><span class="badge bg-blue-lt">{{ $user->role }}</span></td>
+                            <td>
+                                <form method="post" action="{{ route('admin.users.priority.update', $user) }}" class="d-flex gap-2 align-items-center">
+                                    @csrf
+                                    @method('PATCH')
+                                    <select class="form-select form-select-sm" name="priority" onchange="this.form.submit()">
+                                        <option value="" @selected(!$user->priority)>Normal</option>
+                                        <option value="low" @selected($user->priority==='low')>Low</option>
+                                        <option value="medium" @selected($user->priority==='medium')>Medium</option>
+                                        <option value="important" @selected($user->priority==='important')>Important</option>
+                                    </select>
+                                </form>
+                            </td>
+                            <td>
+                                @if($user->is_blocked)
+                                    <span class="badge bg-danger">Blocked</span>
+                                @else
+                                    <span class="badge bg-green">Active</span>
+                                @endif
+                            </td>
                             <td class="text-secondary">{{ $user->created_at }}</td>
                             <td>
                                 <div class="btn-list flex-nowrap">
                                     <a class="btn btn-sm btn-outline-secondary" href="{{ route('admin.users.edit', $user) }}">Edit</a>
+                                    <form method="post" action="{{ route('admin.users.toggle-block', $user) }}" onsubmit="return confirm('{{ $user->is_blocked ? 'Unblock this user?' : 'Block this user?' }}')">
+                                        @csrf
+                                        <button class="btn btn-sm btn-outline-warning" type="submit">
+                                            {{ $user->is_blocked ? 'Unblock' : 'Block' }}
+                                        </button>
+                                    </form>
                                     <form method="post" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Delete this user?')">
                                         @csrf
                                         @method('DELETE')

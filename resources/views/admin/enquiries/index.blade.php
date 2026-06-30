@@ -67,6 +67,8 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
+                    <th>Priority</th>
+                    <th>Status</th>
                     <th>Created</th>
                     <th></th>
                 </tr>
@@ -82,10 +84,29 @@
                         <td>{{ $enquiry->name }}</td>
                         <td>{{ $enquiry->email }}</td>
                         <td>{{ $enquiry->phone }}</td>
+                        <td>
+                            <form method="post" action="{{ route('admin.enquiries.priority.update', $enquiry) }}" class="d-flex gap-2 align-items-center">
+                                @csrf
+                                @method('PATCH')
+                                <select class="form-select form-select-sm" name="priority" onchange="this.form.submit()">
+                                    <option value="" @selected(!$enquiry->priority)>Normal</option>
+                                    <option value="low" @selected($enquiry->priority==='low')>Low</option>
+                                    <option value="medium" @selected($enquiry->priority==='medium')>Medium</option>
+                                    <option value="important" @selected($enquiry->priority==='important')>Important</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            <span class="badge {{ $enquiry->current_status_label === 'Answered' ? 'bg-green' : 'bg-warning text-dark' }}">{{ $enquiry->current_status_label }}</span>
+                        </td>
                         <td>{{ optional($enquiry->created_at)->format('M d, Y h:i A') }}</td>
                         <td>
                             <div class="btn-list flex-nowrap">
                                 <a class="btn btn-sm btn-outline-secondary" href="{{ route('admin.enquiries.show', $enquiry) }}">View</a>
+                                <form method="post" action="{{ route('admin.enquiries.block-requester', $enquiry) }}" onsubmit="return confirm('Block the linked requester?')">
+                                    @csrf
+                                    <button class="btn btn-sm btn-outline-warning" type="submit">Block user</button>
+                                </form>
                                 <form method="post" action="{{ route('admin.enquiries.destroy', $enquiry) }}" onsubmit="return confirm('Delete this enquiry?')">
                                     @csrf
                                     @method('DELETE')

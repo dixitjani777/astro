@@ -44,8 +44,25 @@
                         </select>
                     </div>
                     <div class="col-md-6">
+                        <label class="form-label">Priority</label>
+                        <select class="form-select" name="priority">
+                            @php($priorityValue = old('priority', $user->priority))
+                            <option value="">Normal</option>
+                            <option value="low" @selected($priorityValue==='low')>Low</option>
+                            <option value="medium" @selected($priorityValue==='medium')>Medium</option>
+                            <option value="important" @selected($priorityValue==='important')>Important</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
                         <label class="form-label">Password {{ $user->exists ? '(leave blank to keep)' : '' }}</label>
                         <input class="form-control" type="password" name="password" {{ $user->exists ? '' : 'required' }}>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-check">
+                            <input type="hidden" name="is_blocked" value="0">
+                            <input class="form-check-input" type="checkbox" name="is_blocked" value="1" @checked(old('is_blocked', $user->is_blocked))>
+                            <span class="form-check-label">Block this user</span>
+                        </label>
                     </div>
                 </div>
 

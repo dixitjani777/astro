@@ -36,6 +36,7 @@
                 <thead>
                     <tr>
                         <th>Order</th>
+                        <th>Category</th>
                         <th>Title</th>
                         <th>Status</th>
                         <th class="w-1"></th>
@@ -45,6 +46,7 @@
                     @forelse($services as $s)
                         <tr>
                             <td class="text-secondary">{{ $s->sort_order }}</td>
+                            <td class="text-secondary">{{ $s->category ?: '-' }}</td>
                             <td>{{ $s->title }}</td>
                             <td>
                                 @if($s->is_active)
@@ -64,7 +66,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-secondary">No services found.</td>
+                            <td colspan="5" class="text-secondary">No services found.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -75,4 +77,3 @@
         </div>
     </div>
 @endsection
-

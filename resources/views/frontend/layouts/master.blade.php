@@ -50,6 +50,31 @@
     <link href="{{ asset('css/chatbot.css') }}" rel="stylesheet">
     <link href="{{ asset('css/site-overrides.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap">
+    <style>
+        .astro-location-suggest {
+            position: absolute;
+            z-index: 1050;
+            width: 100%;
+            margin-top: 4px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
+            background: #fff;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+        }
+        .astro-location-suggest button {
+            width: 100%;
+            border: 0;
+            background: #fff;
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 14px;
+            color: #1f2937;
+        }
+        .astro-location-suggest button:hover {
+            background: #f5f7fa;
+        }
+    </style>
     
     <!-- some js are is in footer. dont touch or change their place without asking jani -->
     <script src="{{asset('js/jquery.min.js')}}"></script>
@@ -114,6 +139,102 @@
 			Array.prototype.forEach.call(document.querySelectorAll('form'), addHoneypot);
 		});
 	})();
+</script>
+<script>
+    (function () {
+        var timers = new WeakMap();
+
+        function ensureContainer(input) {
+            var parent = input.closest('.form-label-group') || input.parentElement;
+            if (!parent) return null;
+            if (parent.style.position === '') {
+                parent.style.position = 'relative';
+            }
+            var box = parent.querySelector('.astro-location-suggest');
+            if (!box) {
+                box = document.createElement('div');
+                box.className = 'astro-location-suggest d-none';
+                parent.appendChild(box);
+            }
+            return box;
+        }
+
+        function fillDetails(input, item) {
+            var form = input.closest('form');
+            if (!form) return;
+            var map = {
+                display_name: item.display_name || '',
+                city: item.city || '',
+                state: item.state || '',
+                country: item.country || '',
+                lat: item.lat || '',
+                lon: item.lon || '',
+            };
+
+            Object.keys(map).forEach(function (key) {
+                var hidden = form.querySelector('input[name="meta[' + input.dataset.astroLocation + '_details][' + key + ']"]');
+                if (hidden) hidden.value = map[key];
+            });
+        }
+
+        function renderSuggestions(input, items) {
+            var box = ensureContainer(input);
+            if (!box) return;
+
+            if (!items.length) {
+                box.classList.add('d-none');
+                box.innerHTML = '';
+                return;
+            }
+
+            box.innerHTML = '';
+            items.forEach(function (item) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = item.display_name || '';
+                btn.addEventListener('click', function () {
+                    input.value = item.display_name || input.value;
+                    fillDetails(input, item);
+                    box.classList.add('d-none');
+                });
+                box.appendChild(btn);
+            });
+            box.classList.remove('d-none');
+        }
+
+        async function fetchLocations(input) {
+            var q = (input.value || '').trim();
+            if (q.length < 2) {
+                renderSuggestions(input, []);
+                return;
+            }
+
+            var response = await fetch("{{ route('locations.search') }}?q=" + encodeURIComponent(q), {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!response.ok) return;
+            var data = await response.json();
+            renderSuggestions(input, Array.isArray(data.items) ? data.items : []);
+        }
+
+        document.addEventListener('input', function (event) {
+            var input = event.target;
+            if (!input || !input.matches || !input.matches('[data-astro-location]')) return;
+
+            clearTimeout(timers.get(input));
+            timers.set(input, setTimeout(function () {
+                fetchLocations(input).catch(function () {});
+            }, 300));
+        });
+
+        document.addEventListener('click', function (event) {
+            document.querySelectorAll('.astro-location-suggest').forEach(function (box) {
+                if (!box.contains(event.target)) {
+                    box.classList.add('d-none');
+                }
+            });
+        });
+    })();
 </script>
 
 </body>

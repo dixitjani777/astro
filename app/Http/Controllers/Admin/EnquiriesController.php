@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Mail\EnquiryReplyMail;
 use App\Models\Enquiry;
 use App\Models\EnquiryReply;
+use App\Models\User;
 use App\Services\WhatsAppService;
 use App\Support\IpGeolocation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class EnquiriesController extends Controller
 {
@@ -187,5 +190,59 @@ class EnquiriesController extends Controller
 
         Enquiry::query()->whereIn('id', $data['ids'])->get()->each->delete();
         return redirect()->route('admin.enquiries.index')->with('status', 'Selected enquiries deleted.');
+    }
+
+    public function updatePriority(Request $request, Enquiry $enquiry)
+    {
+        $data = $request->validate([
+            'priority' => ['nullable', 'string', 'in:low,medium,important'],
+        ]);
+
+        $enquiry->update(['priority' => $data['priority'] ?? null]);
+
+        return back()->with('status', 'Enquiry priority updated.');
+    }
+
+    public function blockRequester(Enquiry $enquiry)
+    {
+        $user = $enquiry->user;
+        $email = strtolower(trim((string) ($enquiry->email ?? '')));
+        $phone = trim((string) ($enquiry->phone ?? ''));
+
+        if ($user) {
+            $user->is_blocked = true;
+            $user->save();
+
+            return back()->with('status', 'Requester blocked.');
+        }
+
+        if ($email !== '' || $phone !== '') {
+            $user = null;
+
+            if ($email !== '') {
+                $user = User::query()->whereRaw('LOWER(email) = ?', [$email])->first();
+            }
+
+            if (! $user && $phone !== '') {
+                $user = User::query()->where('mobile', $phone)->first();
+            }
+
+            if (! $user) {
+                $user = User::create([
+                    'name' => $enquiry->name ?: 'Blocked User',
+                    'email' => $email !== '' ? $email : ('blocked-enquiry-' . $enquiry->id . '@astroduniya.local'),
+                    'mobile' => $phone !== '' ? $phone : null,
+                    'password' => Hash::make(Str::random(32)),
+                    'role' => 'user',
+                ]);
+            }
+
+            $user->is_blocked = true;
+            $user->save();
+
+            return back()->with('status', 'Requester blocked.');
+        }
+
+        return back()->withErrors(['form' => 'This enquiry is not linked to a user account.']);
     }
 }

@@ -8,7 +8,10 @@ class PanditService extends Model
 {
     protected $fillable = [
         'title',
+        'category',
         'short_text',
+        'benefits',
+        'details_html',
         'image_path',
         'link_url',
         'sort_order',
@@ -20,4 +23,3 @@ class PanditService extends Model
         'is_active' => 'boolean',
     ];
 }
-

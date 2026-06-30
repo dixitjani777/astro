@@ -110,15 +110,16 @@
 
     {{ $slot }}
 
-    @if($consentLabel)
-        <div class="clearfix bg-light position-relative rounded p-4 mb-4">
-            <label class="form-checkbox form-checkbox-primary mb-0">
-                <input required type="checkbox" name="meta[consent]" value="1">
-                <i></i>
-                <span>{!! $consentLabel !!}</span>
-            </label>
+    <div class="clearfix bg-light position-relative rounded p-4 mb-4 border">
+        <div class="fs--13 text-muted mb-2">
+            AstroDuniya provides spiritual guidance for informational purposes only. Results may vary based on individual circumstances. By continuing, you acknowledge and agree to our Terms &amp; Conditions.
         </div>
-    @endif
+        <label class="form-checkbox form-checkbox-primary mb-0">
+            <input required type="checkbox" name="meta[consent]" value="1">
+            <i></i>
+            <span>{!! $consentLabel ?: 'I agree to the Terms &amp; Conditions.' !!}</span>
+        </label>
+    </div>
 
     @if($showSubmit)
         <button type="submit" class="{{ $submitClass }}">{{ $submitLabel }}</button>

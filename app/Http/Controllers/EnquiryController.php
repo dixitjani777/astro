@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\AdminEnquiryReceived;
 use App\Mail\ClientEnquiryReceived;
 use App\Models\Enquiry;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,10 @@ class EnquiryController extends Controller
 {
     public function store(Request $request)
     {
+        if ($this->isBlockedSubmitter($request)) {
+            return back()->withErrors(['form' => 'This account is blocked and cannot submit new enquiries.'])->withInput();
+        }
+
         $data = $request->validate($this->rulesForSource($request->string('source')->toString()));
         $attachments = $request->file('attachments', []);
         if (!is_array($attachments)) {
@@ -79,6 +84,27 @@ class EnquiryController extends Controller
         return back()->with('status', 'Thanks! We received your enquiry.');
     }
 
+    private function isBlockedSubmitter(Request $request): bool
+    {
+        $user = $request->user();
+        if ($user?->isBlocked()) {
+            return true;
+        }
+
+        $email = strtolower(trim((string) $request->input('email', '')));
+        $phone = trim((string) $request->input('phone', ''));
+
+        if ($email !== '' && User::query()->whereRaw('LOWER(email) = ?', [$email])->where('is_blocked', true)->exists()) {
+            return true;
+        }
+
+        if ($phone !== '' && User::query()->where('mobile', $phone)->where('is_blocked', true)->exists()) {
+            return true;
+        }
+
+        return false;
+    }
+
     private function rulesForSource(string $source): array
     {
         $rules = [
@@ -91,6 +117,7 @@ class EnquiryController extends Controller
             'subject' => ['nullable', 'string', 'max:200'],
             'message' => ['nullable', 'string', 'max:5000'],
             'meta' => ['nullable', 'array'],
+            'meta.consent' => ['accepted'],
             'attachments' => ['nullable', 'array', 'max:5'],
             'attachments.*' => ['file', 'max:10240', 'mimetypes:image/jpeg,image/png,image/webp,image/gif,application/pdf'],
         ];

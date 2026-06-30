@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             \App\Http\Middleware\SetSiteLanguage::class,
+            \App\Http\Middleware\EnsureSiteNotInMaintenance::class,
             \App\Http\Middleware\AutoTranslateHtml::class,
         ]);
 

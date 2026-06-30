@@ -62,9 +62,14 @@
 
 				<!-- Query -->
 				<div class="clearfix mt-5">
-					<h3 class="font-weight-normal text-muted mb-4">
-						Enter Details						
-					</h3>
+				<h3 class="font-weight-normal text-muted mb-4">
+					Enter Details						
+				</h3>
+				@if(request('service'))
+					<div class="alert alert-info border-0">
+						Booking for: <strong>{{ request('service') }}</strong>
+					</div>
+				@endif
 
 					@guest
 						<p class="text-muted sub_heading letter-spacing-03 badge badge-pill badge-primary badge-soft fs--15 mb-1">
@@ -111,8 +116,14 @@
 	<div class="row">
 		<div class="col-12 col-md-6">
 			<div class="form-label-group mb-3">
-				<input required placeholder="Your Location" type="text" class="form-control" name="meta[location]">
+				<input required placeholder="Your Location" type="text" class="form-control" name="meta[location]" data-astro-location="location" autocomplete="off">
 				<label>Your Location</label>
+				<input type="hidden" name="meta[location_details][display_name]" value="{{ old('meta.location_details.display_name') }}">
+				<input type="hidden" name="meta[location_details][city]" value="{{ old('meta.location_details.city') }}">
+				<input type="hidden" name="meta[location_details][state]" value="{{ old('meta.location_details.state') }}">
+				<input type="hidden" name="meta[location_details][country]" value="{{ old('meta.location_details.country') }}">
+				<input type="hidden" name="meta[location_details][lat]" value="{{ old('meta.location_details.lat') }}">
+				<input type="hidden" name="meta[location_details][lon]" value="{{ old('meta.location_details.lon') }}">
 				@error('meta.location')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
 			</div>
 		</div>

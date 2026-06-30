@@ -59,29 +59,12 @@
 							</li>
 							<!-- /LANGUAGE -->
 
-                            <!-- Country -->
-							<li class="dropdown list-inline-item m-2 text-muted font-weight-medium">
-
-								<span class="text-muted">/</span><!-- optional separator -->
-
-								<a id="topDDCurrency" href="#" class="d-inline-block  text-muted font-weight-medium" data-toggle="dropdown" aria-expanded="false">
-									<span class="pl-2 pr-2">INDIA</span>
-								</a>
-
-								<div aria-labelledby="topDDCurrency" class="dropdown-menu text-center fs--13 px-1 pt-1 pb-0 m-0 max-h-50vh w-auto scrollable-vertical dropdown-menu-right">
-									<a href="#!" class="active dropdown-item text-muted text-truncate line-height-1 rounded pt--12 pb--12 mb-1">
-									INDIA
-									</a>
-									<a href="#!" class="dropdown-item text-muted text-truncate line-height-1 rounded pt--12 pb--12 mb-1">
-									UAE
-									</a>
-									<a href="#!" class="dropdown-item text-muted text-truncate line-height-1 rounded pt--12 pb--12 mb-1">
-									USA
-									</a>
-								</div>
-
-							</li>
-							<!-- /Country -->
+                            <li class="list-inline-item m-2 text-muted font-weight-medium">
+                                <span class="text-muted">/</span>
+                                <a href="{{ $siteSettings['site.youtube_url'] ?? ($siteSettings['social.youtube'] ?? '#!') }}" target="_blank" rel="noopener" class="d-inline-block text-muted font-weight-medium">
+                                    <span class="pl-2 pr-2">YouTube</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
 

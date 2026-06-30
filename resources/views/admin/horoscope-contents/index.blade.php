@@ -51,6 +51,7 @@
                     <tr>
                         <th>Period</th>
                         <th>Sign</th>
+                        <th>Last Updated</th>
                         <th>Status</th>
                         <th class="w-1"></th>
                     </tr>
@@ -60,6 +61,7 @@
                         <tr>
                             <td>{{ ucfirst($c->period) }}</td>
                             <td>{{ ucfirst($c->sign) }}</td>
+                            <td class="text-secondary">{{ optional($c->updated_at)->format('M d, Y h:i A') }}</td>
                             <td>
                                 @if($c->is_active)
                                     <span class="badge bg-green">Active</span>
@@ -78,7 +80,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-secondary">No entries yet.</td>
+                            <td colspan="5" class="text-secondary">No entries yet.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -89,4 +91,3 @@
         </div>
     </div>
 @endsection
-

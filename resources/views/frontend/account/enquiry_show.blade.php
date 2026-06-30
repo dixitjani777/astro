@@ -32,6 +32,16 @@
                         <a class="btn btn-sm btn-outline-secondary" href="{{ url('/myaccount/querystatus') }}">Back</a>
                     </div>
                     <div class="portlet-body">
+                        @if($enquiry->source === 'query')
+                            <div class="alert alert-info border-0 mb-4">
+                                <strong>One-time free consultation:</strong> this query was answered as your complimentary consultation.
+                                For any additional questions, please book a paid consultation below.
+                                <div class="mt-3">
+                                    <a href="{{ url('/astrologer/book') }}" class="btn btn-sm btn-primary">Book a Paid Consultation</a>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="row g-3">
                             <div class="col-12 col-md-6">
                                 <div class="p-3 bg-light rounded">
@@ -92,14 +102,14 @@
 
                 <div class="portlet mb-4">
                     <div class="portlet-header border-bottom">
-                        <span class="d-block text-muted text-truncate font-weight-medium pt-1">Conversation</span>
+                        <span class="d-block text-muted text-truncate font-weight-medium pt-1">Astrologer Response</span>
                     </div>
                     <div class="portlet-body">
                         @forelse($enquiry->replies as $r)
                             <div class="border rounded p-3 mb-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="font-weight-medium text-dark">
-                                        {{ $r->sender_type === 'admin' ? 'Admin / Pandit' : 'You' }}
+                                        {{ $r->sender_type === 'admin' ? 'Astrologer / Admin' : 'You' }}
                                         @if($r->senderUser)
                                             <span class="text-muted">({{ $r->senderUser->email }})</span>
                                         @endif
@@ -130,34 +140,8 @@
                                 @endif
                             </div>
                         @empty
-                            <div class="text-muted">No responses yet.</div>
+                            <div class="text-muted">No response yet.</div>
                         @endforelse
-                    </div>
-                </div>
-
-                <div class="portlet">
-                    <div class="portlet-header border-bottom">
-                        <span class="d-block text-muted text-truncate font-weight-medium pt-1">Reply / Follow Up</span>
-                    </div>
-                    <div class="portlet-body">
-                        <form method="post" action="{{ route('account.enquiries.replies.store', $enquiry) }}" enctype="multipart/form-data">
-                            @csrf
-
-                            <div class="form-group mb-3">
-                                <label class="form-label">Message</label>
-                                <textarea class="form-control @error('body') is-invalid @enderror" name="body" rows="4">{{ old('body') }}</textarea>
-                                @error('body')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                            </div>
-
-                            <div class="form-group mb-3">
-                                <label class="form-label">Attachment (optional)</label>
-                                <input class="form-control @error('attachment') is-invalid @enderror" type="file" name="attachment">
-                                @error('attachment')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                <small class="text-muted d-block mt-1">Allowed: photo/image, PDF, Word (.doc/.docx). Max 50MB.</small>
-                            </div>
-
-                            <button class="btn btn-primary" type="submit">Send</button>
-                        </form>
                     </div>
                 </div>
             </div>

@@ -23,6 +23,7 @@ class Enquiry extends Model
         'meta',
         'ip',
         'user_agent',
+        'priority',
     ];
 
     protected $casts = [
@@ -88,5 +89,15 @@ class Enquiry extends Model
             : $this->latestReply;
 
         return $latestReply?->created_at ?? $this->updated_at ?? $this->created_at;
+    }
+
+    public function getPriorityLabelAttribute(): string
+    {
+        return match (strtolower((string) ($this->priority ?? ''))) {
+            'low' => 'Low',
+            'medium' => 'Medium',
+            'important' => 'Important',
+            default => 'Normal',
+        };
     }
 }

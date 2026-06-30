@@ -76,6 +76,8 @@ class UsersController extends Controller
             'mobile' => ['nullable', 'string', 'max:32'],
             'password' => ['required', 'string', 'min:6', 'max:255'],
             'role' => ['required', 'string', 'max:50'],
+            'priority' => ['nullable', 'string', 'in:low,medium,important'],
+            'is_blocked' => ['nullable', 'boolean'],
         ]);
 
         User::create([
@@ -84,6 +86,8 @@ class UsersController extends Controller
             'mobile' => $this->normalizeMobile($data['mobile'] ?? null),
             'password' => Hash::make($data['password']),
             'role' => $data['role'],
+            'priority' => $data['priority'] ?? null,
+            'is_blocked' => (bool) ($data['is_blocked'] ?? false),
         ]);
 
         return redirect()->route('admin.users.index')->with('status', 'User created.');
@@ -105,12 +109,16 @@ class UsersController extends Controller
             'mobile' => ['nullable', 'string', 'max:32'],
             'password' => ['nullable', 'string', 'min:6', 'max:255'],
             'role' => ['required', 'string', 'max:50'],
+            'priority' => ['nullable', 'string', 'in:low,medium,important'],
+            'is_blocked' => ['nullable', 'boolean'],
         ]);
 
         $user->name = $data['name'];
         $user->email = strtolower($data['email']);
         $user->mobile = $this->normalizeMobile($data['mobile'] ?? null);
         $user->role = $data['role'];
+        $user->priority = $data['priority'] ?? null;
+        $user->is_blocked = (bool) ($data['is_blocked'] ?? false);
         if (!empty($data['password'])) {
             $user->password = Hash::make($data['password']);
         }
@@ -151,6 +159,25 @@ class UsersController extends Controller
         }
 
         return redirect()->route('admin.users.index')->with('status', $msg);
+    }
+
+    public function updatePriority(Request $request, User $user)
+    {
+        $data = $request->validate([
+            'priority' => ['nullable', 'string', 'in:low,medium,important'],
+        ]);
+
+        $user->update(['priority' => $data['priority'] ?? null]);
+
+        return back()->with('status', 'User priority updated.');
+    }
+
+    public function toggleBlock(User $user)
+    {
+        $user->is_blocked = ! $user->is_blocked;
+        $user->save();
+
+        return back()->with('status', $user->is_blocked ? 'User blocked.' : 'User unblocked.');
     }
 
     private function normalizeMobile(?string $mobile): ?string

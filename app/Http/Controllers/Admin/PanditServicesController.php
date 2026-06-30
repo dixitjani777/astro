@@ -58,7 +58,10 @@ class PanditServicesController extends Controller
     {
         $data = $request->validate([
             'title' => ['required', 'string', 'max:200'],
+            'category' => ['nullable', 'string', 'max:120'],
             'short_text' => ['nullable', 'string', 'max:2000'],
+            'benefits' => ['nullable', 'string'],
+            'details_html' => ['nullable', 'string'],
             'image_path' => ['nullable', 'string', 'max:500'],
             'link_url' => ['nullable', 'string', 'max:500'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:1000000'],
@@ -71,4 +74,3 @@ class PanditServicesController extends Controller
         return $data;
     }
 }
-

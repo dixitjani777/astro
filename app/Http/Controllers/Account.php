@@ -60,6 +60,11 @@ class Account extends Controller
                 return back()->withErrors(['identifier' => 'Admin accounts must log in from the Admin panel.'])->withInput();
             }
 
+            if (auth()->user()?->isBlocked()) {
+                Auth::logout();
+                return back()->withErrors(['identifier' => 'This account is blocked. Please contact support.'])->withInput();
+            }
+
             return redirect('/myaccount/querystatus')->with('status', 'Logged in successfully.');
         }
 
@@ -309,6 +314,13 @@ class Account extends Controller
         }
 
         return null;
+    }
+
+    private function isBlockedIdentifier(string $identifier): bool
+    {
+        $user = $this->findUserByIdentifier($identifier);
+
+        return (bool) ($user?->isBlocked());
     }
 
     private function mobileLookupCandidates(string $identifier): array

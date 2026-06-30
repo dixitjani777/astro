@@ -31,7 +31,7 @@
                         <form method="post" action="{{ route('admin.login.post') }}" data-recaptcha-action="admin_login">
                             @csrf
                             <input type="hidden" name="hp_time" value="{{ time() }}">
-                            <input type="text" name="website" value="" autocomplete="off" tabindex="-1" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;opacity:0">
+                            <input type="hidden" name="website" value="">
 
                             <div class="mb-3">
                                 <label class="form-label">Email</label>

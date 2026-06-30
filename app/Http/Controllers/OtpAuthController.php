@@ -81,6 +81,14 @@ class OtpAuthController extends Controller
         $mobile = $request->session()->get('otp_mobile');
 
         if ($purpose === 'register') {
+            if (User::query()->whereRaw('LOWER(email) = ?', [$email])->where('is_blocked', true)->exists()) {
+                return back()->withErrors(['email' => 'This email is blocked. Please contact support.'])->withInput();
+            }
+
+            if ($mobile && User::query()->where('mobile', $mobile)->where('is_blocked', true)->exists()) {
+                return back()->withErrors(['mobile' => 'This mobile number is blocked. Please contact support.'])->withInput();
+            }
+
             if ($existing) {
                 return back()->withErrors(['email' => 'An account already exists with this email. Please log in instead.'])->withInput();
             }
@@ -110,6 +118,10 @@ class OtpAuthController extends Controller
 
         if ($user->isAdmin()) {
             return redirect()->route('admin.login')->with('status', 'Please log in from the Admin panel.');
+        }
+
+        if ($user->isBlocked()) {
+            return back()->withErrors(['email' => 'This account is blocked. Please contact support.'])->withInput();
         }
 
         Auth::login($user, true);
@@ -165,6 +177,10 @@ class OtpAuthController extends Controller
 
         if (!$user) {
             return back()->withErrors(['identifier' => 'No account found with this email or mobile number. Please register first.'])->withInput();
+        }
+
+        if ($user->isBlocked()) {
+            return back()->withErrors(['identifier' => 'This account is blocked. Please contact support.'])->withInput();
         }
 
         if ($user->isAdmin()) {

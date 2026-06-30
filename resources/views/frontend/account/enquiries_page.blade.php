@@ -120,6 +120,7 @@
 											</td>
 											<td>
 												@if($latestAdminReply?->body)
+													<div class="fs--13 text-dark fw-bold">Latest astrologer response</div>
 													<div class="fs--13 text-dark">{{ \Illuminate\Support\Str::limit($latestAdminReply->body, 140) }}</div>
 												@elseif($latestAdminReply?->payment_url)
 													<div class="fs--13 text-dark">
@@ -139,6 +140,11 @@
 													</div>
 												@else
 													<div class="fs--13 text-muted">No admin/pandit response yet.</div>
+												@endif
+												@if($e->source === 'query')
+													<div class="mt-2">
+														<a href="{{ url('/astrologer/book') }}" class="btn btn-sm btn-primary">Book paid consultation</a>
+													</div>
 												@endif
 											</td>
 											<td>{{ optional($e->last_updated_at)->format('M d, Y h:i A') ?: '-' }}</td>

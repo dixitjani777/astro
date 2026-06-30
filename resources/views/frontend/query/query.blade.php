@@ -134,11 +134,17 @@
 									</div>
 								</div>
 								<div class="col-12 col-md-6">
-									<div class="form-label-group mb-3">
-										<input required placeholder="Birth Place" id="timepickerT" type="text" class="form-control" name="meta[birth_place]" data-toggle="tooltip" data-placement="top" data-original-title="Birth Place">
+								<div class="form-label-group mb-3">
+										<input required placeholder="Birth Place" id="timepickerT" type="text" class="form-control" name="meta[birth_place]" data-astro-location="birth_place" data-toggle="tooltip" data-placement="top" data-original-title="Birth Place" autocomplete="off">
 										<label for="comment_name">Birth Place</label>
 										<span class="fs--14 styleColor letter-spacing-03">* Select location from the list only.</span>
-									</div>
+										<input type="hidden" name="meta[birth_place_details][display_name]" value="{{ old('meta.birth_place_details.display_name') }}">
+										<input type="hidden" name="meta[birth_place_details][city]" value="{{ old('meta.birth_place_details.city') }}">
+										<input type="hidden" name="meta[birth_place_details][state]" value="{{ old('meta.birth_place_details.state') }}">
+										<input type="hidden" name="meta[birth_place_details][country]" value="{{ old('meta.birth_place_details.country') }}">
+										<input type="hidden" name="meta[birth_place_details][lat]" value="{{ old('meta.birth_place_details.lat') }}">
+										<input type="hidden" name="meta[birth_place_details][lon]" value="{{ old('meta.birth_place_details.lon') }}">
+										</div>
 								</div>
 						</div>
 						

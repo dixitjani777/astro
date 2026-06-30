@@ -9,6 +9,9 @@
                 <h2 class="page-title">Settings</h2>
             </div>
             <div class="col-auto ms-auto d-print-none">
+                <a href="{{ route('admin.settings.site-controls') }}" class="btn btn-outline-primary me-2">
+                    <i class="ti ti-shield-lock"></i>&nbsp;Site Controls
+                </a>
                 <form id="bulkSettingsForm" class="d-inline" method="post" action="{{ route('admin.settings.bulk-delete') }}" data-bulk-form onsubmit="return confirm('Delete selected settings?')">
                     @csrf
                     <button class="btn btn-outline-danger" type="submit" data-bulk-submit disabled>

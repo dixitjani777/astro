@@ -69,4 +69,53 @@ class SettingsController extends Controller
 
         return redirect()->route('admin.settings.index')->with('status', 'Selected settings deleted.');
     }
+
+    public function siteControls()
+    {
+        $keys = [
+            'site.maintenance.enabled',
+            'site.maintenance.message',
+            'site.maintenance.facebook_url',
+            'site.maintenance.instagram_url',
+            'site.maintenance.youtube_url',
+            'site.maintenance.whatsapp_url',
+            'site.youtube_url',
+        ];
+
+        $settings = Setting::query()->whereIn('key', $keys)->pluck('value', 'key')->toArray();
+
+        return view('admin.settings.site-controls', [
+            'settings' => $settings,
+        ]);
+    }
+
+    public function updateSiteControls(Request $request)
+    {
+        $data = $request->validate([
+            'site.maintenance.enabled' => ['nullable', 'boolean'],
+            'site.maintenance.message' => ['nullable', 'string', 'max:2000'],
+            'site.maintenance.facebook_url' => ['nullable', 'url', 'max:2048'],
+            'site.maintenance.instagram_url' => ['nullable', 'url', 'max:2048'],
+            'site.maintenance.youtube_url' => ['nullable', 'url', 'max:2048'],
+            'site.maintenance.whatsapp_url' => ['nullable', 'url', 'max:2048'],
+            'site.youtube_url' => ['nullable', 'url', 'max:2048'],
+        ]);
+
+        foreach ($data as $key => $value) {
+            Setting::updateOrCreate(
+                ['key' => $key],
+                [
+                    'value' => is_bool($value) ? ($value ? '1' : '0') : ($value ?? ''),
+                    'type' => is_bool($value) ? 'bool' : 'text',
+                ]
+            );
+        }
+
+        Cache::forget('settings.all');
+        foreach (array_keys($data) as $key) {
+            Cache::forget("setting.value.{$key}");
+        }
+
+        return redirect()->route('admin.settings.site-controls')->with('status', 'Site controls updated.');
+    }
 }
