@@ -202,7 +202,7 @@ class OtpAuthController extends Controller
 
         Mail::to($user->email)->send(new OtpCodeMail($code));
 
-        $mobile = $isMobileIdentifier && $countryCode === 'in' ? ($user->mobile ?: null) : null;
+        $mobile = $countryCode === 'in' ? $this->normalizeMobile($user->mobile) : null;
         if ($mobile) {
             app(WhatsAppService::class)->sendOtp($mobile, $code, [
                 'purpose' => 'login',

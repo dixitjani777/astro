@@ -28,27 +28,43 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">API URL</label>
-                        <input class="form-control" name="whatsapp_api_url" value="{{ old('whatsapp_api_url', $settings['whatsapp.api_url'] ?? '') }}" placeholder="https://api.example.com/send">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">API Token</label>
-                        <input class="form-control" name="whatsapp_api_token" value="{{ old('whatsapp_api_token', $settings['whatsapp.api_token'] ?? '') }}" placeholder="Bearer token">
+                    <div class="col-12">
+                        <div class="alert alert-info mb-0">
+                            Configure the BW WhatsApp API credentials here for OTP delivery using the <code>astro_otp</code> template.
+                        </div>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">API Key</label>
-                        <input class="form-control" name="whatsapp_api_key" value="{{ old('whatsapp_api_key', $settings['whatsapp.api_key'] ?? '') }}" placeholder="Optional API key">
+                        <label class="form-label">API URL</label>
+                        <input class="form-control" name="whatsapp_api_url" value="{{ old('whatsapp_api_url', $settings['whatsapp.api_url'] ?? '') }}" placeholder="http://bwap.enerzingtech.com/api/sendmsg.php">
                     </div>
+                    <div class="col-md-6">
+                        <label class="form-label">WhatsApp Username</label>
+                        <input class="form-control" name="whatsapp_user" value="{{ old('whatsapp_user', $settings['whatsapp.user'] ?? '') }}" placeholder="WhatsApp API username">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">WhatsApp Password</label>
+                        <input class="form-control" type="password" name="whatsapp_pass" value="{{ old('whatsapp_pass', $settings['whatsapp.pass'] ?? '') }}" placeholder="WhatsApp API password">
+                        <div class="form-hint mt-1">Leave this blank to keep the existing password.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Sender ID</label>
+                        <input class="form-control" name="whatsapp_sender" value="{{ old('whatsapp_sender', $settings['whatsapp.sender'] ?? '') }}" placeholder="Sender ID">
+                    </div>
+
                     <div class="col-md-6">
                         <label class="form-label">Timeout (seconds)</label>
                         <input class="form-control" type="number" name="whatsapp_timeout" value="{{ old('whatsapp_timeout', $settings['whatsapp.timeout'] ?? 20) }}" min="5" max="120">
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">Sender Name / ID</label>
-                        <input class="form-control" name="whatsapp_sender" value="{{ old('whatsapp_sender', $settings['whatsapp.sender'] ?? '') }}" placeholder="Optional sender name">
+                        <label class="form-label">API Token</label>
+                        <input class="form-control" name="whatsapp_api_token" value="{{ old('whatsapp_api_token', $settings['whatsapp.api_token'] ?? '') }}" placeholder="Optional bearer token">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">API Key</label>
+                        <input class="form-control" name="whatsapp_api_key" value="{{ old('whatsapp_api_key', $settings['whatsapp.api_key'] ?? '') }}" placeholder="Optional API key">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Default Country</label>

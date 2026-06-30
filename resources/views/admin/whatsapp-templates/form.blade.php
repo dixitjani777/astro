@@ -28,6 +28,7 @@
                     <div class="col-md-6">
                         <label class="form-label">Slug</label>
                         <input class="form-control" name="slug" value="{{ old('slug', $template->slug) }}" required>
+                        <div class="form-hint mt-1">Keep this as <code>astro_otp</code> for OTP delivery through the BW API.</div>
                     </div>
                     <div class="col-12">
                         <label class="form-label">Body Text</label>

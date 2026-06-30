@@ -17,6 +17,8 @@ class WhatsappSettingsController extends Controller
         'whatsapp.timeout',
         'whatsapp.sender',
         'whatsapp.default_country',
+        'whatsapp.user',
+        'whatsapp.pass',
     ];
 
     public function edit()
@@ -31,6 +33,11 @@ class WhatsappSettingsController extends Controller
 
     public function update(Request $request)
     {
+        $current = Setting::query()
+            ->whereIn('key', $this->keys)
+            ->pluck('value', 'key')
+            ->toArray();
+
         $data = $request->validate([
             'whatsapp_enabled' => ['nullable', 'boolean'],
             'whatsapp_api_url' => ['nullable', 'string', 'max:2048'],
@@ -39,6 +46,8 @@ class WhatsappSettingsController extends Controller
             'whatsapp_timeout' => ['nullable', 'integer', 'min:5', 'max:120'],
             'whatsapp_sender' => ['nullable', 'string', 'max:120'],
             'whatsapp_default_country' => ['nullable', 'string', 'max:8'],
+            'whatsapp_user' => ['nullable', 'string', 'max:120'],
+            'whatsapp_pass' => ['nullable', 'string', 'max:120'],
         ]);
 
         $payload = [
@@ -49,6 +58,12 @@ class WhatsappSettingsController extends Controller
             'whatsapp.timeout' => (string) ($data['whatsapp_timeout'] ?? 20),
             'whatsapp.sender' => $data['whatsapp_sender'] ?? '',
             'whatsapp.default_country' => strtolower(trim((string) ($data['whatsapp_default_country'] ?? 'in'))) ?: 'in',
+            'whatsapp.user' => trim((string) ($data['whatsapp_user'] ?? '')) !== ''
+                ? $data['whatsapp_user']
+                : ($current['whatsapp.user'] ?? ''),
+            'whatsapp.pass' => trim((string) ($data['whatsapp_pass'] ?? '')) !== ''
+                ? $data['whatsapp_pass']
+                : ($current['whatsapp.pass'] ?? ''),
         ];
 
         foreach ($payload as $key => $value) {

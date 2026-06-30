@@ -14,13 +14,18 @@ use Illuminate\Support\Facades\Schema;
 
 class WhatsAppService
 {
+    private const OTP_TEMPLATE_SLUG = 'astro_otp';
+    private const OTP_PROVIDER_PRIORITY = 'wa';
+    private const OTP_PROVIDER_STYPE = 'auth';
+
     public function sendOtp(string $recipient, string $code, array $context = []): ?WhatsappLog
     {
-        return $this->sendTemplate('otp-code', $recipient, array_merge($context, [
-            'code' => $code,
-            'expires_minutes' => 3,
-            'message' => 'Your OTP code is ' . $code . '. It expires in 3 minutes.',
-        ]));
+        $recipient = $this->normalizePhoneRecipient($recipient);
+        if ($recipient === '') {
+            return null;
+        }
+
+        return $this->sendOtpViaProvider($recipient, $code, $context);
     }
 
     public function sendRegistrationWelcome(User $user): ?WhatsappLog
@@ -105,10 +110,10 @@ class WhatsAppService
         ];
 
         if (!$enabled || empty($settings['whatsapp.api_url'])) {
-            return $this->storeLog(array_merge($meta, [
-                'recipient' => $recipient,
-                'template_slug' => $slug,
-                'message_text' => $messageText,
+        return $this->storeLog(array_merge($meta, [
+            'recipient' => $recipient,
+            'template_slug' => $slug,
+            'message_text' => $messageText,
                 'status' => 'skipped',
                 'http_status' => null,
                 'request_payload' => $payload,
@@ -154,6 +159,79 @@ class WhatsAppService
         }
     }
 
+    private function sendOtpViaProvider(string $recipient, string $code, array $context = []): ?WhatsappLog
+    {
+        $settings = $this->settings();
+        $enabled = filter_var((string) ($settings['whatsapp.enabled'] ?? '1'), FILTER_VALIDATE_BOOL);
+        $apiUrl = trim((string) ($settings['whatsapp.api_url'] ?? ''));
+        $user = trim((string) ($settings['whatsapp.user'] ?? ''));
+        $pass = trim((string) ($settings['whatsapp.pass'] ?? ''));
+        $sender = trim((string) ($settings['whatsapp.sender'] ?? ''));
+
+        $templateText = $this->resolveOtpTemplateText();
+        $requestPayload = [
+            'user' => $user,
+            'pass' => $pass,
+            'sender' => $sender,
+            'phone' => $recipient,
+            'text' => $templateText,
+            'priority' => self::OTP_PROVIDER_PRIORITY,
+            'stype' => self::OTP_PROVIDER_STYPE,
+            'Params' => $code,
+        ];
+
+        $log = $this->storeLog(array_merge($context, [
+            'recipient' => $recipient,
+            'template_slug' => self::OTP_TEMPLATE_SLUG,
+            'message_text' => 'OTP sent using template ' . $templateText,
+            'status' => 'pending',
+            'http_status' => null,
+            'request_payload' => $this->maskOtpPayload($requestPayload),
+            'response_payload' => null,
+            'sent_at' => null,
+        ]));
+
+        if (!$enabled || $apiUrl === '') {
+            $log->update([
+                'status' => 'skipped',
+                'response_payload' => ['message' => 'WhatsApp is disabled or missing API URL.'],
+            ]);
+
+            return $log;
+        }
+
+        if ($user === '' || $pass === '' || $sender === '') {
+            $log->update([
+                'status' => 'skipped',
+                'response_payload' => ['message' => 'WhatsApp credentials are missing.'],
+            ]);
+
+            return $log;
+        }
+
+        try {
+            $response = Http::timeout((int) ($settings['whatsapp.timeout'] ?? 20))
+                ->connectTimeout(10)
+                ->get($apiUrl, $requestPayload);
+
+            $log->update([
+                'status' => $response->successful() ? 'sent' : 'failed',
+                'http_status' => $response->status(),
+                'response_payload' => $this->decodeResponseBody($response->body()),
+                'sent_at' => $response->successful() ? now() : null,
+            ]);
+
+            return $log;
+        } catch (\Throwable $e) {
+            $log->update([
+                'status' => 'failed',
+                'response_payload' => ['message' => $e->getMessage()],
+            ]);
+
+            return $log;
+        }
+    }
+
     private function storeLog(array $data): WhatsappLog
     {
         return WhatsappLog::create([
@@ -187,10 +265,47 @@ class WhatsAppService
                     'whatsapp.timeout',
                     'whatsapp.sender',
                     'whatsapp.default_country',
+                    'whatsapp.user',
+                    'whatsapp.pass',
                 ])
                 ->pluck('value', 'key')
                 ->toArray();
         });
+    }
+
+    private function normalizePhoneRecipient(string $recipient): string
+    {
+        return preg_replace('/\D+/', '', trim($recipient)) ?: '';
+    }
+
+    private function resolveOtpTemplateText(): string
+    {
+        if (!Schema::hasTable('whatsapp_templates')) {
+            return self::OTP_TEMPLATE_SLUG;
+        }
+
+        $template = WhatsappTemplate::query()
+            ->where('slug', self::OTP_TEMPLATE_SLUG)
+            ->where('is_active', true)
+            ->first();
+
+        return $template?->slug ?: self::OTP_TEMPLATE_SLUG;
+    }
+
+    private function maskOtpPayload(array $payload): array
+    {
+        if (array_key_exists('user', $payload)) {
+            $payload['user'] = $payload['user'] !== '' ? '***' : '';
+        }
+        if (array_key_exists('pass', $payload)) {
+            $payload['pass'] = $payload['pass'] !== '' ? '***' : '';
+        }
+        if (array_key_exists('sender', $payload)) {
+            $payload['sender'] = $payload['sender'] !== '' ? '***' : '';
+        }
+        $payload['Params'] = isset($payload['Params']) ? '***' : null;
+
+        return $payload;
     }
 
     private function renderTokens(string $text, array $data): string

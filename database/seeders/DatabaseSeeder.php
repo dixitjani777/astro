@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\BlogCategory;
 use App\Models\BlogPost;
 use App\Models\Setting;
+use App\Models\WhatsappTemplate;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -65,6 +66,15 @@ class DatabaseSeeder extends Seeder
         $this->call(HoroscopePeriodSignsSeeder::class);
         $this->call(EmailTemplatesSeeder::class);
 
+        WhatsappTemplate::updateOrCreate(
+            ['slug' => 'astro_otp'],
+            [
+                'name' => 'Astro OTP',
+                'body_text' => 'Your {{site_name}} OTP is {{code}}. It expires in {{expires_minutes}} minutes.',
+                'is_active' => true,
+            ]
+        );
+
         $general = BlogCategory::updateOrCreate(['slug' => 'general'], ['name' => 'General', 'description' => 'General posts']);
         BlogPost::updateOrCreate(
             ['slug' => 'welcome-to-astroduniya'],
@@ -108,5 +118,7 @@ class DatabaseSeeder extends Seeder
         Setting::updateOrCreate(['key' => 'whatsapp.timeout'], ['type' => 'number', 'value' => '20']);
         Setting::updateOrCreate(['key' => 'whatsapp.sender'], ['type' => 'string', 'value' => '']);
         Setting::updateOrCreate(['key' => 'whatsapp.default_country'], ['type' => 'string', 'value' => 'in']);
+        Setting::updateOrCreate(['key' => 'whatsapp.user'], ['type' => 'string', 'value' => '']);
+        Setting::updateOrCreate(['key' => 'whatsapp.pass'], ['type' => 'string', 'value' => '']);
     }
 }
