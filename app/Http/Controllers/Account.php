@@ -204,7 +204,11 @@ class Account extends Controller
             'created_at' => now()->toIso8601String(),
         ], 600);
 
-        Mail::to($user->email)->send(new OtpCodeMail($code));
+        try {
+            Mail::to($user->email)->send(new OtpCodeMail($code));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return back()->with('status', 'OTP sent to your email address.');
     }
@@ -239,7 +243,13 @@ class Account extends Controller
             return back()->withErrors(['identifier' => 'We could not find an account for that email or mobile number.'])->withInput();
         }
 
-        $status = Password::sendResetLink(['email' => $user->email]);
+        try {
+            $status = Password::sendResetLink(['email' => $user->email]);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()->withErrors(['identifier' => 'We could not send the password reset email right now. Please try again later.'])->withInput();
+        }
 
         return back()->with(
             $status === Password::RESET_LINK_SENT ? 'status' : 'error',

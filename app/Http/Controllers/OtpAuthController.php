@@ -129,7 +129,11 @@ class OtpAuthController extends Controller
 
         if ($wasRecentlyCreated) {
             try {
-                Mail::to($user->email)->send(new RegistrationCompletedMail($user));
+        try {
+            Mail::to($user->email)->send(new RegistrationCompletedMail($user));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
                 if ($user->country_code === 'in' && $user->mobile) {
                     app(WhatsAppService::class)->sendRegistrationWelcome($user);
@@ -200,7 +204,11 @@ class OtpAuthController extends Controller
             'created_at' => now()->toIso8601String(),
         ], self::OTP_TTL_SECONDS);
 
-        Mail::to($user->email)->send(new OtpCodeMail($code));
+        try {
+            Mail::to($user->email)->send(new OtpCodeMail($code));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         $mobile = $countryCode === 'in' ? $this->normalizeMobile($user->mobile) : null;
         if ($mobile) {
@@ -255,7 +263,11 @@ class OtpAuthController extends Controller
             'created_at' => now()->toIso8601String(),
         ], self::OTP_TTL_SECONDS);
 
-        Mail::to($email)->send(new OtpCodeMail($code));
+        try {
+            Mail::to($email)->send(new OtpCodeMail($code));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         $sendToMobile = $countryCode === 'in' && $mobile;
         if ($sendToMobile) {

@@ -123,10 +123,18 @@ class ChatbotController extends Controller
 
         $adminEmail = config('enquiries.admin_email');
         if ($adminEmail) {
-            Mail::to($adminEmail)->send(new AdminEnquiryReceived($enquiry));
+            try {
+                Mail::to($adminEmail)->send(new AdminEnquiryReceived($enquiry));
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
         if (!empty($enquiry->email)) {
-            Mail::to($enquiry->email)->send(new ClientEnquiryReceived($enquiry));
+            try {
+                Mail::to($enquiry->email)->send(new ClientEnquiryReceived($enquiry));
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
 
         $request->session()->forget(['chatbot.step', 'chatbot.answers', 'chatbot.complete']);
