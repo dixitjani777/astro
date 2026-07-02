@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Mail\OtpCodeMail;
 use App\Mail\RegistrationCompletedMail;
+use App\Models\OtpDeliveryLog;
+use App\Models\Setting;
 use App\Models\User;
 use App\Services\WhatsAppService;
 use App\Support\IpGeolocation;
@@ -12,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -129,18 +132,25 @@ class OtpAuthController extends Controller
 
         if ($wasRecentlyCreated) {
             try {
-        try {
-            Mail::to($user->email)->send(new RegistrationCompletedMail($user));
-        } catch (\Throwable $e) {
-            report($e);
-        }
+                $log = $this->createOtpDeliveryLog('register_welcome', 'email', (string) $user->email, 'registration-complete', [
+                    'mail_mailer' => config('mail.default'),
+                    'mail_host' => config('mail.mailers.smtp.host'),
+                    'mail_port' => config('mail.mailers.smtp.port'),
+                ]);
+
+                Mail::to($user->email)->send(new RegistrationCompletedMail($user));
+
+                $this->finalizeOtpDeliveryLog($log, 'sent', null, null, 'Registration welcome email sent.');
+            } catch (\Throwable $e) {
+                report($e);
+                if (isset($log)) {
+                    $this->finalizeOtpDeliveryLog($log, 'failed', null, $e->getMessage(), 'Registration welcome email failed.');
+                }
+            }
 
                 if ($user->country_code === 'in' && $user->mobile) {
                     app(WhatsAppService::class)->sendRegistrationWelcome($user);
                 }
-            } catch (\Throwable $e) {
-                report($e);
-            }
         }
 
         $request->session()->forget([
@@ -204,19 +214,48 @@ class OtpAuthController extends Controller
             'created_at' => now()->toIso8601String(),
         ], self::OTP_TTL_SECONDS);
 
+        $emailLog = $this->createOtpDeliveryLog('login', 'email', (string) $user->email, 'otp-code', [
+            'mail_mailer' => config('mail.default'),
+            'mail_host' => config('mail.mailers.smtp.host'),
+            'mail_port' => config('mail.mailers.smtp.port'),
+        ]);
         try {
             Mail::to($user->email)->send(new OtpCodeMail($code));
+            $this->finalizeOtpDeliveryLog($emailLog, 'sent', null, null, 'OTP email sent.');
         } catch (\Throwable $e) {
             report($e);
+            $this->finalizeOtpDeliveryLog($emailLog, 'failed', null, $e->getMessage(), 'OTP email failed.');
         }
 
         $mobile = $countryCode === 'in' ? $this->normalizeMobile($user->mobile) : null;
         if ($mobile) {
-            app(WhatsAppService::class)->sendOtp($mobile, $code, [
+            $waLog = $this->createOtpDeliveryLog('login', 'whatsapp', $mobile, 'astro_otp', [
+                'whatsapp_api_url' => Setting::plainValue('whatsapp.api_url'),
+                'whatsapp_sender' => Setting::plainValue('whatsapp.sender'),
+                'country_code' => $countryCode,
+            ]);
+
+            $waResult = app(WhatsAppService::class)->sendOtp($mobile, $code, [
                 'purpose' => 'login',
                 'name' => $user->name,
                 'email' => $user->email,
             ]);
+
+            if ($waResult) {
+                $this->finalizeOtpDeliveryLog(
+                    $waLog,
+                    $waResult->status === 'sent' ? 'sent' : $waResult->status,
+                    [
+                        'whatsapp_log_id' => $waResult->id,
+                        'http_status' => $waResult->http_status,
+                        'response_payload' => $waResult->response_payload,
+                    ],
+                    $waResult->status === 'failed' ? 'WhatsApp OTP failed.' : null,
+                    'Login WhatsApp OTP ' . $waResult->status . '.'
+                );
+            } else {
+                $this->finalizeOtpDeliveryLog($waLog, 'skipped', null, 'WhatsApp OTP not sent.', 'Login WhatsApp OTP skipped.');
+            }
         }
 
         $request->session()->put('otp_email', $user->email);
@@ -263,19 +302,48 @@ class OtpAuthController extends Controller
             'created_at' => now()->toIso8601String(),
         ], self::OTP_TTL_SECONDS);
 
+        $emailLog = $this->createOtpDeliveryLog('register', 'email', $email, 'otp-code', [
+            'mail_mailer' => config('mail.default'),
+            'mail_host' => config('mail.mailers.smtp.host'),
+            'mail_port' => config('mail.mailers.smtp.port'),
+        ]);
         try {
             Mail::to($email)->send(new OtpCodeMail($code));
+            $this->finalizeOtpDeliveryLog($emailLog, 'sent', null, null, 'OTP email sent.');
         } catch (\Throwable $e) {
             report($e);
+            $this->finalizeOtpDeliveryLog($emailLog, 'failed', null, $e->getMessage(), 'OTP email failed.');
         }
 
         $sendToMobile = $countryCode === 'in' && $mobile;
         if ($sendToMobile) {
-            app(WhatsAppService::class)->sendRegistrationOtp($mobile, $code, [
+            $waLog = $this->createOtpDeliveryLog('register', 'whatsapp', $mobile, 'astro_otp', [
+                'whatsapp_api_url' => Setting::plainValue('whatsapp.api_url'),
+                'whatsapp_sender' => Setting::plainValue('whatsapp.sender'),
+                'country_code' => $countryCode,
+            ]);
+
+            $waResult = app(WhatsAppService::class)->sendRegistrationOtp($mobile, $code, [
                 'purpose' => 'register',
                 'name' => $data['name'] ?? '',
                 'email' => $email,
             ]);
+
+            if ($waResult) {
+                $this->finalizeOtpDeliveryLog(
+                    $waLog,
+                    $waResult->status === 'sent' ? 'sent' : $waResult->status,
+                    [
+                        'whatsapp_log_id' => $waResult->id,
+                        'http_status' => $waResult->http_status,
+                        'response_payload' => $waResult->response_payload,
+                    ],
+                    $waResult->status === 'failed' ? 'WhatsApp OTP failed.' : null,
+                    'Register WhatsApp OTP ' . $waResult->status . '.'
+                );
+            } else {
+                $this->finalizeOtpDeliveryLog($waLog, 'skipped', null, 'WhatsApp OTP not sent.', 'Register WhatsApp OTP skipped.');
+            }
         }
 
         $request->session()->put('otp_email', $email);
@@ -410,5 +478,38 @@ class OtpAuthController extends Controller
     private function otpCacheKey(string $email): string
     {
         return 'otp:email:' . Str::lower(trim($email));
+    }
+
+    private function createOtpDeliveryLog(string $purpose, string $channel, string $recipient, ?string $templateSlug, array $requestPayload = []): ?OtpDeliveryLog
+    {
+        if (!Schema::hasTable('otp_delivery_logs')) {
+            return null;
+        }
+
+        return OtpDeliveryLog::create([
+            'user_id' => auth()->id(),
+            'purpose' => $purpose,
+            'channel' => $channel,
+            'recipient' => $recipient,
+            'template_slug' => $templateSlug,
+            'status' => 'pending',
+            'request_payload' => $requestPayload,
+            'sent_at' => null,
+        ]);
+    }
+
+    private function finalizeOtpDeliveryLog(?OtpDeliveryLog $log, string $status, ?array $responsePayload = null, ?string $errorMessage = null, ?string $messageText = null): void
+    {
+        if (!$log) {
+            return;
+        }
+
+        $log->update([
+            'status' => $status,
+            'response_payload' => $responsePayload,
+            'error_message' => $errorMessage,
+            'message_text' => $messageText,
+            'sent_at' => now(),
+        ]);
     }
 }

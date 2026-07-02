@@ -256,6 +256,15 @@
                             </li>
                         @endif
 
+                        @if($me && $me->hasPermission('admin.otp_delivery_logs'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.otp-delivery-logs.index') }}">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-device-mobile-bolt"></i></span>
+                                    <span class="nav-link-title">OTP Delivery Logs</span>
+                                </a>
+                            </li>
+                        @endif
+
                         @if($me && $me->hasPermission('admin.email_templates'))
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.email-templates.index') }}">

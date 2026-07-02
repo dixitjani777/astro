@@ -16,6 +16,7 @@ use App\Http\Controllers\OtpAuthController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\LocationLookupController;
 use App\Http\Controllers\Admin\EmailTemplatesController;
+use App\Http\Controllers\Admin\OtpDeliveryLogsController;
 use App\Http\Controllers\Admin\WhatsappLogsController;
 use App\Http\Controllers\Admin\WhatsappSettingsController;
 use App\Http\Controllers\Admin\WhatsappTemplatesController;
@@ -100,6 +101,8 @@ Route::middleware(['auth', 'admin', 'admin.log'])->prefix('admin')->name('admin.
     Route::put('site-controls', [\App\Http\Controllers\Admin\SettingsController::class, 'updateSiteControls'])->name('settings.site-controls.update')->middleware('perm:admin.settings');
 
     Route::middleware('perm:admin.email_templates')->resource('email-templates', EmailTemplatesController::class)->only(['index', 'edit', 'update'])->parameters(['email-templates' => 'email_template']);
+    Route::get('otp-delivery-logs', [OtpDeliveryLogsController::class, 'index'])->name('otp-delivery-logs.index')->middleware('perm:admin.otp_delivery_logs');
+    Route::get('otp-delivery-logs/{otp_delivery_log}', [OtpDeliveryLogsController::class, 'show'])->name('otp-delivery-logs.show')->middleware('perm:admin.otp_delivery_logs');
     Route::get('whatsapp-settings', [WhatsappSettingsController::class, 'edit'])->name('whatsapp.settings.edit')->middleware('perm:admin.whatsapp');
     Route::put('whatsapp-settings', [WhatsappSettingsController::class, 'update'])->name('whatsapp.settings.update')->middleware('perm:admin.whatsapp');
     Route::middleware('perm:admin.whatsapp_templates')->resource('whatsapp-templates', WhatsappTemplatesController::class)->except(['show'])->parameters(['whatsapp-templates' => 'whatsapp_template']);
