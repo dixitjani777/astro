@@ -11,12 +11,12 @@
     <style>
         :root {
             color-scheme: light;
-            --bg: #f6efe6;
-            --panel: rgba(255,255,255,.82);
-            --text: #1f2937;
-            --muted: #6b7280;
-            --accent: #c96d36;
-            --accent-2: #24425a;
+            --bg: #fffaf5;
+            --panel: rgba(255,255,255,.90);
+            --text: #262626;
+            --muted: #676767;
+            --accent: #ff640a;
+            --accent-dark: #1f1f1f;
         }
         * { box-sizing: border-box; }
         body {
@@ -27,24 +27,35 @@
             font-family: Inter, sans-serif;
             color: var(--text);
             background:
-                radial-gradient(circle at top left, rgba(201,109,54,.20), transparent 30%),
-                radial-gradient(circle at bottom right, rgba(36,66,90,.18), transparent 28%),
-                linear-gradient(180deg, #fff8f1, var(--bg));
+                radial-gradient(circle at top left, rgba(255,100,10,.16), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(31,31,31,.08), transparent 28%),
+                linear-gradient(180deg, #ffffff, var(--bg));
         }
         .card {
             width: min(92vw, 760px);
             padding: 40px;
-            border-radius: 28px;
+            border-radius: 32px;
             background: var(--panel);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 24px 60px rgba(31,41,55,.14);
-            border: 1px solid rgba(255,255,255,.8);
+            backdrop-filter: blur(14px);
+            box-shadow: 0 28px 70px rgba(31,31,31,.12);
+            border: 1px solid rgba(255,255,255,.9);
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg, rgba(255,100,10,.09), transparent 34%),
+                linear-gradient(315deg, rgba(31,31,31,.04), transparent 40%);
+            pointer-events: none;
         }
         .eyebrow {
             display: inline-block;
             padding: 8px 14px;
             border-radius: 999px;
-            background: rgba(201,109,54,.12);
+            background: rgba(255,100,10,.10);
             color: var(--accent);
             font-weight: 700;
             letter-spacing: .08em;
@@ -56,6 +67,18 @@
             font-family: "Playfair Display", serif;
             font-size: clamp(2.4rem, 5vw, 4.5rem);
             line-height: 1;
+        }
+        .brand-mark {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+        .brand-mark img {
+            width: min(100%, 360px);
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 10px 18px rgba(31,31,31,.08));
         }
         p {
             margin: 0 0 18px;
@@ -78,8 +101,8 @@
             text-decoration: none;
             font-weight: 700;
         }
-        .btn.primary { background: var(--accent); color: #fff; }
-        .btn.secondary { background: #e8eef2; color: var(--accent-2); }
+        .btn.primary { background: var(--accent); color: #fff; box-shadow: 0 10px 24px rgba(255,100,10,.22); }
+        .btn.secondary { background: #f2f2f2; color: var(--accent-dark); }
         .social {
             display: flex;
             flex-wrap: wrap;
@@ -87,13 +110,13 @@
             margin-top: 26px;
         }
         .social a {
-            color: var(--accent-2);
+            color: var(--accent-dark);
             text-decoration: none;
             font-weight: 600;
         }
         .brand {
             margin-top: 30px;
-            color: var(--accent-2);
+            color: var(--accent-dark);
             font-weight: 700;
             font-size: .95rem;
             letter-spacing: .06em;
@@ -107,6 +130,9 @@
 </head>
 <body>
     <main class="card">
+        <div class="brand-mark">
+            <img src="{{ asset('images/logo3.png') }}" alt="{{ $siteName ?? config('app.name') }} logo">
+        </div>
         <span class="eyebrow">Maintenance Mode</span>
         <h1>We&rsquo;ll be back soon.</h1>
         <p>{{ $message ?? 'We are currently making AstroDuniya even better. Please check back shortly.' }}</p>
