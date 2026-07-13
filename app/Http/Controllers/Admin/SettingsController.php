@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -73,12 +74,15 @@ class SettingsController extends Controller
     public function siteControls()
     {
         $keys = [
-            'site.maintenance.enabled',
+            'site.mode',
             'site.maintenance.message',
             'site.maintenance.facebook_url',
             'site.maintenance.instagram_url',
             'site.maintenance.youtube_url',
             'site.maintenance.whatsapp_url',
+            'site.coming_soon.message',
+            'site.coming_soon.launch_date',
+            'site.coming_soon.newsletter_label',
             'site.youtube_url',
         ];
 
@@ -92,21 +96,29 @@ class SettingsController extends Controller
     public function updateSiteControls(Request $request)
     {
         $data = $request->validate([
-            'site.maintenance.enabled' => ['nullable', 'boolean'],
+            'site.mode' => ['required', 'in:normal,coming_soon,maintenance'],
             'site.maintenance.message' => ['nullable', 'string', 'max:2000'],
             'site.maintenance.facebook_url' => ['nullable', 'url', 'max:2048'],
             'site.maintenance.instagram_url' => ['nullable', 'url', 'max:2048'],
             'site.maintenance.youtube_url' => ['nullable', 'url', 'max:2048'],
             'site.maintenance.whatsapp_url' => ['nullable', 'url', 'max:2048'],
+            'site.coming_soon.message' => ['nullable', 'string', 'max:2000'],
+            'site.coming_soon.launch_date' => ['nullable', 'date'],
+            'site.coming_soon.newsletter_label' => ['nullable', 'string', 'max:120'],
             'site.youtube_url' => ['nullable', 'url', 'max:2048'],
         ]);
+        $data = Arr::dot($data);
 
         foreach ($data as $key => $value) {
             Setting::updateOrCreate(
                 ['key' => $key],
                 [
-                    'value' => is_bool($value) ? ($value ? '1' : '0') : ($value ?? ''),
-                    'type' => is_bool($value) ? 'bool' : 'text',
+                    'value' => $value ?? '',
+                    'type' => match ($key) {
+                        'site.mode' => 'string',
+                        'site.coming_soon.launch_date' => 'string',
+                        default => 'text',
+                    },
                 ]
             );
         }

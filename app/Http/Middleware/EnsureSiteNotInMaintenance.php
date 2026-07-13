@@ -19,10 +19,9 @@ class EnsureSiteNotInMaintenance
             return $next($request);
         }
 
-        $enabled = strtolower((string) Setting::plainValue('site.maintenance.enabled', '0'));
-        $isOn = in_array($enabled, ['1', 'true', 'yes', 'on'], true);
+        $mode = strtolower(trim((string) Setting::plainValue('site.mode', 'normal')));
 
-        if (! $isOn) {
+        if ($mode === 'normal' || $mode === '') {
             return $next($request);
         }
 
@@ -30,24 +29,37 @@ class EnsureSiteNotInMaintenance
             return $next($request);
         }
 
-        return response()->view('frontend.maintenance', [
-            'message' => (string) Setting::plainValue(
-                'site.maintenance.message',
-                'We are currently making AstroDuniya even better. Please check back shortly.'
-            ),
+        $view = $mode === 'coming_soon' ? 'frontend.coming-soon' : 'frontend.maintenance';
+        $status = $mode === 'coming_soon' ? 200 : 503;
+
+        return response()->view($view, [
+            'mode' => $mode,
+            'siteName' => config('app.name'),
+            'message' => $mode === 'coming_soon'
+                ? (string) Setting::plainValue(
+                    'site.coming_soon.message',
+                    'We are preparing something new for you. Please check back soon.'
+                )
+                : (string) Setting::plainValue(
+                    'site.maintenance.message',
+                    'We are currently making AstroDuniya even better. Please check back shortly.'
+                ),
+            'launchDate' => Setting::plainValue('site.coming_soon.launch_date'),
+            'newsletterLabel' => (string) Setting::plainValue('site.coming_soon.newsletter_label', 'Get launch updates'),
             'socialLinks' => [
                 'facebook' => Setting::plainValue('site.maintenance.facebook_url'),
                 'instagram' => Setting::plainValue('site.maintenance.instagram_url'),
                 'youtube' => Setting::plainValue('site.maintenance.youtube_url'),
                 'whatsapp' => Setting::plainValue('site.maintenance.whatsapp_url'),
             ],
-        ], 503);
+        ], $status);
     }
 
     private function shouldBypass(Request $request): bool
     {
         return $request->is('admin', 'admin/*')
             || $request->is('admin/login')
-            || $request->routeIs('admin.login', 'admin.login.post');
+            || $request->routeIs('admin.login', 'admin.login.post')
+            || $request->is('up');
     }
 }
