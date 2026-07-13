@@ -5,6 +5,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Carbon;
 use App\Models\DailyHoroscope;
+use App\Models\HoroscopeContent;
 use App\Services\HoroscopeApiClient;
 
 Artisan::command('inspire', function () {
@@ -64,6 +65,83 @@ Artisan::command('horoscope:fetch-daily {--date= : YYYY-MM-DD (optional, default
     $this->line("Done for {$forDate} (tz: {$timezone}). OK={$ok}, FAILED={$failed}");
 })->purpose('Fetch and store daily horoscopes (all 12 signs) into database');
 
+Artisan::command('horoscope:sync-periods {--periods=* : Optional list of periods to sync (weekly, monthly, yearly)}', function () {
+    $timezone = (string) env('HOROSCOPE_TIMEZONE', 'Asia/Kolkata');
+    $periods = $this->option('periods');
+    $periods = is_array($periods) ? array_values(array_filter(array_map('strtolower', $periods))) : [];
+    if (empty($periods)) {
+        $periods = ['weekly', 'monthly', 'yearly'];
+    }
+
+    $allowedPeriods = ['weekly', 'monthly', 'yearly'];
+    $signs = [
+        'aries',
+        'taurus',
+        'gemini',
+        'cancer',
+        'leo',
+        'virgo',
+        'libra',
+        'scorpio',
+        'sagittarius',
+        'capricorn',
+        'aquarius',
+        'pisces',
+    ];
+
+    /** @var HoroscopeApiClient $client */
+    $client = app(HoroscopeApiClient::class);
+
+    foreach ($periods as $period) {
+        if (! in_array($period, $allowedPeriods, true)) {
+            $this->warn("Skipping unsupported period: {$period}");
+            continue;
+        }
+
+        $ok = 0;
+        $failed = 0;
+
+        foreach ($signs as $sign) {
+            try {
+                $payload = $client->fetchPeriod($period, $sign);
+                if (empty($payload['description'])) {
+                    throw new \RuntimeException('Empty horoscope response.');
+                }
+
+                $description = trim((string) $payload['description']);
+
+                HoroscopeContent::updateOrCreate(
+                    ['period' => $period, 'sign' => $sign],
+                    [
+                        'title' => ucfirst($sign) . ' ' . ucfirst($period) . ' Horoscope',
+                        'health_percent' => null,
+                        'occupation_percent' => null,
+                        'wealth_percent' => null,
+                        'family_percent' => null,
+                        'love_life_percent' => null,
+                        'love_text' => $description,
+                        'career_text' => null,
+                        'health_text' => null,
+                        'money_text' => null,
+                        'content_html' => '<p>' . e($description) . '</p>',
+                        'meta_title' => ucfirst($sign) . ' ' . ucfirst($period) . ' Horoscope',
+                        'meta_description' => null,
+                        'is_active' => true,
+                    ]
+                );
+
+                $ok++;
+                $this->info("{$period}: OK {$sign}");
+            } catch (\Throwable $e) {
+                $failed++;
+                $this->error("{$period}: FAILED {$sign} ({$e->getMessage()})");
+            }
+        }
+
+        $this->line("Done {$period} (tz: {$timezone}). OK={$ok}, FAILED={$failed}");
+    }
+})->purpose('Fetch and store weekly/monthly/yearly horoscopes into horoscope contents');
+
 app()->booted(function () {
     /** @var Schedule $schedule */
     $schedule = app(Schedule::class);
@@ -76,4 +154,10 @@ app()->booted(function () {
         ->timezone($timezone)
         ->onOneServer()
         ->withoutOverlapping(30);
+
+    $schedule->command('horoscope:sync-periods')
+        ->dailyAt('06:30')
+        ->timezone($timezone)
+        ->onOneServer()
+        ->withoutOverlapping(45);
 });
