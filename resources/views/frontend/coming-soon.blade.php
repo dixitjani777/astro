@@ -134,7 +134,7 @@
 <body>
     <main class="card">
         <div class="brand-mark">
-            <img src="{{ asset('images/logo3.png') }}" alt="{{ $siteName ?? config('app.name') }} logo">
+            <img src="{{ asset('images/logo.png') }}" alt="{{ $siteName ?? config('app.name') }} logo">
         </div>
         <span class="eyebrow">Coming Soon</span>
         <h1>Something new is on the way.</h1>

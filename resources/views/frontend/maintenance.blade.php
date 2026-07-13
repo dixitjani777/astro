@@ -131,7 +131,7 @@
 <body>
     <main class="card">
         <div class="brand-mark">
-            <img src="{{ asset('images/logo3.png') }}" alt="{{ $siteName ?? config('app.name') }} logo">
+            <img src="{{ asset('images/logo.png') }}" alt="{{ $siteName ?? config('app.name') }} logo">
         </div>
         <span class="eyebrow">Maintenance Mode</span>
         <h1>We&rsquo;ll be back soon.</h1>
