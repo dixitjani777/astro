@@ -8,6 +8,7 @@ use App\Models\DailyHoroscope;
 use App\Models\HomeService;
 use App\Models\HomeSlider;
 use Illuminate\Support\Facades\Cache;
+use App\Support\FrontendTheme;
 
 class Home extends Controller
 {
@@ -20,7 +21,7 @@ class Home extends Controller
             ->whereDate('for_date', $forDate)
             ->first();
 
-        return view('frontend/home', [
+        $data = [
             'dailyPreview' => $dailyPreview,
             'dailyPreviewDate' => Carbon::parse($forDate, $timezone),
             'homeSlides' => Cache::remember('frontend.home_sliders.active', 300, function () {
@@ -43,6 +44,12 @@ class Home extends Controller
                 ->orderBy('sort_order')
                 ->orderBy('title')
                 ->get(),
-        ]);
+        ];
+
+        return app(FrontendTheme::class)->view(
+            'frontend.themes.light.home',
+            'frontend.home',
+            $data
+        );
 	}
 }

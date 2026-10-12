@@ -1,5 +1,5 @@
 <div id="chatbot-button" aria-label="Chatbot">
-    <i class="fas fa-comments" style="font-size: 24px;"></i>
+    <i class="fa fa-comments fas" style="font-size: 24px;"></i>
 </div>
 
 <div id="chatbot-window">

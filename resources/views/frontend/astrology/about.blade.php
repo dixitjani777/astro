@@ -1,5 +1,5 @@
 <!-- layout, title, description, keywords -->
-@extends('frontend.layouts.master')
+@extends(app(\App\Support\FrontendTheme::class)->active() === 'light' ? 'frontend.themes.light.layouts.master' : 'frontend.layouts.master')
 @section('title','About Astrology : Learn how astrology works - Astroduniya')
 @section('description','Astrology is an early culture which says that the quality and fortune of human depend on the situation of the Planets at the time of birth.')
 @section('keywords','Learn astrology, how astrology works, all about astrology, understand astrology, astrology 2020, free astrology, astrology online, aspects in astrology, aspects in astrology')
@@ -14,7 +14,23 @@
 
 <!-- Start Section -->
 @section('content')
-@include('frontend.layouts.subnav')
+@if(app(\App\Support\FrontendTheme::class)->active() === 'light')
+<section class="hs_indx_title_main_wrapper">
+    <div class="hs_title_img_overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 full_width">
+                <div class="hs_indx_title_left_wrapper"><h2>About Astrology</h2></div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 full_width">
+                <div class="hs_indx_title_right_wrapper"><ul><li><a href="{{ url('/') }}">Home</a> &nbsp;&nbsp;&nbsp;&gt;</li><li>About Astrology</li></ul></div>
+            </div>
+        </div>
+    </div>
+</section>
+@else
+    @include('frontend.layouts.subnav')
+@endif
 
 <section class="cus_pd35">
 	<div class="container">

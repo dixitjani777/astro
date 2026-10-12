@@ -1,5 +1,5 @@
 <!-- layout, title, description, keywords -->
-@extends('frontend.layouts.master')
+@extends(app(\App\Support\FrontendTheme::class)->active() === 'light' ? 'frontend.themes.light.layouts.master' : 'frontend.layouts.master')
 @section('title','Book Pandit Online - Astroduniya')
 @section('description','Book your Pandit online to perform your pujas. Perform your puja with our Pandits at best price including all puja materials')
 @section('keywords','book pandit, book pandit online, book pandit ji, pandit ji for puja near me, online pandit near me, book my purohit, online pandit consultation, pandit for puja in mumbai, astroduniya pandit ji')
@@ -15,8 +15,14 @@
 <!-- Start Section -->
 @section('content')
 
+@if(app(\App\Support\FrontendTheme::class)->active() === 'light')
+<section class="hs_indx_title_main_wrapper"><div class="hs_title_img_overlay"></div><div class="container"><div class="row"><div class="col-lg-12 full_width"><div class="hs_indx_title_left_wrapper"><h2>Book Pandit Ji</h2></div></div><div class="col-lg-12 full_width"><div class="hs_indx_title_right_wrapper"><ul><li><a href="{{ url('/') }}">Home</a> &nbsp;&nbsp;&nbsp;&gt;</li><li>Book Pandit Ji</li></ul></div></div></div></div></section>
+@else
+@include('frontend.layouts.subnav')
+@endif
 
-<section>
+
+<section class="light-legacy-inner-section light-pandit-book">
 	<div class="container">
 		<div class="row">
 			
@@ -206,7 +212,7 @@
 
 						<div class="bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
 							<a href="portfolio-single-1.html" class="d-block overflow-hidden overlay-dark-hover overlay-opacity-2 text-decoration-none text-dark">
-								<img class="img-fluid lazy rounded" data-src="{{ asset('images/services/pt2.jpg') }}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAQAAACoWRFeAAAAE0lEQVR42mNkYGAcRaNoFA0cAgAUvAEtNFICWAAAAABJRU5ErkJggg==" alt="...">
+								<img class="img-fluid rounded" src="{{ asset('images/services/pt2.jpg') }}" alt="Prayer service">
 							</a>
 
 							<div class="p-3">

@@ -15,26 +15,28 @@
 <!-- Start Section -->
 @section('content')
 
-<section class="p-0">
+<div class="buy-page-banner"><div class="buy-page-banner__title">Buy Gemstone</div><div class="buy-page-banner__crumbs"><a href="{{ url('/') }}">Home</a><span>&gt;</span><span>Buy Gemstone</span></div></div>
+
+<section class="p-0 light-gemstone-buy">
 	<div class="container">
 		
 		<!-- info ba r-->
-		<section id="infbr" class="p-0 info-bar info-bar-clean">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-4">
+		<div id="infbr" class="p-0 info-bar info-bar-clean light-buy-info">
+			<div class="container light-buy-info-inner">
+				<div class="row light-buy-info-grid">
+					<div class="col-md-4 light-buy-info-item">
 						<img src="{{ asset('images/infobar/checkked.png')}}" class="info_img" alt="expert astrologer">
 						<h1 class="letter-spacing-03 font-weight-medium fs--20"><b>Govt. Certified Gemstones</b></h1>
 						<p class="letter-spacing-1 m-0"><b class="info_sub_clr">Authorized Gemstone</b></p>				
 					</div>
 
-					<div class="col-md-4">
+					<div class="col-md-4 light-buy-info-item">
 						<img src="{{ asset('images/infobar/checkked.png')}}" class="info_img" alt="panditji">
 						<h1 class="letter-spacing-03 font-weight-medium fs--20"><b>Premium Gemstones</b></h1>
 						<p class="letter-spacing-1 m-0"><b class="info_sub_clr">Quality Gemstones</b></p>
 					</div>
 					
-					<div class="col-md-4">
+					<div class="col-md-4 light-buy-info-item">
 						<img src="{{ asset('images/infobar/checkked.png')}}" class="info_img" alt="online support">
 						<h1 class="letter-spacing-03 font-weight-medium fs--20"><b>ONLINE SUPPORT</b></h1>
 						<p class="letter-spacing-1 m-0"><b class="info_sub_clr">Professional Team</b></p>
@@ -44,19 +46,19 @@
 				</div>
 			</div>
 			
-		</section>
+		</div>
 		<!-- /info bar -->
 	</div>
 </section>
 
 <!-- Choose Gemstones -->
-<section id="daily_horoscope" class="bg-light">
+<div id="daily_horoscope" class="bg-light light-buy-products">
 <div>
-	<div class="container mb-6">
+	<div class="container mb-6 light-buy-products-inner">
 		
-		<div class="row">
+		<div class="row light-buy-products-grid">
 			
-			<div class="col-lg-4 mb-4">
+			<div class="col-lg-4 mb-4 light-buy-product">
 
 				<div class="card shadow-md shadow-lg-hover transition-hover-top h-100 bl-0 br-0 bb-0 bw--2 text-center">
 					<div class="card-body">
@@ -286,7 +288,7 @@
 
 	</div>	
 </div>	
-</section>
+</div>
 <!-- /Choose Gemstones -->
 
 @endsection

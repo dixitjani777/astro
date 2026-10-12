@@ -1,5 +1,5 @@
 <!-- layout, title, description, keywords -->
-@extends('frontend.layouts.master')
+@extends(app(\App\Support\FrontendTheme::class)->active() === 'light' ? 'frontend.themes.light.layouts.master' : 'frontend.layouts.master')
 @php
 	$metaTitle = (!empty($cms?->meta_title)) ? $cms->meta_title : 'Horoscope Matching : Love compatibility - Astroduniya';
 	$metaDescription = (!empty($cms?->meta_description)) ? $cms->meta_description : 'Get your horoscope matching report with highest accuracy result. It gives you overall marriage life predictions. Also, get solutions from report if any required.';
@@ -19,10 +19,14 @@
 
 <!-- Start Section -->
 @section('content')
-@include('frontend.layouts.subnav')
+@if(app(\App\Support\FrontendTheme::class)->active() === 'light')
+<section class="hs_indx_title_main_wrapper"><div class="hs_title_img_overlay"></div><div class="container"><div class="row"><div class="col-lg-12 full_width"><div class="hs_indx_title_left_wrapper"><h2>Matchmaking</h2></div></div><div class="col-lg-12 full_width"><div class="hs_indx_title_right_wrapper"><ul><li><a href="{{ url('/') }}">Home</a> &nbsp;&nbsp;&nbsp;&gt;</li><li>Horoscope Matching Report</li></ul></div></div></div></div></section>
+@else
+    @include('frontend.layouts.subnav')
+@endif
 
 
-<section>
+<section class="light-legacy-inner-section light-horoscope-matching">
 	<div class="container">
 		<div class="row">	
 			<div class="col-lg-9 order-1 order-lg-1">		

@@ -1,5 +1,5 @@
 <!-- layout, title, description, keywords -->
-@extends('frontend.layouts.master')
+@extends(app(\App\Support\FrontendTheme::class)->active() === 'light' ? 'frontend.themes.light.layouts.master' : 'frontend.layouts.master')
 @section('title','Blogs : Astrological articles and discussion - Astroduniya')
 @section('description','Get Astrological information, news, blogs, article of spiritual activities and many other subjects.')
 @section('keywords','astrology blogs, astrology articles, astrology news, astrology discussion, popular blogs, read blogs, blog sites')
@@ -14,7 +14,17 @@
 
 <!-- Start Section -->
 @section('content')
+@if(app(\App\Support\FrontendTheme::class)->active() === 'light')
+<section class="hs_indx_title_main_wrapper">
+	<div class="hs_title_img_overlay"></div>
+	<div class="container"><div class="row">
+		<div class="col-lg-12 full_width"><div class="hs_indx_title_left_wrapper"><h2>Blogs</h2></div></div>
+		<div class="col-lg-12 full_width"><div class="hs_indx_title_right_wrapper"><ul><li><a href="{{ url('/') }}">Home</a> &nbsp;&nbsp;&nbsp;&gt;</li><li>Blogs</li></ul></div></div>
+	</div></div>
+</section>
+@else
 @include('frontend.layouts.subnav')
+@endif
 	
 <section>
 	<div class="container">

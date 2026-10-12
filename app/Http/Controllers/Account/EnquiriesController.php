@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Enquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use App\Support\FrontendTheme;
 
 class EnquiriesController extends Controller
 {
@@ -18,7 +19,7 @@ class EnquiriesController extends Controller
             'replies.senderUser',
         ]);
 
-        return view('frontend.account.enquiry_show', [
+        return app(FrontendTheme::class)->view('frontend.themes.light.account.enquiry-show', 'frontend.account.enquiry_show', [
             'enquiry' => $enquiry,
         ]);
     }

@@ -1,5 +1,5 @@
 <!-- layout, title, description, keywords -->
-@extends('frontend.layouts.master')
+@extends(app(\App\Support\FrontendTheme::class)->active() === 'light' ? 'frontend.themes.light.layouts.master' : 'frontend.layouts.master')
 @section('title','About Planets : 12 planets in solar system - Astroduniya')
 @section('description','The planets is also called as Grahas. It have their own significance to affect the human life. It have the excellent power upon the entire world.')
 @section('keywords','about planets, planets information, planets in astrology,  planets names, what are the 12 planets, what are the 9 planets, solar system planets, sun planet, mars planet, mercury planet,  rahu ketu')
@@ -14,9 +14,13 @@
 
 <!-- Start Section -->
 @section('content')
-@include('frontend.layouts.subnav')
+@if(app(\App\Support\FrontendTheme::class)->active() === 'light')
+<section class="hs_indx_title_main_wrapper"><div class="hs_title_img_overlay"></div><div class="container"><div class="row"><div class="col-lg-12 full_width"><div class="hs_indx_title_left_wrapper"><h2>About Planets</h2></div></div><div class="col-lg-12 full_width"><div class="hs_indx_title_right_wrapper"><ul><li><a href="{{ url('/') }}">Home</a> &nbsp;&nbsp;&nbsp;&gt;</li><li>The Planets</li></ul></div></div></div></div></section>
+@else
+    @include('frontend.layouts.subnav')
+@endif
 
-<section>
+<section class="light-legacy-inner-section light-planets-page">
 	<div class="container">
 		<div class="row">	
 			<div class="col-lg-9 order-1 order-lg-1">

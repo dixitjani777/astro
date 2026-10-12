@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PanditService;
+use App\Support\FrontendTheme;
 
 class Panditji extends Controller
 {
     public function book(){
-    	return view('frontend/panditji/book');
+	    	return view('frontend.panditji.book');
 	}
 
 	public function services(){
-    	return view('frontend/panditji/services', [
+	    	return app(FrontendTheme::class)->view('frontend.themes.light.services.index', 'frontend/panditji/services', [
+	            'pageTitle' => 'Panditji Services',
             'panditServices' => PanditService::query()
                 ->where('is_active', true)
                 ->orderBy('sort_order')
@@ -22,22 +24,22 @@ class Panditji extends Controller
 	}
 
 	public function puja_services(){
-    	return view('frontend/panditji/puja_services');
+	    	return app(FrontendTheme::class)->view('frontend.themes.light.services.index', 'frontend/panditji/puja_services', ['pageTitle' => 'Puja Services']);
 	}
 
 	public function havan_services(){
-    	return view('frontend/panditji/havan_services');
+	    	return app(FrontendTheme::class)->view('frontend.themes.light.services.index', 'frontend/panditji/havan_services', ['pageTitle' => 'Havan Services']);
 	}
 
 	public function jaap(){
-    	return view('frontend/panditji/jaap');
+	    	return app(FrontendTheme::class)->view('frontend.themes.light.services.index', 'frontend/panditji/jaap', ['pageTitle' => 'Jaap']);
 	}
 
 	public function katha(){
-    	return view('frontend/panditji/katha');
+	    	return app(FrontendTheme::class)->view('frontend.themes.light.services.index', 'frontend/panditji/katha', ['pageTitle' => 'Katha']);
 	}
 
 	public function pujas(){
-    	return view('frontend/panditji/pujas');
+	    	return app(FrontendTheme::class)->view('frontend.themes.light.services.index', 'frontend/panditji/pujas', ['pageTitle' => 'Pujas']);
 	}
 }

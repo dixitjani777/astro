@@ -1,5 +1,5 @@
 <!-- layout, title, description, keywords -->
-@extends('frontend.layouts.master')
+@extends(app(\App\Support\FrontendTheme::class)->active() === 'light' ? 'frontend.themes.light.layouts.master' : 'frontend.layouts.master')
 @section('title','Houses of zodiac : 12 house in astrology - Astroduniya')
 @section('description','The birth chart is divided into twelve equal sections, which contain the Houses. Each house is associated with a set of qualities.')
 @section('keywords','house of zodiac, house of zodiac signs, 12 house of zodiac, 12 houses in vedic astrology, 12 houses in kundli, elements of the house, second house astrology, 3rd house astrology,  4rd house astrology')
@@ -14,9 +14,13 @@
 
 <!-- Start Section -->
 @section('content')
-@include('frontend.layouts.subnav')
+@if(app(\App\Support\FrontendTheme::class)->active() === 'light')
+<section class="hs_indx_title_main_wrapper"><div class="hs_title_img_overlay"></div><div class="container"><div class="row"><div class="col-lg-12 full_width"><div class="hs_indx_title_left_wrapper"><h2>About Houses</h2></div></div><div class="col-lg-12 full_width"><div class="hs_indx_title_right_wrapper"><ul><li><a href="{{ url('/') }}">Home</a> &nbsp;&nbsp;&nbsp;&gt;</li><li>The Astrological Houses</li></ul></div></div></div></div></section>
+@else
+    @include('frontend.layouts.subnav')
+@endif
 
-<section>
+<section class="light-legacy-inner-section light-houses-page">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-9 order-1 order-lg-1">	
@@ -31,8 +35,8 @@
 						The Houses are a roadmap for understanding your past, present, and future.<span class="font-weight-medium badge badge-pill badge-primary badge-soft fs--15 styleColor">Choose house to explore.</span>
 					</p><br/>
 
-					<div class="row">
-						<div class="col-6m col-lg-3">
+					<div class="row light-house-grid">
+						<div class="light-house-item">
 
 							<div class="card h-100 bw--2 text-center bg-btlight">
 								<div class="card-body mb-2 my-2 ">
@@ -47,7 +51,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-house-item">
 
 							<div class="card h-100 bw--2 text-center bg-btlight">
 								<div class="card-body my-2 mb-2">
@@ -59,10 +63,10 @@
 									</a>
 								</div>
 							</div>
-
 						</div>
 
-						<div class="col-6m col-lg-3">
+
+						<div class="light-house-item">
 
 							<div class="card h-100 bw--2 text-center bg-btlight">
 								<div class="card-body">
@@ -77,7 +81,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-house-item">
 
 							<div class="card h-100 bw--2 text-center bg-btlight">
 								<div class="card-body">
@@ -89,13 +93,12 @@
 									</a>
 								</div>
 							</div>
-
 						</div>
-					</div>
-					
-					<div class="row">
 
-						<div class="col-6m col-lg-3">
+					
+
+
+						<div class="light-house-item">
 
 							<div class="card h-100 bw--2 text-center bg-btlight">
 								<div class="card-body">
@@ -110,7 +113,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-house-item">
 
 							<div class="card h-100 bw--2 text-center bg-btlight">
 								<div class="card-body">
@@ -125,7 +128,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-house-item">
 
 							<div class="card h-100 bw--2 text-center bg-btlight">
 								<div class="card-body">
@@ -140,7 +143,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-house-item">
 
 							<div class="card h-100 bw--2 text-center bg-btlight">
 								<div class="card-body">
@@ -154,11 +157,10 @@
 							</div>
 
 						</div>
-					</div>
 					
-					<div class="row">
 
-						<div class="col-6m col-lg-3">
+
+						<div class="light-house-item">
 
 							<div class="card h-100 bw--2 text-center bg-btlight">
 								<div class="card-body">
@@ -173,7 +175,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-house-item">
 
 							<div class="card h-100 bw--2 text-center bg-btlight">
 								<div class="card-body">
@@ -188,7 +190,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-house-item">
 
 							<div class="card h-100 bw--2 text-center bg-btlight">
 								<div class="card-body">
@@ -203,7 +205,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-house-item">
 
 							<div class="card h-100 bw--2 text-center bg-btlight">
 								<div class="card-body">

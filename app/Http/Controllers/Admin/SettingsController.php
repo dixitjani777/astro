@@ -84,6 +84,7 @@ class SettingsController extends Controller
             'site.coming_soon.launch_date',
             'site.coming_soon.newsletter_label',
             'site.youtube_url',
+            'site.frontend_theme',
         ];
 
         $settings = Setting::query()->whereIn('key', $keys)->pluck('value', 'key')->toArray();
@@ -106,6 +107,7 @@ class SettingsController extends Controller
             'site.coming_soon.launch_date' => ['nullable', 'date'],
             'site.coming_soon.newsletter_label' => ['nullable', 'string', 'max:120'],
             'site.youtube_url' => ['nullable', 'url', 'max:2048'],
+            'site.frontend_theme' => ['required', 'in:current,light'],
         ]);
         $data = Arr::dot($data);
 

@@ -7,6 +7,7 @@ use App\Models\DailyHoroscope;
 use App\Models\Enquiry;
 use App\Models\Offer;
 use App\Models\Setting;
+use App\Support\FrontendTheme;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
@@ -22,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(FrontendTheme::class, fn () => new FrontendTheme());
     }
 
     /**
@@ -46,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
                     return;
                 }
 
-                $siteSettings = Cache::remember('settings.all', 3600, function () {
+            $siteSettings = Cache::remember('settings.all', 3600, function () {
                     return Setting::pluck('value', 'key')->toArray();
                 });
             } catch (QueryException $e) {
@@ -54,6 +55,9 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $view->with('siteSettings', $siteSettings);
+            $view->with('activeFrontendTheme', in_array($siteSettings['site.frontend_theme'] ?? 'current', ['current', 'light'], true)
+                ? ($siteSettings['site.frontend_theme'] ?? 'current')
+                : 'current');
         });
 
         view()->composer('*', function ($view) {

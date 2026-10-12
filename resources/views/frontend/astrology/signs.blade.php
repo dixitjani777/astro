@@ -1,5 +1,5 @@
 <!-- layout, title, description, keywords -->
-@extends('frontend.layouts.master')
+@extends(app(\App\Support\FrontendTheme::class)->active() === 'light' ? 'frontend.themes.light.layouts.master' : 'frontend.layouts.master')
 @section('title','About Zodiac : 12 signs of zodiac - Astroduniya')
 @section('description','The position of the Sun at the time you were born, determines your zodiac sign. Zodiac sign is the biggest influence on human life.')
 @section('keywords','about zodiac, about zodiac signs, 12 signs of zodiac, Aries, Taurus, Gemini, Cancer, Leo, Virgo, Libra, Scorpio, Sagittarius, Capricorn, Aquarius, Pisces')
@@ -14,21 +14,25 @@
 
 <!-- Start Section -->
 @section('content')
-@include('frontend.layouts.subnav')
+@if(app(\App\Support\FrontendTheme::class)->active() === 'light')
+<section class="hs_indx_title_main_wrapper"><div class="hs_title_img_overlay"></div><div class="container"><div class="row"><div class="col-lg-12 full_width"><div class="hs_indx_title_left_wrapper"><h2>About Zodiac</h2></div></div><div class="col-lg-12 full_width"><div class="hs_indx_title_right_wrapper"><ul><li><a href="{{ url('/') }}">Home</a> &nbsp;&nbsp;&nbsp;&gt;</li><li>Sign of Zodiac</li></ul></div></div></div></div></section>
+@else
+    @include('frontend.layouts.subnav')
+@endif
 
-<section>
+<section class="light-legacy-inner-section light-zodiac-page">
 	<div class="container">
 		<div class="row">
 
-			<div class="col-lg-9 order-1 order-lg-1">	
+			<div class="col-lg-9 order-1 order-lg-1 light-zodiac-content">	
 				<div>
 					<p>
 						The position of the Sun at the time you were born, determines your astrology sign, also known as your zodiac sign. Your zodiac sign impacts everything about you.
 						In astrology, zodiac sign is the biggest influence on human life. Each zodiac sign represent its own set of strengths, challenges, relationships.     <span class="font-weight-normal badge badge-pill badge-primary badge-soft fs--15 styleColor">Choose your zodiac to explore.</span>
 					</p> <br/>
 				
-					<div class="row">
-						<div class="col-6m col-lg-3">
+					<div class="row light-zodiac-grid">
+						<div class="light-zodiac-item">
 
 							<div class="card bg-btlight bw--2 text-center">
 								<div class="card-body my-2 mb-2">
@@ -46,7 +50,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-zodiac-item">
 
 							<div class="card bg-btlight bw--2 text-center">
 								<div class="card-body my-2 mb-2">
@@ -64,7 +68,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-zodiac-item">
 
 							<div class="card bg-btlight bw--2 text-center">
 								<div class="card-body my-2 mb-2">
@@ -82,7 +86,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-zodiac-item">
 
 							<div class="card bg-btlight bw--2 text-center">
 								<div class="card-body my-2 mb-2">
@@ -100,11 +104,9 @@
 
 						</div>
 
-					</div>
-					
-					<div class="row">
 
-						<div class="col-6m col-lg-3">
+
+						<div class="light-zodiac-item">
 
 							<div class="card bg-btlight bw--2 text-center">
 								<div class="card-body my-2 mb-2">
@@ -122,7 +124,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-zodiac-item">
 
 							<div class="card bg-btlight bw--2 text-center">
 								<div class="card-body my-2 mb-2">
@@ -140,7 +142,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-zodiac-item">
 
 							<div class="card bg-btlight bw--2 text-center">
 								<div class="card-body my-2 mb-2">
@@ -158,7 +160,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-zodiac-item">
 
 							<div class="card bg-btlight bw--2 text-center">
 								<div class="card-body my-2 mb-2">
@@ -176,11 +178,9 @@
 
 						</div>
 						
-					</div>
-					
-					<div class="row">
 
-						<div class="col-6m col-lg-3">
+
+						<div class="light-zodiac-item">
 
 							<div class="card bg-btlight bw--2 text-center">
 								<div class="card-body my-2 mb-2">
@@ -198,7 +198,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-zodiac-item">
 
 							<div class="card bg-btlight bw--2 text-center">
 								<div class="card-body my-2 mb-2">
@@ -216,7 +216,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-zodiac-item">
 
 							<div class="card bg-btlight bw--2 text-center">
 								<div class="card-body my-2 mb-2">
@@ -234,7 +234,7 @@
 
 						</div>
 						
-						<div class="col-6m col-lg-3">
+						<div class="light-zodiac-item">
 
 							<div class="card bg-btlight bw--2 text-center">
 								<div class="card-body my-2 mb-2">

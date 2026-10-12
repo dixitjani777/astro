@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use App\Models\DailyHoroscope;
 use App\Models\HoroscopeContent;
 use App\Services\HoroscopeApiClient;
+use App\Support\FrontendTheme;
 
 class Horoscope extends Controller
 {
@@ -26,7 +27,8 @@ class Horoscope extends Controller
     ];
 
     public function about(){
-        return view('frontend/horoscope/about', [
+        return app(FrontendTheme::class)->view('frontend/horoscope/about', 'frontend/horoscope/about', [
+            'pageTitle' => 'Horoscope',
             'cms' => $this->cms('about', 'general'),
         ]);
     }
@@ -38,7 +40,8 @@ class Horoscope extends Controller
             abort(404);
         }
 
-        return view('frontend/horoscope/prediction', [
+        return app(FrontendTheme::class)->view('frontend/horoscope/prediction', 'frontend/horoscope/prediction', [
+            'pageTitle' => ucfirst($period) . ' Horoscope',
             'cms' => $this->cms('prediction', $period),
         ]);
     }
@@ -83,7 +86,7 @@ class Horoscope extends Controller
             }
         }
 
-        return view('frontend/horoscope/daily', [
+        return app(FrontendTheme::class)->view('frontend.themes.light.horoscope.daily', 'frontend/horoscope/daily', [
             'sign' => $sign,
             'signLabel' => self::VALID_SIGNS[$sign],
             'forDate' => Carbon::parse($forDate, $timezone),
@@ -106,13 +109,15 @@ class Horoscope extends Controller
     }
 
     public function report(){
-        return view('frontend/horoscope/report', [
+        return app(FrontendTheme::class)->view('frontend/horoscope/report', 'frontend/horoscope/report', [
+            'pageTitle' => 'Horoscope Report',
             'cms' => $this->cms('report', 'general'),
         ]);
     }
 
     public function matching(){
-        return view('frontend/horoscope/matching', [
+        return app(FrontendTheme::class)->view('frontend/horoscope/matching', 'frontend/horoscope/matching', [
+            'pageTitle' => 'Horoscope Matching',
             'cms' => $this->cms('matching', 'general'),
         ]);
     }
@@ -124,7 +129,8 @@ class Horoscope extends Controller
             abort(404);
         }
 
-        return view("frontend/horoscope/{$period}", [
+        return app(FrontendTheme::class)->view("frontend/horoscope/{$period}", "frontend/horoscope/{$period}", [
+            'pageTitle' => $signLabel . ' ' . ucfirst($period) . ' Horoscope',
             'sign' => $sign,
             'signLabel' => self::VALID_SIGNS[$sign],
             'cms' => $this->cms($period, $sign),

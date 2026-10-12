@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\FrontendTheme;
+
 use App\Mail\OtpCodeMail;
 use App\Models\Enquiry;
 use App\Models\User;
@@ -24,7 +26,7 @@ class Account extends Controller
             return redirect('/myaccount/querystatus');
         }
 
-    	return view('frontend/account/login_register', [
+      	return app(FrontendTheme::class)->view('frontend.themes.light.account.login', 'frontend/account/login_register', [
             'loginMode' => request('mode') === 'password' ? 'password' : 'otp',
         ]);
 	}
@@ -72,7 +74,7 @@ class Account extends Controller
     }
 
 	public function forgotpassword(){
-    	return view('frontend/account/forgot_password');
+	    	return app(FrontendTheme::class)->view('frontend.themes.light.account.forgot-password', 'frontend/account/forgot_password');
 	}
 
 	public function loginwithotp(){
@@ -139,7 +141,7 @@ class Account extends Controller
 	}
 
 	public function setting(){
-    	return view('frontend/account/settings_dynamic', [
+	    	return app(FrontendTheme::class)->view('frontend.themes.light.account.settings', 'frontend/account/settings_dynamic', [
             'user' => request()->user(),
         ]);
 	}
@@ -259,7 +261,7 @@ class Account extends Controller
 
     public function showResetForm(string $token)
     {
-        return view('frontend/account/reset_password', [
+	    return app(FrontendTheme::class)->view('frontend.themes.light.account.reset-password', 'frontend/account/reset_password', [
             'token' => $token,
             'email' => request('email'),
         ]);
@@ -355,7 +357,7 @@ class Account extends Controller
             ->latest()
             ->paginate(15);
 
-        return view('frontend.account.enquiries_page', [
+        return app(FrontendTheme::class)->view('frontend.themes.light.account.enquiries', 'frontend.account.enquiries_page', [
             'pageTitle' => $title,
             'pageSubtitle' => $subtitle,
             'enquiries' => $enquiries,

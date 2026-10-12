@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BlogPost;
+use App\Support\FrontendTheme;
 use App\Models\CmsPage;
 use Illuminate\Http\Request;
 
@@ -33,7 +34,7 @@ class Section extends Controller
     }
 
     public function contact(){
-        return $this->cmsPageOrFallbackView('contact', 'frontend/section/contact');
+          return app(FrontendTheme::class)->view('frontend.themes.light.contact.index', 'frontend/section/contact');
 	}
 
     public function about(){
@@ -46,13 +47,13 @@ class Section extends Controller
             ->latest()
             ->paginate(12);
 
-        return view('frontend/section/blogs', [
+          return app(FrontendTheme::class)->view('frontend.themes.light.blog.index', 'frontend/section/blogs', [
             'posts' => $posts,
         ]);
     }
 
     public function readblog(BlogPost $post){
-        return view('frontend/section/readblog', [
+          return app(FrontendTheme::class)->view('frontend.themes.light.blog.show', 'frontend/section/readblog', [
             'post' => $post,
         ]);
     }
@@ -66,7 +67,16 @@ class Section extends Controller
     }
 
     public function feedback(){
-        return $this->cmsPageOrFallbackView('feedback', 'frontend/section/feedback');
+        $page = CmsPage::query()
+            ->where('slug', 'feedback')
+            ->where('is_published', true)
+            ->first();
+
+        if ($page) {
+            return view('frontend.cms.page', ['page' => $page]);
+        }
+
+        return app(FrontendTheme::class)->view('frontend.themes.light.feedback.index', 'frontend/section/feedback');
     }
 
     public function payment(){
@@ -74,11 +84,33 @@ class Section extends Controller
     }
 
     public function privacy(){
-        return $this->cmsPageOrFallbackView('privacy', 'frontend/section/privacy');
+        $page = CmsPage::query()
+            ->where('slug', 'privacy')
+            ->where('is_published', true)
+            ->first();
+
+        if ($page) {
+            return app(FrontendTheme::class)->view('frontend.themes.light.cms.page', 'frontend.cms.page', [
+                'page' => $page,
+            ]);
+        }
+
+        return app(FrontendTheme::class)->view('frontend.themes.light.legal.privacy', 'frontend/section/privacy');
     }
 
     public function terms(){
-        return $this->cmsPageOrFallbackView('terms', 'frontend/section/terms');
+        $page = CmsPage::query()
+            ->where('slug', 'terms')
+            ->where('is_published', true)
+            ->first();
+
+        if ($page) {
+            return app(FrontendTheme::class)->view('frontend.themes.light.cms.page', 'frontend.cms.page', [
+                'page' => $page,
+            ]);
+        }
+
+        return app(FrontendTheme::class)->view('frontend.themes.light.legal.terms', 'frontend/section/terms');
     }
 
     public function page(string $slug)
@@ -88,7 +120,7 @@ class Section extends Controller
             ->where('is_published', true)
             ->firstOrFail();
 
-        return view('frontend.cms.page', [
+          return app(FrontendTheme::class)->view('frontend.themes.light.cms.page', 'frontend.cms.page', [
             'page' => $page,
         ]);
     }

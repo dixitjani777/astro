@@ -1,5 +1,5 @@
 <!-- layout, title, description, keywords -->
-@extends('frontend.layouts.master')
+@extends(app(\App\Support\FrontendTheme::class)->active() === 'light' ? 'frontend.themes.light.layouts.master' : 'frontend.layouts.master')
 @section('title','Gemstone Recommendations : Accurate Guide - Astroduniya')
 @section('description','People should wear recommended gemstone based on birth chart. People should consult with an expert astrologer for wearing recommended gemstone.')
 @section('keywords','gemstone recommendation, gemstone guide, gemstone recommendation free, gemstones, power of gemstone, lucky gemstone, gemstones online, buy gemstones, gemstones buy, gemstones buy online, gemstones near me')
@@ -14,11 +14,15 @@
 
 <!-- Start Section -->
 @section('content')
-@include('frontend.layouts.subnav')
+@if(app(\App\Support\FrontendTheme::class)->active() === 'light')
+<section class="hs_indx_title_main_wrapper"><div class="hs_title_img_overlay"></div><div class="container"><div class="row"><div class="col-lg-12 full_width"><div class="hs_indx_title_left_wrapper"><h2>Gemstone Recommendations</h2></div></div><div class="col-lg-12 full_width"><div class="hs_indx_title_right_wrapper"><ul><li><a href="{{ url('/') }}">Home</a> &nbsp;&nbsp;&nbsp;&gt;</li><li>Gemstone Recommendations</li></ul></div></div></div></div></section>
+@else
+    @include('frontend.layouts.subnav')
+@endif
 
 
 
-<section>
+<section class="light-legacy-inner-section light-gemstone-recommendations">
 	<div class="container">
 		<div class="row">	
 			<div class="col-lg-9 order-1 order-lg-1">		

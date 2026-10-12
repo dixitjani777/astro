@@ -1,5 +1,5 @@
 <!-- layout, title, description, keywords -->
-@extends('frontend.layouts.master')
+@extends(app(\App\Support\FrontendTheme::class)->active() === 'light' ? 'frontend.themes.light.layouts.master' : 'frontend.layouts.master')
 @section('title','Contact Us - Astroduniya')
 @section('description','Contact Us')
 @section('keywords','Contact Us')
@@ -14,7 +14,17 @@
 
 <!-- Start Section -->
 @section('content')
+@if(app(\App\Support\FrontendTheme::class)->active() === 'light')
+<section class="hs_indx_title_main_wrapper">
+	<div class="hs_title_img_overlay"></div>
+	<div class="container"><div class="row">
+		<div class="col-lg-12 full_width"><div class="hs_indx_title_left_wrapper"><h2>Contact Us</h2></div></div>
+		<div class="col-lg-12 full_width"><div class="hs_indx_title_right_wrapper"><ul><li><a href="{{ url('/') }}">Home</a> &nbsp;&nbsp;&nbsp;&gt;</li><li>Contact Us</li></ul></div></div>
+	</div></div>
+</section>
+@else
 @include('frontend.layouts.subnav')
+@endif
 
 <!-- block : contact -->
 <section id="section_contact">

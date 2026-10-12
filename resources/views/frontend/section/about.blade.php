@@ -1,5 +1,5 @@
 <!-- layout, title, description, keywords -->
-@extends('frontend.layouts.master')
+@extends(app(\App\Support\FrontendTheme::class)->active() === 'light' ? 'frontend.themes.light.layouts.master' : 'frontend.layouts.master')
 @section('title',"About Us : World's Best Astrologer & Pandit Ji - Astroduniya")
 @section('description','About Us')
 @section('keywords','astrologer near me')
@@ -14,9 +14,27 @@
 
 <!-- Start Section -->
 @section('content')
+@if(app(\App\Support\FrontendTheme::class)->active() === 'light')
+<section class="hs_indx_title_main_wrapper">
+	<div class="hs_title_img_overlay"></div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 full_width">
+				<div class="hs_indx_title_left_wrapper"><h2>About Us</h2></div>
+			</div>
+			<div class="col-lg-12 full_width">
+				<div class="hs_indx_title_right_wrapper">
+					<ul><li><a href="{{ url('/') }}">Home</a> &nbsp;&nbsp;&nbsp;&gt;</li><li>About Us</li></ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+@else
 @include('frontend.layouts.subnav')
+@endif
 	
-<section>
+<section class="light-section-about">
 <div class="container">
 	<div class="row">
 		
@@ -63,8 +81,8 @@
 								Base64 image is an empty landscape png for better autoresize
 								Classes: rounded, rounded-xl, py-* 
 							-->
-							<div class="py-5 rounded-xl bg-light bg-cover lazy" data-loaded="true" style="background-image: url(&quot;demo.files/images/unsplash/covers/austin-distel-wD1LRb9OeEo-unsplash.jpg&quot;);">
-								<img class="w-100" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAKCAQAAADxnt1TAAAAEUlEQVR42mNkIBowjiodaKUACusAC4zze1kAAAAASUVORK5CYII=" alt="...">
+							<div class="about-hero-visual rounded-xl">
+								<img class="w-100" src="{{ asset('images/other/learn_astrology.jpg') }}" alt="Astrology under the night sky">
 							</div>		
 
 						</div>
@@ -84,21 +102,21 @@
 						<div class="row">
 
 							<div class="col-6">
-								<img class="img-fluid rounded shadow-primary-lg aos-init aos-animate" data-aos="fade-up" data-aos-delay="0" data-aos-offset="0" src="demo.files/images/unsplash/team/thumb_330/craig-mckay-jmURdhtm7Ng-unsplash.jpg" alt="...">
+								<img class="img-fluid rounded shadow-primary-lg aos-init aos-animate" data-aos="fade-up" data-aos-delay="0" data-aos-offset="0" src="{{ asset('images/services/team_activity.jpg') }}" alt="Astroduniya team">
 							</div>
 
 							<div class="col-6">
-								<img class="img-fluid rounded mt-5 shadow-primary-lg aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-offset="0" src="demo.files/images/unsplash/covers/thumb_330/austin-distel-wD1LRb9OeEo-unsplash.jpg" alt="...">
-								<img class="img-fluid rounded mt-4 shadow-primary-lg aos-init aos-animate" data-aos="fade-up" data-aos-delay="250" data-aos-offset="0" src="demo.files/images/unsplash/covers/thumb_330/austin-distel-mpN7xjKQ_Ns-unsplash.jpg" alt="...">
+								<img class="img-fluid rounded mt-5 shadow-primary-lg aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-offset="0" src="{{ asset('images/other/about_horoscopee.jpg') }}" alt="Astrology guidance">
+								<img class="img-fluid rounded mt-4 shadow-primary-lg aos-init aos-animate" data-aos="fade-up" data-aos-delay="250" data-aos-offset="0" src="{{ asset('images/other/about_horoscope.jpg') }}" alt="Zodiac chart">
 							</div>
 
 							<div class="col-6">
-								<img class="img-fluid rounded shadow-primary-lg aos-init aos-animate" data-aos="fade-up" data-aos-delay="0" data-aos-offset="0" src="demo.files/images/unsplash/team/thumb_330/craig-mckay-jmURdhtm7Ng-unsplash.jpg" alt="...">
+								<img class="img-fluid rounded shadow-primary-lg aos-init aos-animate" data-aos="fade-up" data-aos-delay="0" data-aos-offset="0" src="{{ asset('themes/light/images/content/title_img4.jpg') }}" alt="Astrology cards">
 							</div>
 
 							<div class="col-6">
-								<img class="img-fluid rounded mt-5 shadow-primary-lg aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-offset="0" src="demo.files/images/unsplash/covers/thumb_330/austin-distel-wD1LRb9OeEo-unsplash.jpg" alt="...">
-								<img class="img-fluid rounded mt-4 shadow-primary-lg aos-init aos-animate" data-aos="fade-up" data-aos-delay="250" data-aos-offset="0" src="demo.files/images/unsplash/covers/thumb_330/austin-distel-mpN7xjKQ_Ns-unsplash.jpg" alt="...">
+								<img class="img-fluid rounded mt-5 shadow-primary-lg aos-init aos-animate" data-aos="fade-up" data-aos-delay="150" data-aos-offset="0" src="{{ asset('themes/light/images/content/title_img5.jpg') }}" alt="Astrology consultation">
+								<img class="img-fluid rounded mt-4 shadow-primary-lg aos-init aos-animate" data-aos="fade-up" data-aos-delay="250" data-aos-offset="0" src="{{ asset('themes/light/images/content/title_img6.jpg') }}" alt="Astrology reading">
 							</div>
 
 						</div>
@@ -117,7 +135,7 @@
 
 							<!-- icon -->
 							<div class="text-primary">
-								<img width="50" height="50" src="demo.files/svg/icons/startup/017-megaphone.svg" alt="...">
+								<i class="fa fa-bullhorn about-value-icon" aria-hidden="true"></i>
 							</div>
 
 							<div class="ml-4 mr-4">
@@ -141,7 +159,7 @@
 
 							<!-- icon -->
 							<div class="text-primary">
-								<img width="50" height="50" src="demo.files/svg/icons/startup/017-growth.svg" alt="...">
+								<i class="fa fa-line-chart about-value-icon" aria-hidden="true"></i>
 							</div>
 
 							<div class="ml-4 mr-4">
@@ -166,7 +184,7 @@
 
 							<!-- icon -->
 							<div class="text-primary">
-								<img width="50" height="50" src="demo.files/svg/icons/startup/017-networking.svg" alt="...">
+								<i class="fa fa-users about-value-icon" aria-hidden="true"></i>
 							</div>
 
 							<div class="ml-4 mr-4">

@@ -50,6 +50,15 @@
     <link href="{{ asset('css/chatbot.css') }}" rel="stylesheet">
     <link href="{{ asset('css/site-overrides.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;display=swap">
+    @if(($activeFrontendTheme ?? 'current') === 'light')
+        <link rel="stylesheet" href="{{ asset('themes/light/css/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ asset('themes/light/css/font-awesome.css') }}">
+        <link rel="stylesheet" href="{{ asset('themes/light/css/flaticon.css') }}">
+        <link rel="stylesheet" href="{{ asset('themes/light/css/reset.css') }}">
+        <link rel="stylesheet" href="{{ asset('themes/light/css/style.css') }}">
+        <link rel="stylesheet" href="{{ asset('themes/light/css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('themes/light/css/astro-integration.css?v=20261012-100') }}">
+    @endif
     <style>
         .astro-location-suggest {
             position: absolute;
@@ -86,7 +95,7 @@
 
 </head><!--/head-->
 
-<body class="astroduniya header-sticky ">
+<body class="astroduniya header-sticky " data-frontend-theme="{{ $activeFrontendTheme ?? 'current' }}">
 
 <!-- PRELOADER -->
 <!-- <div id="preloader">
@@ -98,11 +107,36 @@
 </div> -->
 <!-- /PRELOADER -->
 
-@include('frontend.layouts.header')
-@yield('content')
-@include('frontend.layouts.footer')
+@if(($activeFrontendTheme ?? 'current') === 'light')
+    @include('frontend.themes.light.partials.header')
+@else
+    @include('frontend.layouts.header')
+@endif
+@if(($activeFrontendTheme ?? 'current') === 'light')
+    <main class="light-legacy-content">@yield('content')</main>
+@else
+    @yield('content')
+@endif
+@if(($activeFrontendTheme ?? 'current') === 'light')
+    @include('frontend.themes.light.partials.footer')
+@else
+    @include('frontend.layouts.footer')
+@endif
 <x-chatbot-widget />
 <script src="{{ asset('js/chatbot.js') }}"></script>
+@if(($activeFrontendTheme ?? 'current') === 'light')
+    <script>
+        (function () {
+            var header = document.querySelector('.hs_header_Wrapper');
+            if (!header) return;
+            var updateHeader = function () {
+                header.classList.toggle('menu_fixed', window.scrollY > 160);
+            };
+            window.addEventListener('scroll', updateHeader, { passive: true });
+            updateHeader();
+        })();
+    </script>
+@endif
 <script>
 	(function () {
 		function addHoneypot(form) {

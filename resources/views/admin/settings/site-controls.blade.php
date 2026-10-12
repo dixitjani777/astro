@@ -33,6 +33,16 @@
                             <div class="form-hint mt-2">Admins can still access the panel while the public site is restricted.</div>
                         </div>
 
+                        <div class="col-md-4">
+                            <label class="form-label">Frontend theme</label>
+                            @php($frontendTheme = old('site.frontend_theme', $settings['site.frontend_theme'] ?? 'current'))
+                            <select class="form-select" name="site[frontend_theme]">
+                                <option value="current" @selected($frontendTheme === 'current')>Current theme</option>
+                                <option value="light" @selected($frontendTheme === 'light')>Light version theme</option>
+                            </select>
+                            <div class="form-hint mt-2">Changes the public frontend only. The admin panel is not affected.</div>
+                        </div>
+
                         <div class="col-12">
                             <label class="form-label">Maintenance message</label>
                             <textarea class="form-control" rows="4" name="site[maintenance][message]">{{ old('site.maintenance.message', $settings['site.maintenance.message'] ?? '') }}</textarea>

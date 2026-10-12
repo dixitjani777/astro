@@ -1,5 +1,5 @@
 <!-- layout, title, description, keywords -->
-@extends('frontend.layouts.master')
+@extends(app(\App\Support\FrontendTheme::class)->active() === 'light' ? 'frontend.themes.light.layouts.master' : 'frontend.layouts.master')
 @php
 	$metaTitle = (!empty($cms?->meta_title)) ? $cms->meta_title : 'About Horoscope : What is Horoscope - Astroduniya';
 	$metaDescription = (!empty($cms?->meta_description)) ? $cms->meta_description : 'Predictions of Horoscope help you to explore your upcoming event. It always help you to identify actual reasons of your troubles in life.';
@@ -19,9 +19,13 @@
 
 <!-- Start Section -->
 @section('content')
-@include('frontend.layouts.subnav')
+@if(app(\App\Support\FrontendTheme::class)->active() === 'light')
+<section class="hs_indx_title_main_wrapper"><div class="hs_title_img_overlay"></div><div class="container"><div class="row"><div class="col-lg-12 full_width"><div class="hs_indx_title_left_wrapper"><h2>About Horoscope</h2></div></div><div class="col-lg-12 full_width"><div class="hs_indx_title_right_wrapper"><ul><li><a href="{{ url('/') }}">Home</a> &nbsp;&nbsp;&nbsp;&gt;</li><li>About Horoscope</li></ul></div></div></div></div></section>
+@else
+    @include('frontend.layouts.subnav')
+@endif
 
-<section>
+<section class="light-legacy-inner-section light-horoscope-about">
 	<div class="container">
 		<div class="row">	
 			<div class="col-lg-9 order-1 order-lg-1">
@@ -44,8 +48,8 @@
 						In astrology, zodiac sign is the biggest influence on human life. Each zodiac sign represent its own set of strengths, challenges, relationships. <span class="font-weight-normal badge badge-pill badge-primary badge-soft fs--15 styleColor">choose zodiac to explore</span>.
 					</p>
 					
-					<div class="row">
-						<div class="col-6m col-lg-3">
+					<div class="row light-horoscope-sign-grid">
+						<div class="light-horoscope-sign-item">
 
 							<div class="card h-100 mb-2 my-2 text-center bg-btlight">
 								<div class="card-body">
@@ -63,7 +67,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-horoscope-sign-item">
 
 							<div class="card h-100 mb-2 my-2 text-center bg-btlight">
 								<div class="card-body">
@@ -81,7 +85,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-horoscope-sign-item">
 
 							<div class="card h-100 mb-2 my-2 text-center bg-btlight">
 								<div class="card-body">
@@ -99,7 +103,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-horoscope-sign-item">
 
 							<div class="card h-100 mb-2 my-2 text-center bg-btlight">
 								<div class="card-body">
@@ -117,11 +121,9 @@
 
 						</div>
 
-					</div>
 					
-					<div class="row">
 
-						<div class="col-6m col-lg-3">
+						<div class="light-horoscope-sign-item">
 
 							<div class="card h-100 mb-2 my-2 text-center bg-btlight">
 								<div class="card-body">
@@ -139,7 +141,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-horoscope-sign-item">
 
 							<div class="card h-100 mb-2 my-2 text-center bg-btlight">
 								<div class="card-body">
@@ -157,7 +159,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-horoscope-sign-item">
 
 							<div class="card h-100 mb-2 my-2 text-center bg-btlight">
 								<div class="card-body">
@@ -175,7 +177,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-horoscope-sign-item">
 
 							<div class="card h-100 mb-2 my-2 text-center bg-btlight">
 								<div class="card-body">
@@ -193,11 +195,9 @@
 
 						</div>
 						
-					</div>
 					
-					<div class="row">
 
-						<div class="col-6m col-lg-3">
+						<div class="light-horoscope-sign-item">
 
 							<div class="card h-100 mb-2 my-2 text-center bg-btlight">
 								<div class="card-body">
@@ -215,7 +215,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-horoscope-sign-item">
 
 							<div class="card h-100 mb-2 my-2 text-center bg-btlight">
 								<div class="card-body">
@@ -233,7 +233,7 @@
 
 						</div>
 
-						<div class="col-6m col-lg-3">
+						<div class="light-horoscope-sign-item">
 
 							<div class="card h-100 mb-2 my-2 text-center bg-btlight">
 								<div class="card-body">
@@ -251,7 +251,7 @@
 
 						</div>
 						
-						<div class="col-6m col-lg-3">
+						<div class="light-horoscope-sign-item">
 
 							<div class="card h-100 mb-2 my-2 text-center bg-btlight">
 								<div class="card-body">

@@ -1,5 +1,5 @@
 <!-- layout, title, description, keywords -->
-@extends('frontend.layouts.master')
+@extends(app(\App\Support\FrontendTheme::class)->active() === 'light' ? 'frontend.themes.light.layouts.master' : 'frontend.layouts.master')
 @section('title','About Gemstone : Power of Gemstone - Astroduniya')
 @section('description','Gemstones helps to balance the body, mind, and spirit. These are healing stones which increase inner peace and prosperity.')
 @section('keywords','gemstones, gems, birthstone, about gemstone, power of gemstone, lucky gemstone, gemstones uses, gemstones online, gemstone shopping, buy gemstones')
@@ -14,9 +14,13 @@
 
 <!-- Start Section -->
 @section('content')
-@include('frontend.layouts.subnav')
+@if(app(\App\Support\FrontendTheme::class)->active() === 'light')
+<section class="hs_indx_title_main_wrapper"><div class="hs_title_img_overlay"></div><div class="container"><div class="row"><div class="col-lg-12 full_width"><div class="hs_indx_title_left_wrapper"><h2>Power of Gemstones</h2></div></div><div class="col-lg-12 full_width"><div class="hs_indx_title_right_wrapper"><ul><li><a href="{{ url('/') }}">Home</a> &nbsp;&nbsp;&nbsp;&gt;</li><li>About Gemstone</li></ul></div></div></div></div></section>
+@else
+    @include('frontend.layouts.subnav')
+@endif
 
-<section>
+<section class="light-legacy-inner-section light-gemstone-about">
 	<div class="container">
 		<div class="row">	
 			<div class="col-lg-9 order-1 order-lg-1">

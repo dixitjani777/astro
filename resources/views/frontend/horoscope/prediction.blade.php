@@ -1,3 +1,4 @@
+@extends(app(\App\Support\FrontendTheme::class)->active() === 'light' ? 'frontend.themes.light.layouts.master' : 'frontend.layouts.master')
 <?php
 $prediction = Request::segment(3); 
     switch ($prediction) {
@@ -42,7 +43,6 @@ $prediction = Request::segment(3);
 ?>
 
 <!-- layout, title, description, keywords -->
-@extends('frontend.layouts.master')
 @section('title',$title)
 @section('description',$description)
 @section('keywords',$keywords)
@@ -51,9 +51,13 @@ $prediction = Request::segment(3);
 
 <!-- Start Section -->
 @section('content')
-@include('frontend.layouts.subnav')
+@if(app(\App\Support\FrontendTheme::class)->active() === 'light')
+<section class="hs_indx_title_main_wrapper"><div class="hs_title_img_overlay"></div><div class="container"><div class="row"><div class="col-lg-12 full_width"><div class="hs_indx_title_left_wrapper"><h2>{{ $toolbar_title }}</h2></div></div><div class="col-lg-12 full_width"><div class="hs_indx_title_right_wrapper"><ul><li><a href="{{ url('/') }}">Home</a> &nbsp;&nbsp;&nbsp;&gt;</li><li>{{ $toolbar_title }}</li></ul></div></div></div></div></section>
+@else
+    @include('frontend.layouts.subnav')
+@endif
 
-<section style="background-image: url(../../images/other/bgvb.png);">
+<section class="light-legacy-inner-section light-horoscope-prediction" style="background-image: url(../../images/other/bgvb.png);">
 	<div class="container">
 		<div class="row">	
 			<div class="col-md-9 col-sm-9">
