@@ -1335,6 +1335,7 @@ body[data-frontend-theme="light"] .light-vastu-page .col-lg-3 #clipboard_2 ifram
 
 /* Match the bundled light-template chrome on legacy section pages. */
 body[data-frontend-theme="light"] .hs_header_Wrapper { background: #242424 !important; }
+body[data-frontend-theme="light"] .hs_header_Wrapper.menu_fixed { background: #fff !important; }
 body[data-frontend-theme="light"] .hs_header_Wrapper > .container { width: 1140px; max-width: calc(100% - 30px); padding: 0; background: #fff; }
 body[data-frontend-theme="light"] .hs_header_Wrapper .hs_top_header_main_Wrapper { width: 100%; box-sizing: border-box; }
 body[data-frontend-theme="light"] main.light-legacy-content > .hs_indx_title_main_wrapper {
