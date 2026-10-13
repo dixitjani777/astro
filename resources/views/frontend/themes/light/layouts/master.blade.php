@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{{ asset('themes/light/css/reset.css') }}">
     <link rel="stylesheet" href="{{ asset('themes/light/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('themes/light/css/responsive.css') }}">
-    <link rel="stylesheet" href="{{ asset('themes/light/css/astro-integration.css?v=20261013-101') }}">
+    <link rel="stylesheet" href="{{ asset('themes/light/css/astro-integration.css?v=20261013-103') }}">
     <link rel="stylesheet" href="{{ asset('css/chatbot.css') }}">
     @stack('styles')
 </head>
